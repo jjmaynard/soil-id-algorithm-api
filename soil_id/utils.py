@@ -2257,6 +2257,13 @@ def process_data_with_rosetta(df, vars, v=3, conf=None, include_sd=False):
     Returns:
     - DataFrame: The processed results from the ROSETTA python package.
     """
+    # Check if rosetta is available
+    if not ROSETTA_AVAILABLE or SoilData is None or rosetta is None:
+        raise NotImplementedError(
+            "Rosetta library is not available. This function requires the rosetta package "
+            "which is not installed in serverless environments."
+        )
+    
     # Select only the specified vars columns and other columns
     df_vars = df[vars]
     df_other = df.drop(columns=vars)
