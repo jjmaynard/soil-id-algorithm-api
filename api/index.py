@@ -124,6 +124,45 @@ async def root():
     }
 
 
+@app.get("/api/debug/environment")
+async def debug_environment():
+    """Debug endpoint to check installed packages and environment"""
+    import sys
+    import subprocess
+    
+    # Check if rosetta is importable
+    rosetta_status = "not_installed"
+    try:
+        import rosetta
+        rosetta_status = "imported_successfully"
+    except ImportError as e:
+        rosetta_status = f"import_failed: {str(e)}"
+    
+    # Check if serverless_soil_stats is available
+    serverless_stats_status = "not_found"
+    try:
+        from soil_id.serverless_soil_stats import ilr, spearmanr
+        serverless_stats_status = "imported_successfully"
+    except ImportError as e:
+        serverless_stats_status = f"import_failed: {str(e)}"
+    
+    # Get pip list
+    try:
+        pip_list = subprocess.check_output([sys.executable, "-m", "pip", "list"], 
+                                          stderr=subprocess.STDOUT).decode()
+        installed_packages = [line.split()[0] for line in pip_list.split('\n')[2:] if line.strip()]
+    except Exception as e:
+        installed_packages = [f"error: {str(e)}"]
+    
+    return {
+        "python_version": sys.version,
+        "rosetta_status": rosetta_status,
+        "serverless_stats_status": serverless_stats_status,
+        "installed_packages": installed_packages,
+        "sys_path": sys.path[:5]  # First 5 paths
+    }
+
+
 @app.post("/api/list-soils", response_model=SoilListOutputDataResponse)
 async def api_list_soils(request: ListSoilsRequest):
     """
