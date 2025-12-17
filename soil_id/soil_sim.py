@@ -446,9 +446,6 @@ def soil_sim(muhorzdata_pd):
         """
         sim_data_df = pd.concat(sim_data_out, axis=0, ignore_index=True)
 
-        # Convert NaN values to None
-        sim_data_df = sim_data_df.where(pd.notna(sim_data_df), None)
-
         # ------------------------------------------------------------------------------------
         # Step 3. Run Rosetta and other Van Genuchten equations
         # ------------------------------------------------------------------------------------
@@ -466,6 +463,7 @@ def soil_sim(muhorzdata_pd):
         ]
 
         # Use Rosetta REST API for hydraulic property prediction
+        # Note: Keep NaN values as-is for Rosetta (it expects numeric or NaN, not None)
         rosetta_data = process_data_with_rosetta(sim_data_df, vars=variables, v=3)
 
         # Create layerID

@@ -2263,8 +2263,11 @@ def process_data_with_rosetta(df, vars, v=3, conf=None, include_sd=False):
     import json
     
     # Select only the specified vars columns
-    df_vars = df[vars]
+    df_vars = df[vars].copy()
     df_other = df.drop(columns=vars)
+
+    # Replace None with NaN for JSON serialization
+    df_vars = df_vars.fillna(np.nan)
 
     # Convert the vars df to a matrix (2D list) for API
     df_vars_matrix = df_vars.values.tolist()
