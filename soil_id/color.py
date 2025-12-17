@@ -19,6 +19,33 @@ import numpy as np
 import pandas as pd
 
 
+def find_closest_rgb_in_reference(r, g, b, color_ref):
+    """
+    Find the closest RGB color in the reference data and return its LAB values.
+    Uses Euclidean distance in RGB space.
+    """
+    # Normalize RGB to 0-1 range if needed
+    if r > 1 or g > 1 or b > 1:
+        r, g, b = r / 255.0, g / 255.0, b / 255.0
+    
+    # Calculate Euclidean distance to all reference colors
+    distances = np.sqrt(
+        (color_ref['srgb_r'] - r) ** 2 +
+        (color_ref['srgb_g'] - g) ** 2 +
+        (color_ref['srgb_b'] - b) ** 2
+    )
+    
+    # Find the closest match
+    idx = distances.idxmin()
+    
+    # Return the corresponding LAB values
+    return (
+        color_ref.at[idx, 'cielab_l'],
+        color_ref.at[idx, 'cielab_a'],
+        color_ref.at[idx, 'cielab_b']
+    )
+
+
 def euclidean_distance(point1, point2):
     """Calculate Euclidean distance between two points."""
     return math.sqrt(sum((a - b) ** 2 for a, b in zip(point1, point2)))
@@ -76,14 +103,13 @@ def convert_rgb_to_lab(row, color_ref):
     """
     if pd.isnull(row["srgb_r"]) or pd.isnull(row["srgb_g"]) or pd.isnull(row["srgb_b"]):
         return np.nan, np.nan, np.nan
+
     # Look up the closest RGB match and get LAB values
     L, a, b = find_closest_rgb_in_reference(
         row["srgb_r"], row["srgb_g"], row["srgb_b"], color_ref
     )
     
     return L, a, b
-    
-    return lab.lab_l, lab.lab_a, lab.lab_b
 
 
 def getProfileLAB(data_osd, color_ref):
@@ -304,8 +330,8 @@ def getColor_deltaE2000_OSD_pedon(data_osd, data_pedon):
     osd_colors_rgb = interpolate_color_values(top, bottom, list(zip(r, g, b)))
     osd_colors_lab = []
     for color_val in osd_colors_rgb:
-        # Simplified - would need color_ref for actual implementation
-        osd_colors_lab.append([np.nan, np.nan, np.nan])
+        L, a, b_val = rgb_to_lab(color_val[0], color_val[1], color_val[2])
+        osd_colors_lab.append([L, a, b_val])
 
     # Calculate average LAB for OSD at 31-37 cm depth
     osd_avg_lab = np.mean(osd_colors_lab[31:37], axis=0) if len(osd_colors_lab) > 31 else np.nan
