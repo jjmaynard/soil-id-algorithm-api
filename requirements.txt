@@ -1,3 +1,11 @@
+# Core dependencies - install first
+numpy==2.2.1
+pandas==2.2.3
+
+# Soil science (for hydraulic property prediction - AWS calculations)
+# Must install early as it includes large sqlite database (~11MB)
+rosetta-soil>=0.1.2
+
 # FastAPI and ASGI server
 fastapi==0.104.1
 uvicorn==0.24.0
@@ -12,13 +20,6 @@ geopandas==1.0.1
 pyogrio==0.10.0
 pyproj==3.7.0
 shapely==2.0.6
-
-# Scientific computing (remove problematic packages for serverless)
-numpy==2.2.1
-pandas==2.2.3
-
-# Soil science (for hydraulic property prediction - AWS calculations)
-rosetta-soil>=0.1.2
 
 # HTTP and caching
 requests==2.32.3
