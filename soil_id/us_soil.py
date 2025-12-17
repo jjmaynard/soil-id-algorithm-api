@@ -27,7 +27,7 @@ from pandas import json_normalize
 
 # local libraries
 import soil_id.config
-from .color import getProfileLAB, lab2munsell, munsell2rgb
+from .color import getProfileLAB, lab2munsell, munsell2rgb, lab2munsell_fast
 from .rank_utils import finalize_rank_output
 from .services import get_elev_data, get_soil_series_data, get_soilweb_data, sda_return
 
@@ -796,15 +796,19 @@ def list_soils(lon, lat, sim=True):
                         lab_lyrs.append(dict(zip(l_d.index, lab_parse)))
 
                         # Convert LAB triplets to Munsell values
-                        munsell_values = [
-                            (
-                                lab2munsell(color_ref, LAB_ref, lab)
-                                if lab[0] and lab[1] and lab[2]
-                                else ""
-                            )
-                            for lab in lab_parse
-                        ]
-                        munsell_lyrs.append(dict(zip(l_d.index, munsell_values)))
+                        # Use fast vectorized color matching for all valid LAB triplets
+                        valid_mask = [(lab[0] and lab[1] and lab[2]) for lab in lab_parse]
+                        valid_labs = [lab for lab, valid in zip(lab_parse, valid_mask) if valid]
+                        munsell_fast = [""] * len(lab_parse)
+                        if valid_labs:
+                            fast_results = lab2munsell_fast(valid_labs)
+                            # fast_results is a list of strings
+                            j = 0
+                            for i, valid in enumerate(valid_mask):
+                                if valid:
+                                    munsell_fast[i] = fast_results[j]
+                                    j += 1
+                        munsell_lyrs.append(dict(zip(l_d.index, munsell_fast)))
 
                     # Extract OSD Texture and Rock Fragment Data
                     if OSD_text_int[index] == "Yes" or OSD_rfv_int[index] == "Yes":

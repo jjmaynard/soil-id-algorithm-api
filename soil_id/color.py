@@ -13,10 +13,61 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see https://www.gnu.org/licenses/.
 
-import math
 
+import math
 import numpy as np
 import pandas as pd
+
+# --- FastColorMatcher: Optimized vectorized color matching (serverless-compatible) ---
+class FastColorMatcher:
+    """
+    Fast Munsell color matching using vectorized numpy operations (serverless-compatible)
+    """
+    def __init__(self, color_ref_path):
+        self.color_ref = pd.read_csv(color_ref_path)
+        self.LAB_ref = self.color_ref[["cielab_l", "cielab_a", "cielab_b"]].values
+        self.munsell_ref = self.color_ref[["hue", "value", "chroma"]]
+
+    def lab2munsell(self, lab_values):
+        lab_values = np.atleast_2d(lab_values)
+        distances = np.sqrt(np.sum(
+            (lab_values[:, np.newaxis, :] - self.LAB_ref[np.newaxis, :, :]) ** 2,
+            axis=2
+        ))
+        min_indices = np.argmin(distances, axis=1)
+        return self.munsell_ref.iloc[min_indices].reset_index(drop=True)
+
+    def lab2munsell_with_distance(self, lab_values):
+        lab_values = np.atleast_2d(lab_values)
+        distances = np.sqrt(np.sum(
+            (lab_values[:, np.newaxis, :] - self.LAB_ref[np.newaxis, :, :]) ** 2,
+            axis=2
+        ))
+        min_indices = np.argmin(distances, axis=1)
+        min_distances = distances[np.arange(len(distances)), min_indices]
+        result = self.munsell_ref.iloc[min_indices].reset_index(drop=True).copy()
+        result['delta_e'] = min_distances
+        return result
+
+    def batch_convert(self, lab_array):
+        return self.lab2munsell(lab_array)
+
+# Singleton instance for production use
+import soil_id.config
+_fast_matcher = FastColorMatcher(soil_id.config.MUNSELL_RGB_LAB_PATH)
+
+def lab2munsell_fast(lab):
+    """
+    Fast vectorized LAB to Munsell conversion (single color or batch)
+    Returns: string if input is 1D, list of strings if input is 2D
+    """
+    arr = np.atleast_2d(lab)
+    munsell_df = _fast_matcher.lab2munsell(arr)
+    # Format as 'hue value/chroma'
+    out = [f"{row['hue']} {int(row['value'])}/{int(row['chroma'])}" for _, row in munsell_df.iterrows()]
+    if np.asarray(lab).ndim == 1:
+        return out[0]
+    return out
 
 
 def find_closest_rgb_in_reference(r, g, b, color_ref):
