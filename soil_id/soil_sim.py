@@ -465,13 +465,8 @@ def soil_sim(muhorzdata_pd):
             "water_retention_15_bar",
         ]
 
-        try:
-            rosetta_data = process_data_with_rosetta(sim_data_df, vars=variables, v=3)
-        except (NotImplementedError, AttributeError) as e:
-            # Rosetta not available in serverless environment
-            # Return None values for aws_PIW90 and var_imp
-            logging.warning(f"Rosetta unavailable: {e}. Returning None for aws_PIW90 and var_imp")
-            return None, None
+        # Use Rosetta REST API for hydraulic property prediction
+        rosetta_data = process_data_with_rosetta(sim_data_df, vars=variables, v=3)
 
         # Create layerID
         sim_data_df["layerID"] = (

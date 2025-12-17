@@ -2247,31 +2247,82 @@ def slice_and_aggregate_soil_data(df):
 
 def process_data_with_rosetta(df, vars, v=3, conf=None, include_sd=False):
     """
+    Process soil data using the Rosetta REST API for hydraulic property prediction.
+    
     Parameters:
-    - df (DataFrame): The the DataFrame to be processed.
+    - df (DataFrame): The DataFrame to be processed.
     - vars (list): List of variable names to be processed.
-    - v (str): The version of the ROSETTA model to use.
+    - v (int): The version of the ROSETTA model to use (1-3).
     - conf (dict, optional): Additional request configuration options.
     - include_sd (bool): Whether to include standard deviation in the output.
 
     Returns:
-    - DataFrame: The processed results from the ROSETTA python package.
+    - DataFrame: The processed results from the ROSETTA REST API.
     """
-    # Check if rosetta is available
-    if not ROSETTA_AVAILABLE or SoilData is None or rosetta is None:
-        raise NotImplementedError(
-            "Rosetta library is not available. This function requires the rosetta package "
-            "which is not installed in serverless environments."
-        )
+    import requests
+    import json
     
-    # Select only the specified vars columns and other columns
+    # Select only the specified vars columns
     df_vars = df[vars]
     df_other = df.drop(columns=vars)
 
-    # Convert the vars df to a matrix (2D list)
+    # Convert the vars df to a matrix (2D list) for API
     df_vars_matrix = df_vars.values.tolist()
-
-    mean, stdev, codes = rosetta(v, SoilData.from_array(df_vars_matrix))
+    
+    # Prepare API request
+    api_url = "http://www.handbook60.org/api/v1/rosetta"
+    
+    # Build request data according to API specs
+    request_data = {
+        "soildata": df_vars_matrix,
+        "model_type": int(v)  # Rosetta model version (1, 2, or 3)
+    }
+    
+    try:
+        # Make API request
+        response = requests.post(api_url, json=request_data, timeout=30)
+        response.raise_for_status()
+        
+        result_data = response.json()
+        
+        # Extract mean van Genuchten parameters
+        mean = result_data.get("van_genuchten_params", [])
+        
+        # Convert to DataFrame
+        vg_params = pd.DataFrame(mean)
+        vg_params.columns = ["theta_r", "theta_s", "alpha", "npar", "ksat"]
+        
+        # Add model codes and version
+        codes = result_data.get("model_codes", [-1] * len(mean))
+        vg_params[".rosetta.model"] = pd.Categorical.from_codes(
+            codes, categories=["-1", "1", "2", "3", "4", "5"]
+        )
+        vg_params[".rosetta.version"] = v
+        
+        # If include_sd is True, add standard deviations
+        if include_sd:
+            stdev = result_data.get("stdev", [[0]*5] * len(mean))
+            vg_sd = pd.DataFrame(stdev)
+            vg_sd.columns = [f"sd_{col}" for col in ["theta_r", "theta_s", "alpha", "npar", "ksat"]]
+            result = pd.concat([df_other.reset_index(drop=True), vg_params, vg_sd], axis=1)
+        else:
+            result = pd.concat([df_other.reset_index(drop=True), vg_params], axis=1)
+            
+        return result
+        
+    except requests.RequestException as e:
+        logging.warning(f"Rosetta API request failed: {e}")
+        # Return DataFrame with NaN values if API fails
+        vg_params = pd.DataFrame({
+            "theta_r": [np.nan] * len(df),
+            "theta_s": [np.nan] * len(df),
+            "alpha": [np.nan] * len(df),
+            "npar": [np.nan] * len(df),
+            "ksat": [np.nan] * len(df),
+            ".rosetta.model": ["-1"] * len(df),
+            ".rosetta.version": [v] * len(df)
+        })
+        return pd.concat([df_other.reset_index(drop=True), vg_params], axis=1)
 
     # Convert van Genuchten params to DataFrame
     vg_params = pd.DataFrame(mean)
