@@ -70,9 +70,9 @@ def munsell2rgb(color_ref, munsell_ref, munsell):
     return [color_ref.at[idx, col] for col in ["srgb_r", "srgb_g", "srgb_b"]]
 
 
-def convert_rgb_to_lab(row):
+def convert_rgb_to_lab(row, color_ref):
     """
-    Converts RGB values to LAB using colormath.
+    Converts RGB values to LAB using the reference lookup table.
     """
     if pd.isnull(row["srgb_r"]) or pd.isnull(row["srgb_g"]) or pd.isnull(row["srgb_b"]):
         return np.nan, np.nan, np.nan
