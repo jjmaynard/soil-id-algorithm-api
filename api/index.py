@@ -243,7 +243,15 @@ async def api_analyze_soil_combined(request: RankSoilsRequest):
             cracks=request.cracks
         )
         
-        return rank_result
+        # Combine list and rank results
+        return {
+            "soil_list_data": {
+                "soil_list_json": list_result.soil_list_json,
+                "rank_data_csv": list_result.rank_data_csv,
+                "map_unit_component_data_csv": list_result.map_unit_component_data_csv
+            },
+            "ranking_result": rank_result
+        }
     
     except HTTPException:
         raise
