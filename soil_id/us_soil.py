@@ -1140,7 +1140,12 @@ def list_soils(lon, lat):
     ]
 
     # Run soil simulations: functional similarity calculation and soil information value
-    aws_PIW90, var_imp = soil_sim(muhorzdata_pd)
+    if SOIL_SIM_AVAILABLE:
+        aws_PIW90, var_imp = soil_sim(muhorzdata_pd)
+    else:
+        # When soil_sim is not available, set default values
+        aws_PIW90 = None
+        var_imp = None
 
     # Create a new column 'soilID_rank' which will be True for the first row in each group sorted
     # by 'distance' and False for other rows
