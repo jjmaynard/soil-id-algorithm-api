@@ -19,8 +19,16 @@ from typing import List
 
 import numpy as np
 import pandas as pd
-from composition_stats import ilr, ilr_inv
-from scipy.stats import spearmanr
+
+# Use serverless-compatible implementations for Vercel deployment
+try:
+    from .serverless_soil_stats import ilr, ilr_inv, spearmanr
+    SERVERLESS_MODE = True
+except ImportError:
+    # Fallback to full scipy/composition-stats if available
+    from composition_stats import ilr, ilr_inv
+    from scipy.stats import spearmanr
+    SERVERLESS_MODE = False
 
 from .utils import (
     acomp,

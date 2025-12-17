@@ -25,8 +25,16 @@ import re
 import geopandas as gpd
 import numpy as np
 import pandas as pd
-from numpy.linalg import cholesky
 from shapely.geometry import Point
+
+# Use serverless-compatible implementations for Vercel deployment
+try:
+    from .serverless_soil_stats import cholesky, norm_cdf
+    SERVERLESS_STATS_MODE = True
+except ImportError:
+    # Fallback to numpy/scipy if available
+    from numpy.linalg import cholesky
+    SERVERLESS_STATS_MODE = False
 
 # Optional imports for features that require scipy/sklearn/gdal
 try:
@@ -47,7 +55,7 @@ except ImportError:
 try:
     from scipy.interpolate import UnivariateSpline
     from scipy.sparse import issparse
-    from scipy.stats import entropy, norm
+    from scipy.stats import entropy
     SCIPY_AVAILABLE = True
 except ImportError:
     SCIPY_AVAILABLE = False
@@ -56,7 +64,13 @@ except ImportError:
     def issparse(x):
         return False
     entropy = None
-    norm = None
+
+# norm.cdf is handled by serverless_soil_stats.norm_cdf imported above
+if not SERVERLESS_STATS_MODE:
+    try:
+        from scipy.stats import norm
+    except ImportError:
+        norm = None
 
 try:
     from sklearn.impute import SimpleImputer
@@ -2000,7 +2014,11 @@ def simulate_correlated_triangular(n, params, correlation_matrix):
 
     for i, (a, b, c) in enumerate(params):
         normal_var = correlated_normal[:, i]
-        u = norm.cdf(normal_var)  # Transform to uniform [0, 1] range
+        # Transform to uniform [0, 1] range using serverless-compatible norm_cdf
+        if SERVERLESS_STATS_MODE:
+            u = norm_cdf(normal_var)
+        else:
+            u = norm.cdf(normal_var)
 
         # Check for degenerate case where c - a == 0
         if c - a == 0:
