@@ -17,6 +17,9 @@ shapely==2.0.6
 numpy==2.2.1
 pandas==2.2.3
 
+# Soil science
+rosetta-soil==0.1.2
+
 # HTTP and caching
 requests==2.32.3
 requests-cache==1.2.1
