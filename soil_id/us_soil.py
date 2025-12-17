@@ -1140,6 +1140,7 @@ def list_soils(lon, lat):
     ]
 
     # Run soil simulations: functional similarity calculation and soil information value
+    soil_sim_error = None
     if SOIL_SIM_AVAILABLE:
         try:
             aws_PIW90, var_imp = soil_sim(muhorzdata_pd)
@@ -1147,6 +1148,7 @@ def list_soils(lon, lat):
             # Log the error but continue with None values
             import traceback
             error_details = f"soil_sim failed: {type(e).__name__}: {str(e)}"
+            soil_sim_error = error_details + "\n" + traceback.format_exc()
             print(error_details)  # Print to stdout so it appears in Vercel logs
             print(traceback.format_exc())  # Print full stack trace
             logging.warning(error_details)
@@ -1156,6 +1158,7 @@ def list_soils(lon, lat):
         # When soil_sim is not available, set default values
         aws_PIW90 = None
         var_imp = None
+        soil_sim_error = "soil_sim not available (scipy/composition-stats not installed)"
 
     # Create a new column 'soilID_rank' which will be True for the first row in each group sorted
     # by 'distance' and False for other rows
@@ -1571,6 +1574,7 @@ def list_soils(lon, lat):
         },
         "AWS_PIW90": aws_PIW90,
         "Soil Data Value": var_imp,
+        "soil_sim_error": soil_sim_error,  # Temporary field for debugging
         "soilList": output_SoilList,
     }
 
