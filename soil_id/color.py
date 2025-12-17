@@ -17,71 +17,8 @@ import math
 
 import numpy as np
 import pandas as pd
-
-
-def rgb_to_xyz(r, g, b):
-    """
-    Convert sRGB to XYZ color space.
-    Input: r, g, b in 0-255 range
-    Output: X, Y, Z values
-    """
-    # Normalize to 0-1
-    r, g, b = r / 255.0, g / 255.0, b / 255.0
-    
-    # Apply sRGB gamma correction
-    def gamma_correction(val):
-        if val <= 0.04045:
-            return val / 12.92
-        else:
-            return ((val + 0.055) / 1.055) ** 2.4
-    
-    r = gamma_correction(r)
-    g = gamma_correction(g)
-    b = gamma_correction(b)
-    
-    # Convert to XYZ using sRGB matrix (D65 illuminant)
-    X = r * 0.4124564 + g * 0.3575761 + b * 0.1804375
-    Y = r * 0.2126729 + g * 0.7151522 + b * 0.0721750
-    Z = r * 0.0193339 + g * 0.1191920 + b * 0.9503041
-    
-    return X, Y, Z
-
-
-def xyz_to_lab(X, Y, Z):
-    """
-    Convert XYZ to LAB color space.
-    Reference white point: D65 (standard daylight)
-    """
-    # D65 standard illuminant
-    ref_X = 0.95047
-    ref_Y = 1.00000
-    ref_Z = 1.08883
-    
-    X = X / ref_X
-    Y = Y / ref_Y
-    Z = Z / ref_Z
-    
-    def f(t):
-        delta = 6.0 / 29.0
-        if t > delta ** 3:
-            return t ** (1.0 / 3.0)
-        else:
-            return t / (3 * delta ** 2) + 4.0 / 29.0
-    
-    L = 116 * f(Y) - 16
-    a = 500 * (f(X) - f(Y))
-    b = 200 * (f(Y) - f(Z))
-    
-    return L, a, b
-
-
-def rgb_to_lab(r, g, b):
-    """
-    Convert sRGB (0-255) to CIELAB color space.
-    """
-    X, Y, Z = rgb_to_xyz(r, g, b)
-    L, a, b_val = xyz_to_lab(X, Y, Z)
-    return L, a, b_val
+from colormath.color_objects import sRGBColor, LabColor
+from colormath.color_conversions import convert_color
 
 
 def euclidean_distance(point1, point2):
@@ -137,15 +74,18 @@ def munsell2rgb(color_ref, munsell_ref, munsell):
 
 def convert_rgb_to_lab(row):
     """
-    Converts RGB values to LAB using pure Python implementation.
+    Converts RGB values to LAB using colormath.
     """
     if pd.isnull(row["srgb_r"]) or pd.isnull(row["srgb_g"]) or pd.isnull(row["srgb_b"]):
         return np.nan, np.nan, np.nan
 
-    # Convert RGB (0-255) to LAB
-    L, a, b = rgb_to_lab(row["srgb_r"], row["srgb_g"], row["srgb_b"])
+    # Create sRGB color object (values should be in 0-255 range)
+    rgb = sRGBColor(row["srgb_r"], row["srgb_g"], row["srgb_b"], is_upscaled=True)
     
-    return L, a, b
+    # Convert to LAB
+    lab = convert_color(rgb, LabColor)
+    
+    return lab.lab_l, lab.lab_a, lab.lab_b
 
 
 def getProfileLAB(data_osd, color_ref):
@@ -369,8 +309,9 @@ def getColor_deltaE2000_OSD_pedon(data_osd, data_pedon):
         rgb = sRGBColor(color_val[0], color_val[1], color_val[2], is_upscaled=True)
         lab = convert_color(rgb, LabColor)
         osd_colors_lab.append([lab.lab_l, lab.lab_a, lab.lab_b])
-L, a, b_val = rgb_to_lab(color_val[0], color_val[1], color_val[2])
-        osd_colors_lab.append([L, a, b_valn(osd_colors_lab) > 31 else np.nan
+
+    # Calculate average LAB for OSD at 31-37 cm depth
+    osd_avg_lab = np.mean(osd_colors_lab[31:37], axis=0) if len(osd_colors_lab) > 31 else np.nan
     if np.isnan(osd_avg_lab).any():
         return np.nan
 
