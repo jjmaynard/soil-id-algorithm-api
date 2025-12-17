@@ -4,9 +4,6 @@ uvicorn==0.24.0
 pydantic==2.5.0
 mangum==0.17.0
 
-# Color conversion (pure Python, no C dependencies)
-colormath==3.0.0
-
 # Configuration
 python-dotenv==1.0.0
 
