@@ -17,8 +17,6 @@ import math
 
 import numpy as np
 import pandas as pd
-from colormath.color_objects import sRGBColor, LabColor
-from colormath.color_conversions import convert_color
 
 
 def euclidean_distance(point1, point2):
