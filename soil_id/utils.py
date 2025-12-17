@@ -875,21 +875,30 @@ def check_pairwise_arrays(X, Y, precomputed=False, dtype=None):
         if dtype is None:
             dtype = np.float64
         
-        # Convert to specified dtype
-        X = X.astype(dtype, copy=False)
-        
-        # Simple imputation: replace NaN with column mean
-        col_mean = np.nanmean(X, axis=0)
-        inds = np.where(np.isnan(X))
-        X[inds] = np.take(col_mean, inds[1])
+        # Handle mixed-type data: try to convert, but keep as object dtype if conversion fails
+        try:
+            X = X.astype(dtype, copy=False)
+            
+            # Simple imputation: replace NaN with column mean (only for numeric data)
+            col_mean = np.nanmean(X, axis=0)
+            inds = np.where(np.isnan(X))
+            X[inds] = np.take(col_mean, inds[1])
+        except (ValueError, TypeError):
+            # Data contains non-numeric values, keep as-is (object dtype)
+            # No imputation for mixed-type data
+            pass
         
         if Y is X or Y is None:
             Y = X
         else:
-            Y = Y.astype(dtype, copy=False)
-            col_mean_y = np.nanmean(Y, axis=0)
-            inds_y = np.where(np.isnan(Y))
-            Y[inds_y] = np.take(col_mean_y, inds_y[1])
+            try:
+                Y = Y.astype(dtype, copy=False)
+                col_mean_y = np.nanmean(Y, axis=0)
+                inds_y = np.where(np.isnan(Y))
+                Y[inds_y] = np.take(col_mean_y, inds_y[1])
+            except (ValueError, TypeError):
+                # Data contains non-numeric values, keep as-is
+                pass
 
     # Check for valid shapes based on whether distances are precomputed
     if precomputed and X.shape[1] != Y.shape[0]:
