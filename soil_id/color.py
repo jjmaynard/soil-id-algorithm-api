@@ -17,8 +17,13 @@ import math
 
 import numpy as np
 import pandas as pd
-import skimage
-from sklearn.metrics.pairwise import euclidean_distances
+from colormath.color_objects import sRGBColor, LabColor
+from colormath.color_conversions import convert_color
+
+
+def euclidean_distance(point1, point2):
+    """Calculate Euclidean distance between two points."""
+    return math.sqrt(sum((a - b) ** 2 for a, b in zip(point1, point2)))
 
 
 def lab2munsell(color_ref, LAB_ref, lab):
@@ -32,7 +37,16 @@ def lab2munsell(color_ref, LAB_ref, lab):
     Returns:
     - str: Munsell color notation.
     """
-    idx = pd.DataFrame(euclidean_distances([lab], LAB_ref)).idxmin(axis=1).iloc[0]
+    # Find the index of the closest LAB value using pure Python euclidean distance
+    min_dist = float('inf')
+    idx = 0
+    for i in range(len(LAB_ref)):
+        ref_lab = [LAB_ref.iloc[i, 0], LAB_ref.iloc[i, 1], LAB_ref.iloc[i, 2]]
+        dist = euclidean_distance(lab, ref_lab)
+        if dist < min_dist:
+            min_dist = dist
+            idx = i
+    
     munsell_color = (
         f"{color_ref.at[idx, 'hue']} "
         f"{int(color_ref.at[idx, 'value'])}/{int(color_ref.at[idx, 'chroma'])}"
@@ -60,14 +74,18 @@ def munsell2rgb(color_ref, munsell_ref, munsell):
 
 def convert_rgb_to_lab(row):
     """
-    Converts RGB values to LAB.
+    Converts RGB values to LAB using colormath.
     """
     if pd.isnull(row["srgb_r"]) or pd.isnull(row["srgb_g"]) or pd.isnull(row["srgb_b"]):
         return np.nan, np.nan, np.nan
 
-    result = skimage.color.rgb2lab([row["srgb_r"], row["srgb_g"], row["srgb_b"]])
-
-    return result
+    # Create sRGB color object (values should be in 0-255 range)
+    rgb = sRGBColor(row["srgb_r"], row["srgb_g"], row["srgb_b"], is_upscaled=True)
+    
+    # Convert to LAB
+    lab = convert_color(rgb, LabColor)
+    
+    return lab.lab_l, lab.lab_a, lab.lab_b
 
 
 def getProfileLAB(data_osd, color_ref):
@@ -282,7 +300,11 @@ def getColor_deltaE2000_OSD_pedon(data_osd, data_pedon):
         [0] + data_pedon[0][:-1],
         data_pedon[0],
         data_pedon[1],
-    )
+    )]
+    for color_val in osd_colors_rgb:
+        rgb = sRGBColor(color_val[0], color_val[1], color_val[2], is_upscaled=True)
+        lab = convert_color(rgb, LabColor)
+        osd_colors_lab.append([lab.lab_l, lab.lab_a, lab.lab_b])
 
     # Convert RGB values to LAB for OSD
     osd_colors_rgb = interpolate_color_values(top, bottom, list(zip(r, g, b)))
