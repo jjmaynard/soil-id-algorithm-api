@@ -1145,7 +1145,11 @@ def list_soils(lon, lat):
             aws_PIW90, var_imp = soil_sim(muhorzdata_pd)
         except Exception as e:
             # Log the error but continue with None values
-            logging.warning(f"soil_sim failed: {type(e).__name__}: {str(e)}")
+            import traceback
+            error_details = f"soil_sim failed: {type(e).__name__}: {str(e)}"
+            print(error_details)  # Print to stdout so it appears in Vercel logs
+            print(traceback.format_exc())  # Print full stack trace
+            logging.warning(error_details)
             aws_PIW90 = None
             var_imp = None
     else:
