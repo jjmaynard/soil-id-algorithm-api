@@ -4,6 +4,9 @@ uvicorn==0.24.0
 pydantic==2.5.0
 mangum==0.17.0
 
+# Configuration
+python-dotenv==1.0.0
+
 # Geospatial libraries (using pyogrio which includes GDAL bindings)
 geopandas==1.0.1
 pyogrio==0.10.0
