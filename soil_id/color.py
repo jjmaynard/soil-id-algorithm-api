@@ -103,7 +103,7 @@ def getProfileLAB(data_osd, color_ref):
     data_osd = correct_color_depth_discrepancies(data_osd)
 
     data_osd["cielab_l"], data_osd["cielab_a"], data_osd["cielab_b"] = zip(
-        *data_osd.apply(lambda row: convert_rgb_to_lab(row), axis=1)
+        *data_osd.apply(lambda row: convert_rgb_to_lab(row, color_ref), axis=1)
     )
 
     l_intpl, a_intpl, b_intpl = [], [], []
