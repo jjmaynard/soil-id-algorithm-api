@@ -2269,13 +2269,12 @@ def process_data_with_rosetta(df, vars, v=3, conf=None, include_sd=False):
     # Convert the vars df to a matrix (2D list) for API
     df_vars_matrix = df_vars.values.tolist()
     
-    # Prepare API request
-    api_url = "http://www.handbook60.org/api/v1/rosetta"
+    # Prepare API request with rosetta version in URL
+    api_url = f"http://www.handbook60.org/api/v1/rosetta/{v}"
     
     # Build request data according to API specs
     request_data = {
-        "soildata": df_vars_matrix,
-        "model_type": int(v)  # Rosetta model version (1, 2, or 3)
+        "soildata": df_vars_matrix
     }
     
     try:
