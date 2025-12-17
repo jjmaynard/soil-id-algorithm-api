@@ -130,13 +130,28 @@ async def debug_environment():
     import sys
     import subprocess
     
-    # Check if rosetta is importable
-    rosetta_status = "not_installed"
+    # Check if Rosetta REST API is accessible
+    rosetta_status = "not_tested"
     try:
-        import rosetta
-        rosetta_status = "imported_successfully"
-    except ImportError as e:
-        rosetta_status = f"import_failed: {str(e)}"
+        import requests
+        test_data = {"soildata": [[50, 20, 30, 1.5, 0.3, 0.1]]}
+        response = requests.post(
+            "http://www.handbook60.org/api/v1/rosetta/3",
+            json=test_data,
+            timeout=5
+        )
+        if response.status_code == 200:
+            result = response.json()
+            if "van_genuchten_params" in result:
+                rosetta_status = "REST_API_working"
+            else:
+                rosetta_status = "REST_API_returned_unexpected_format"
+        else:
+            rosetta_status = f"REST_API_error_status_{response.status_code}"
+    except requests.Timeout:
+        rosetta_status = "REST_API_timeout"
+    except Exception as e:
+        rosetta_status = f"REST_API_failed: {str(e)}"
     
     # Check if serverless_soil_stats is available
     serverless_stats_status = "not_found"
