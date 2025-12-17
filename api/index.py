@@ -5,7 +5,7 @@
 # by the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 
-from .main import app
+from main import app
 
 # Export the app as handler for Vercel
 handler = app
