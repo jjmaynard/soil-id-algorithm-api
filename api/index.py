@@ -9,6 +9,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Optional, List
+from mangum import Mangum
 import sys
 from pathlib import Path
 
@@ -254,4 +255,4 @@ async def api_analyze_soil_combined(request: RankSoilsRequest):
 
 
 # For Vercel serverless deployment
-handler = app
+handler = Mangum(app, lifespan="off")
