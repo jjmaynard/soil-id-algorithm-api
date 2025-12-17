@@ -255,4 +255,4 @@ async def api_analyze_soil_combined(request: RankSoilsRequest):
 
 
 # For Vercel serverless deployment
-handler = Mangum(app, lifespan="off")
+app = app  # Vercel handles ASGI apps directly
