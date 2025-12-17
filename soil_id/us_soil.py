@@ -88,7 +88,7 @@ class SoilListOutputData:
 ############################################################################################
 #                                   list_soils                                 #
 ############################################################################################
-def list_soils(lon, lat):
+def list_soils(lon, lat, sim=True):
     # Load in LAB to Munsell conversion look-up table
     color_ref = pd.read_csv(soil_id.config.MUNSELL_RGB_LAB_PATH)
     LAB_ref = color_ref[["cielab_l", "cielab_a", "cielab_b"]]
@@ -1140,7 +1140,7 @@ def list_soils(lon, lat):
     ]
 
     # Run soil simulations: functional similarity calculation and soil information value
-    if SOIL_SIM_AVAILABLE:
+    if sim and SOIL_SIM_AVAILABLE:
         try:
             aws_PIW90, var_imp = soil_sim(muhorzdata_pd)
         except Exception as e:
@@ -1153,7 +1153,7 @@ def list_soils(lon, lat):
             aws_PIW90 = None
             var_imp = None
     else:
-        # When soil_sim is not available, set default values
+        # When soil_sim is not available or sim=False, set default values
         aws_PIW90 = None
         var_imp = None
 

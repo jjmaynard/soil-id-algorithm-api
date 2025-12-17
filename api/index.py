@@ -42,12 +42,14 @@ class ListSoilsRequest(BaseModel):
     """Request model for listing soils at a location"""
     lon: float = Field(..., description="Longitude coordinate")
     lat: float = Field(..., description="Latitude coordinate")
+    sim: bool = Field(True, description="Whether to run soil simulation calculations (AWS_PIW90, Soil Data Value)")
     
     class Config:
         json_schema_extra = {
             "example": {
                 "lon": -101.9733687,
-                "lat": 33.81246789
+                "lat": 33.81246789,
+                "sim": True
             }
         }
 
@@ -77,6 +79,9 @@ class RankSoilsRequest(BaseModel):
     soil_list_json: dict = Field(..., description="Soil list JSON from list_soils endpoint")
     rank_data_csv: str = Field(..., description="Rank data CSV from list_soils endpoint")
     map_unit_component_data_csv: str = Field(..., description="Map unit component data CSV from list_soils endpoint")
+    
+    # Simulation parameter
+    sim: bool = Field(True, description="Whether to run soil simulation calculations (AWS_PIW90, Soil Data Value)")
     
     # Field measurement data
     soilHorizon: Optional[List[Optional[str]]] = Field(None, description="Soil texture classifications")
@@ -190,7 +195,7 @@ async def api_list_soils(request: ListSoilsRequest):
     endpoint along with field measurement data.
     """
     try:
-        result = list_soils(request.lon, request.lat)
+        result = list_soils(request.lon, request.lat, sim=request.sim)
         
         # Handle error case where result is a string
         if isinstance(result, str):
@@ -275,7 +280,7 @@ async def api_analyze_soil_combined(request: RankSoilsRequest):
     """
     try:
         # First, get the soil list
-        list_result = list_soils(request.lon, request.lat)
+        list_result = list_soils(request.lon, request.lat, sim=request.sim)
         
         # Handle error case
         if isinstance(list_result, str):
