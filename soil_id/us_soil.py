@@ -1950,10 +1950,10 @@ def rank_soils(
     # ---Site Data Similarity---
     if pElev is None:
         pElev_dict = get_elev_data(lon, lat)
-    try:
-        pElev = float(pElev_dict["value"])
-    except (KeyError, TypeError, ValueError):
-        pElev = None  # or some default
+        try:
+            pElev = float(pElev_dict["value"])
+        except (KeyError, TypeError, ValueError):
+            pElev = None  # or some default
 
     # 1) “Raw” guard on the three possible site inputs:
     provided = {
