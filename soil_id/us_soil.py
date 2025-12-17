@@ -28,10 +28,32 @@ from pandas import json_normalize
 # local libraries
 import soil_id.config
 
-from .color import getProfileLAB, lab2munsell, munsell2rgb
+# Try to import color functions, but make them optional for serverless deployment
+try:
+    from .color import getProfileLAB, lab2munsell, munsell2rgb
+    COLOR_FUNCTIONS_AVAILABLE = True
+except ImportError:
+    COLOR_FUNCTIONS_AVAILABLE = False
+    # Provide stub functions that will raise informative errors if called
+    def getProfileLAB(*args, **kwargs):
+        raise NotImplementedError("Color functions require scipy/scikit-image which are not available in serverless deployment")
+    def lab2munsell(*args, **kwargs):
+        raise NotImplementedError("Color functions require scipy/scikit-image which are not available in serverless deployment")
+    def munsell2rgb(*args, **kwargs):
+        raise NotImplementedError("Color functions require scipy/scikit-image which are not available in serverless deployment")
+
 from .rank_utils import finalize_rank_output
 from .services import get_elev_data, get_soil_series_data, get_soilweb_data, sda_return
-from .soil_sim import soil_sim
+
+# Try to import soil_sim, but make it optional
+try:
+    from .soil_sim import soil_sim
+    SOIL_SIM_AVAILABLE = True
+except ImportError:
+    SOIL_SIM_AVAILABLE = False
+    def soil_sim(*args, **kwargs):
+        raise NotImplementedError("soil_sim requires scipy/composition-stats which are not available in serverless deployment")
+
 from .utils import (
     aggregate_data,
     create_new_layer,
