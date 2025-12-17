@@ -2284,8 +2284,15 @@ def process_data_with_rosetta(df, vars, v=3, conf=None, include_sd=False):
         
         result_data = response.json()
         
+        # Validate response structure
+        if not isinstance(result_data, dict):
+            raise ValueError("API response is not a dictionary")
+        
         # Extract mean van Genuchten parameters
         mean = result_data.get("van_genuchten_params", [])
+        
+        if not mean or len(mean) == 0:
+            raise ValueError("API returned empty van_genuchten_params")
         
         # Convert to DataFrame
         vg_params = pd.DataFrame(mean)
@@ -2309,8 +2316,8 @@ def process_data_with_rosetta(df, vars, v=3, conf=None, include_sd=False):
             
         return result
         
-    except requests.RequestException as e:
-        logging.warning(f"Rosetta API request failed: {e}")
+    except (requests.RequestException, ValueError, KeyError, json.JSONDecodeError) as e:
+        logging.warning(f"Rosetta API processing failed: {e}")
         # Return DataFrame with NaN values if API fails
         vg_params = pd.DataFrame({
             "theta_r": [np.nan] * len(df),
@@ -2322,41 +2329,6 @@ def process_data_with_rosetta(df, vars, v=3, conf=None, include_sd=False):
             ".rosetta.version": [v] * len(df)
         })
         return pd.concat([df_other.reset_index(drop=True), vg_params], axis=1)
-
-    # Convert van Genuchten params to DataFrame
-    vg_params = pd.DataFrame(mean)
-    vg_params.columns = ["theta_r", "theta_s", "alpha", "npar", "ksat"]
-
-    # Add model codes and version to the DataFrame
-    vg_params[".rosetta.model"] = pd.Categorical.from_codes(
-        codes, categories=["-1", "1", "2", "3", "4", "5"]
-    )
-    vg_params[".rosetta.version"] = v
-
-    # If include_sd is True, add standard deviations to the DataFrame
-    if include_sd:
-        vg_sd = pd.DataFrame(stdev)
-        vg_sd.columns = [f"sd_{name}" for name in vg_params.columns]
-        result = pd.concat(
-            [
-                df_other.reset_index(drop=True),
-                df_vars.reset_index(drop=True),
-                vg_params.reset_index(drop=True),
-                vg_sd,
-            ],
-            axis=1,
-        )
-    else:
-        result = pd.concat(
-            [
-                df_other.reset_index(drop=True),
-                df_vars.reset_index(drop=True),
-                vg_params.reset_index(drop=True),
-            ],
-            axis=1,
-        )
-
-    return result
 
 
 def vg_function(phi, theta_r, theta_s, alpha, n):
