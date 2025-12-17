@@ -1141,7 +1141,13 @@ def list_soils(lon, lat):
 
     # Run soil simulations: functional similarity calculation and soil information value
     if SOIL_SIM_AVAILABLE:
-        aws_PIW90, var_imp = soil_sim(muhorzdata_pd)
+        try:
+            aws_PIW90, var_imp = soil_sim(muhorzdata_pd)
+        except Exception as e:
+            # Log the error but continue with None values
+            logging.warning(f"soil_sim failed: {type(e).__name__}: {str(e)}")
+            aws_PIW90 = None
+            var_imp = None
     else:
         # When soil_sim is not available, set default values
         aws_PIW90 = None
