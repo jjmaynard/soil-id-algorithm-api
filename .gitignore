@@ -27,6 +27,7 @@ prof/
 
 # reference and output files
 Data/
+!Data/LandPKS_munsell_rgb_lab.csv
 bulk_test_result*
 
 get-pip.py*
