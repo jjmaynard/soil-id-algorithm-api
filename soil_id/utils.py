@@ -844,26 +844,52 @@ def check_pairwise_arrays(X, Y, precomputed=False, dtype=None):
     - tuple: Validated and possibly transformed versions of X and Y.
     """
 
-    # Determine the appropriate dtype
-    X, Y, dtype_float = pairwise._return_float_dtype(X, Y)
-
-    # Use a consistent name for the estimator in error messages
-    estimator = "check_pairwise_arrays"
-
-    # If dtype is not provided, use the determined float dtype
-    if dtype is None:
-        dtype = dtype_float
-
-    # impute missing values
-    imputer = SimpleImputer(missing_values=np.nan, strategy="mean")  # You can change the strategy
-    X = imputer.fit_transform(X)
-
-    # Validate the input arrays
-    X = validation.check_array(X, accept_sparse="csr", dtype=dtype, estimator=estimator)
-    if Y is X or Y is None:
-        Y = X
+    # Convert to numpy arrays
+    X = np.asarray(X)
+    if Y is not None:
+        Y = np.asarray(Y)
+    
+    if SKLEARN_AVAILABLE:
+        # Determine the appropriate dtype using sklearn
+        X, Y, dtype_float = pairwise._return_float_dtype(X, Y)
+        
+        # Use a consistent name for the estimator in error messages
+        estimator = "check_pairwise_arrays"
+        
+        # If dtype is not provided, use the determined float dtype
+        if dtype is None:
+            dtype = dtype_float
+        
+        # impute missing values
+        imputer = SimpleImputer(missing_values=np.nan, strategy="mean")
+        X = imputer.fit_transform(X)
+        
+        # Validate the input arrays
+        X = validation.check_array(X, accept_sparse="csr", dtype=dtype, estimator=estimator)
+        if Y is X or Y is None:
+            Y = X
+        else:
+            Y = validation.check_array(Y, accept_sparse="csr", dtype=dtype, estimator=estimator)
     else:
-        Y = validation.check_array(Y, accept_sparse="csr", dtype=dtype, estimator=estimator)
+        # Fallback implementation without sklearn
+        if dtype is None:
+            dtype = np.float64
+        
+        # Convert to specified dtype
+        X = X.astype(dtype, copy=False)
+        
+        # Simple imputation: replace NaN with column mean
+        col_mean = np.nanmean(X, axis=0)
+        inds = np.where(np.isnan(X))
+        X[inds] = np.take(col_mean, inds[1])
+        
+        if Y is X or Y is None:
+            Y = X
+        else:
+            Y = Y.astype(dtype, copy=False)
+            col_mean_y = np.nanmean(Y, axis=0)
+            inds_y = np.where(np.isnan(Y))
+            Y[inds_y] = np.take(col_mean_y, inds_y[1])
 
     # Check for valid shapes based on whether distances are precomputed
     if precomputed and X.shape[1] != Y.shape[0]:
