@@ -7,7 +7,7 @@ authors = [
   { name = "Jonathan Maynard", email = "jonathan.maynard@usda.gov" },
   { name = "Paul Schreiber", email = "paul@techmatters.org" },
 ]
-dynamic = ["version", "description", "classifiers", "dependencies"]
+dynamic = ["version", "description", "classifiers"]
 
 [tool.ruff]
 exclude = ["migrations"]

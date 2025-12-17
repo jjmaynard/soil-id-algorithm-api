@@ -1,0 +1,26 @@
+# FastAPI and ASGI server
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+
+# Geospatial libraries
+geopandas==1.0.1
+pyogrio==0.10.0
+pyproj==3.7.0
+shapely==2.0.6
+
+# HTTP and caching
+requests==2.32.3
+requests-cache==1.2.1
+platformdirs==4.3.6
+
+# Data processing
+pandas==2.2.3
+numpy==2.2.1
+
+# Utilities
+attrs==25.4.0
+cattrs==25.3.0
+certifi==2025.10.5
+charset-normalizer==3.4.3
+url-normalize==1.4.3
