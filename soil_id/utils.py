@@ -52,7 +52,9 @@ try:
 except ImportError:
     SCIPY_AVAILABLE = False
     UnivariateSpline = None
-    issparse = None
+    # Provide fallback for issparse that always returns False (assumes dense arrays)
+    def issparse(x):
+        return False
     entropy = None
     norm = None
 
