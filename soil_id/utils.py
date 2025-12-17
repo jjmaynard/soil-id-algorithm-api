@@ -29,7 +29,14 @@ from shapely.geometry import Point
 
 # Use serverless-compatible implementations for Vercel deployment
 try:
-    from .serverless_soil_stats import cholesky, norm_cdf
+    from .serverless_soil_stats import (
+        cholesky, 
+        norm_cdf, 
+        UnivariateSpline,
+        entropy,
+        information_gain as serverless_information_gain,
+        mutual_information
+    )
     SERVERLESS_STATS_MODE = True
 except ImportError:
     # Fallback to numpy/scipy if available
@@ -53,43 +60,19 @@ except ImportError:
     rosetta = None
 
 try:
-    from scipy.interpolate import UnivariateSpline
+    from scipy.interpolate import UnivariateSpline as ScipyUnivariateSpline
     from scipy.sparse import issparse
-    from scipy.stats import entropy
+    from scipy.stats import entropy as scipy_entropy
     SCIPY_AVAILABLE = True
+    # Use scipy versions if available, otherwise use serverless versions
+    if not SERVERLESS_STATS_MODE:
+        UnivariateSpline = ScipyUnivariateSpline
+        entropy = scipy_entropy
 except ImportError:
     SCIPY_AVAILABLE = False
-    
-    # Simple interpolation class to replace UnivariateSpline for serverless
-    class SimpleInterpolator:
-        """Simple linear interpolation with extrapolation for values outside range"""
-        def __init__(self, x, y, s=0):
-            # Sort by x values
-            sorted_indices = np.argsort(x)
-            self.x = np.array(x)[sorted_indices]
-            self.y = np.array(y)[sorted_indices]
-        
-        def __call__(self, x_new):
-            """Interpolate at x_new using linear interpolation"""
-            if np.isscalar(x_new):
-                return float(np.interp(x_new, self.x, self.y))
-            return np.interp(x_new, self.x, self.y)
-    
-    UnivariateSpline = SimpleInterpolator
-    
     # Provide fallback for issparse that always returns False (assumes dense arrays)
     def issparse(x):
         return False
-    
-    # Simple entropy function to replace scipy.stats.entropy
-    def entropy(probabilities, base=2):
-        """Calculate Shannon entropy of a probability distribution"""
-        probabilities = np.array(probabilities)
-        # Filter out zeros to avoid log(0)
-        probabilities = probabilities[probabilities > 0]
-        if len(probabilities) == 0:
-            return 0.0
-        return -np.sum(probabilities * np.log(probabilities) / np.log(base))
 
 # norm.cdf is handled by serverless_soil_stats.norm_cdf imported above
 if not SERVERLESS_STATS_MODE:
@@ -2411,7 +2394,8 @@ def calculate_vwc_awc(sim_data, phi_min=1e-6, phi_max=1e8, pts=100):
             n=10 ** row["npar"],
         )
 
-        vg_fwd = UnivariateSpline(m["phi"], m["theta"], s=0)
+        # Use cubic spline for smooth soil water characteristic curve interpolation
+        vg_fwd = UnivariateSpline(m["phi"], m["theta"], k=3, s=0)
 
         # Extract VWC at specific matric potentials (kPa)
         data = {
