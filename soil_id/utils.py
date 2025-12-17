@@ -26,15 +26,46 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 from numpy.linalg import cholesky
-from osgeo import ogr
-from rosetta import SoilData, rosetta
-from scipy.interpolate import UnivariateSpline
-from scipy.sparse import issparse
-from scipy.stats import entropy, norm
 from shapely.geometry import Point
-from sklearn.impute import SimpleImputer
-from sklearn.metrics import pairwise
-from sklearn.utils import validation
+
+# Optional imports for features that require scipy/sklearn/gdal
+try:
+    from osgeo import ogr
+    OSGEO_AVAILABLE = True
+except ImportError:
+    OSGEO_AVAILABLE = False
+    ogr = None
+
+try:
+    from rosetta import SoilData, rosetta
+    ROSETTA_AVAILABLE = True
+except ImportError:
+    ROSETTA_AVAILABLE = False
+    SoilData = None
+    rosetta = None
+
+try:
+    from scipy.interpolate import UnivariateSpline
+    from scipy.sparse import issparse
+    from scipy.stats import entropy, norm
+    SCIPY_AVAILABLE = True
+except ImportError:
+    SCIPY_AVAILABLE = False
+    UnivariateSpline = None
+    issparse = None
+    entropy = None
+    norm = None
+
+try:
+    from sklearn.impute import SimpleImputer
+    from sklearn.metrics import pairwise
+    from sklearn.utils import validation
+    SKLEARN_AVAILABLE = True
+except ImportError:
+    SKLEARN_AVAILABLE = False
+    SimpleImputer = None
+    pairwise = None
+    validation = None
 
 # local libraries
 import soil_id.config
