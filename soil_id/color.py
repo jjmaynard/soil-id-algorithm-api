@@ -300,15 +300,15 @@ def getColor_deltaE2000_OSD_pedon(data_osd, data_pedon):
         [0] + data_pedon[0][:-1],
         data_pedon[0],
         data_pedon[1],
-    )]
+    )
+
+    # Convert RGB values to LAB for OSD
+    osd_colors_rgb = interpolate_color_values(top, bottom, list(zip(r, g, b)))
+    osd_colors_lab = []
     for color_val in osd_colors_rgb:
         rgb = sRGBColor(color_val[0], color_val[1], color_val[2], is_upscaled=True)
         lab = convert_color(rgb, LabColor)
         osd_colors_lab.append([lab.lab_l, lab.lab_a, lab.lab_b])
-
-    # Convert RGB values to LAB for OSD
-    osd_colors_rgb = interpolate_color_values(top, bottom, list(zip(r, g, b)))
-    osd_colors_lab = [skimage.color.rgb2lab([[color_val]])[0][0] for color_val in osd_colors_rgb]
 
     # Calculate average LAB for OSD at 31-37 cm depth
     osd_avg_lab = np.mean(osd_colors_lab[31:37], axis=0) if len(osd_colors_lab) > 31 else np.nan
