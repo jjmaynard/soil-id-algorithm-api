@@ -59,11 +59,37 @@ try:
     SCIPY_AVAILABLE = True
 except ImportError:
     SCIPY_AVAILABLE = False
-    UnivariateSpline = None
+    
+    # Simple interpolation class to replace UnivariateSpline for serverless
+    class SimpleInterpolator:
+        """Simple linear interpolation with extrapolation for values outside range"""
+        def __init__(self, x, y, s=0):
+            # Sort by x values
+            sorted_indices = np.argsort(x)
+            self.x = np.array(x)[sorted_indices]
+            self.y = np.array(y)[sorted_indices]
+        
+        def __call__(self, x_new):
+            """Interpolate at x_new using linear interpolation"""
+            if np.isscalar(x_new):
+                return float(np.interp(x_new, self.x, self.y))
+            return np.interp(x_new, self.x, self.y)
+    
+    UnivariateSpline = SimpleInterpolator
+    
     # Provide fallback for issparse that always returns False (assumes dense arrays)
     def issparse(x):
         return False
-    entropy = None
+    
+    # Simple entropy function to replace scipy.stats.entropy
+    def entropy(probabilities, base=2):
+        """Calculate Shannon entropy of a probability distribution"""
+        probabilities = np.array(probabilities)
+        # Filter out zeros to avoid log(0)
+        probabilities = probabilities[probabilities > 0]
+        if len(probabilities) == 0:
+            return 0.0
+        return -np.sum(probabilities * np.log(probabilities) / np.log(base))
 
 # norm.cdf is handled by serverless_soil_stats.norm_cdf imported above
 if not SERVERLESS_STATS_MODE:
