@@ -149,6 +149,7 @@ def ilr_inv(ilr_coords: np.ndarray, n_parts: int = 3) -> np.ndarray:
 # ============================================================================
 
 def spearmanr(x: np.ndarray, y: Optional[np.ndarray] = None, 
+              axis: Optional[int] = None,
               nan_policy: str = 'propagate') -> Union[float, Tuple[float, float]]:
     """
     Spearman rank correlation coefficient.
@@ -156,10 +157,12 @@ def spearmanr(x: np.ndarray, y: Optional[np.ndarray] = None,
     Args:
         x: First variable or matrix
         y: Second variable (optional)
+        axis: If axis=0, compute correlation across rows (columns are variables)
         nan_policy: How to handle NaNs ('propagate', 'omit', or 'raise')
         
     Returns:
         Correlation coefficient (and p-value if requested)
+        Returns tuple of (correlation_matrix, None) to match scipy interface
     """
     if y is None:
         # Matrix form - compute pairwise correlations
@@ -194,7 +197,8 @@ def spearmanr(x: np.ndarray, y: Optional[np.ndarray] = None,
                 rho = _spearman_corr_1d(xi, xj)
                 corr_matrix[i, j] = corr_matrix[j, i] = rho
         
-        return corr_matrix
+        # Return tuple to match scipy.stats.spearmanr interface
+        return corr_matrix, None
     
     else:
         # Two variable form
