@@ -273,9 +273,6 @@ def soil_sim(muhorzdata_pd):
             ]
         )
 
-        sim_data_out = []
-
-
         def simulate_row(row):
             sand_params = [row["sandtotal_l"], row["sandtotal_r"], row["sandtotal_h"]]
             silt_params = [row["silttotal_l"], row["silttotal_r"], row["silttotal_h"]]
@@ -313,36 +310,53 @@ def soil_sim(muhorzdata_pd):
                 ilr2_r = 0.0
             # Create the list of parameters.
             is_constant = False  # Set appropriately if needed
-            if is_constant:
-                params = [
-                    [ilr1_l, ilr1_r, ilr1_h],
-                    [ilr2_l, ilr2_r, ilr2_h],
-                    [row["dbovendry_l"], row["dbovendry_r"], row["dbovendry_h"]],
-                    [row["wthirdbar_l"], row["wthirdbar_r"], row["wthirdbar_h"]],
-                    [row["wfifteenbar_l"], row["wfifteenbar_r"], row["wfifteenbar_h"]],
-                ]
-            else:
-                params = [
-                    [ilr1_l, ilr1_r, ilr1_h],
-                    [ilr2_l, ilr2_r, ilr2_h],
-                    [row["dbovendry_l"], row["dbovendry_r"], row["dbovendry_h"]],
-                    [row["wthirdbar_l"], row["wthirdbar_r"], row["wthirdbar_h"]],
-                    [row["wfifteenbar_l"], row["wfifteenbar_r"], row["wfifteenbar_h"]],
-                ]
-            return params
+            params = [
+                [ilr1_l, ilr1_r, ilr1_h],
+                [ilr2_l, ilr2_r, ilr2_h],
+                [row["dbovendry_l"], row["dbovendry_r"], row["dbovendry_h"]],
+                [row["wthirdbar_l"], row["wthirdbar_r"], row["wthirdbar_h"]],
+                [row["wfifteenbar_l"], row["wfifteenbar_r"], row["wfifteenbar_h"]],
+            ]
+            # Prepare all needed simulation output for downstream processing
+            return {
+                "params": params,
+                "compname_grp": row["compname_grp"],
+                "hzdept_r": row["hzdept_r"],
+                "hzdepb_r": row["hzdepb_r"],
+                "cond_prob": row["cond_prob"],
+            }
 
         # Parallel execution using ThreadPoolExecutor
         with ThreadPoolExecutor() as executor:
             futures = [executor.submit(simulate_row, row) for _, row in agg_data_df.iterrows()]
-            params_list = []
+            sim_results = []
             for future in as_completed(futures):
                 result = future.result()
                 if result is not None:
-                    params_list.append(result)
+                    sim_results.append(result)
 
-        # Now params_list contains all parameter sets from simulation
-        # Further processing should use params_list, not 'row'
-        # Example: convert params_list to DataFrame or use as needed
+        # Now sim_results contains all simulation outputs
+        # Build DataFrame for further processing
+        sim_data_out = []
+        for res in sim_results:
+            params = res["params"]
+            compname_grp = res["compname_grp"]
+            hzdept_r = res["hzdept_r"]
+            hzdepb_r = res["hzdepb_r"]
+            cond_prob = res["cond_prob"]
+            # Reconstruct DataFrame row for each simulation result as needed
+            # (If more fields are needed, add to simulate_row and here)
+            sim_data_out.append({
+                "params": params,
+                "compname_grp": compname_grp,
+                "hzdept_r": hzdept_r,
+                "hzdepb_r": hzdepb_r,
+                "cond_prob": cond_prob,
+            })
+
+        # Convert sim_data_out to DataFrame for downstream use
+        sim_data_df = pd.DataFrame(sim_data_out)
+        # All further processing should use sim_data_df, not 'row'
 
             # Check diagonal elements and off-diagonal range
             if not np.all(np.diag(local_correlation_matrix) >= 0.99999999999999) or np.any(
