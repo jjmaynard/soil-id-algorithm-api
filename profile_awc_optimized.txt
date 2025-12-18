@@ -1,0 +1,152 @@
+================================================================================
+SOIL ID API - PERFORMANCE PROFILING
+================================================================================
+
+================================================================================
+BOTTLENECK ANALYSIS
+================================================================================
+
+Based on the code structure, likely bottlenecks are:
+
+1. DATABASE QUERIES (list_soils early stages)
+   - get_soilweb_data(): External API call to SoilWeb
+   - sda_return(): SSURGO/STATSGO database queries
+   - These are network-bound and can't be easily optimized
+   
+2. SOIL SIMULATION (when sim=True)
+   - simulate_correlated_triangular(): Monte Carlo simulations
+   - ilr/ilr_inv transformations: Matrix operations
+   - Cholesky decomposition: O(n³) complexity
+   
+3. ROSETTA API (hydraulic properties)
+   - process_data_with_rosetta(): HTTP REST API calls
+   - Can be optimized with batching or caching
+   
+4. INTERPOLATION (calculate_vwc_awc)
+   - UnivariateSpline: Cubic spline fitting per layer
+   - Called for each simulated layer
+   
+5. INFORMATION GAIN (variable importance)
+   - entropy calculations across all simulated samples
+   - Grouping and aggregation operations
+   
+Run the profiler to see actual time distribution!
+
+
+================================================================================
+PROFILING: sim=False (database queries only)
+================================================================================
+Profiling list_soils with sim=False...
+
+================================================================================
+Execution completed in 1.85 seconds
+================================================================================
+
+         1354528 function calls (1325452 primitive calls) in 1.847 seconds
+
+   Ordered by: cumulative time
+   List reduced from 2226 to 30 due to restriction <30>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.001    0.001    1.847    1.847 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/profile_local.py:25(profile_list_soils_without_sim)
+        1    0.006    0.006    1.846    1.846 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/us_soil.py:91(list_soils)
+        1    0.000    0.000    0.550    0.550 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/services.py:145(get_soilweb_data)
+        1    0.000    0.000    0.547    0.547 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/api.py:62(get)
+        1    0.000    0.000    0.547    0.547 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/api.py:14(request)
+        1    0.000    0.000    0.547    0.547 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/sessions.py:500(request)
+        1    0.000    0.000    0.544    0.544 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/sessions.py:673(send)
+       42    0.011    0.000    0.540    0.013 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:412(getProfile)
+       17    0.000    0.000    0.384    0.023 /home/jmaynard/miniconda3/lib/python3.12/socket.py:693(readinto)
+       17    0.000    0.000    0.384    0.023 /home/jmaynard/miniconda3/lib/python3.12/ssl.py:1237(recv_into)
+       17    0.000    0.000    0.384    0.023 /home/jmaynard/miniconda3/lib/python3.12/ssl.py:1095(read)
+       17    0.384    0.023    0.384    0.023 {method 'read' of '_ssl._SSLSocket' objects}
+     3692    0.023    0.000    0.360    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:4062(__getitem__)
+        1    0.000    0.000    0.342    0.342 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/adapters.py:613(send)
+        1    0.000    0.000    0.341    0.341 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/connectionpool.py:592(urlopen)
+        1    0.000    0.000    0.341    0.341 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/connectionpool.py:377(_make_request)
+      181    0.002    0.000    0.263    0.001 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:694(__init__)
+       16    0.002    0.000    0.203    0.013 {method 'read' of '_io.BufferedReader' objects}
+        3    0.000    0.000    0.202    0.067 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/models.py:890(content)
+       11    0.000    0.000    0.202    0.018 {method 'join' of 'bytes' objects}
+       13    0.000    0.000    0.202    0.016 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/models.py:816(generate)
+       13    0.000    0.000    0.202    0.016 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/response.py:1044(stream)
+       13    0.000    0.000    0.202    0.016 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/response.py:1173(read_chunked)
+       12    0.000    0.000    0.201    0.017 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/response.py:1151(_handle_chunk)
+       13    0.000    0.000    0.201    0.015 /home/jmaynard/miniconda3/lib/python3.12/http/client.py:633(_safe_read)
+        1    0.000    0.000    0.184    0.184 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/connection.py:485(getresponse)
+        1    0.000    0.000    0.184    0.184 /home/jmaynard/miniconda3/lib/python3.12/http/client.py:1379(getresponse)
+        1    0.000    0.000    0.184    0.184 /home/jmaynard/miniconda3/lib/python3.12/http/client.py:324(begin)
+        1    0.000    0.000    0.183    0.183 /home/jmaynard/miniconda3/lib/python3.12/http/client.py:291(_read_status)
+       12    0.000    0.000    0.183    0.015 {method 'readline' of '_io.BufferedReader' objects}
+
+
+
+
+✓ Detailed profile saved to: profile_sim_false.txt
+
+================================================================================
+PROFILING: sim=True (full simulation pipeline)
+================================================================================
+Profiling list_soils with sim=True...
+Warning: 2 records have texture sums outside 95-105% range
+
+================================================================================
+Execution completed in 6.24 seconds
+================================================================================
+
+         3271561 function calls (3222949 primitive calls) in 6.243 seconds
+
+   Ordered by: cumulative time
+   List reduced from 2638 to 30 due to restriction <30>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        6    0.000    0.000   10.576    1.763 /home/jmaynard/miniconda3/lib/python3.12/concurrent/futures/_base.py:199(as_completed)
+        9    0.000    0.000   10.572    1.175 /home/jmaynard/miniconda3/lib/python3.12/threading.py:637(wait)
+       14    0.000    0.000    8.673    0.620 /home/jmaynard/miniconda3/lib/python3.12/threading.py:323(wait)
+        1    0.001    0.001    6.243    6.243 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/profile_local.py:19(profile_list_soils_with_sim)
+        1    0.006    0.006    6.243    6.243 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/us_soil.py:91(list_soils)
+        1    0.005    0.005    4.533    4.533 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/soil_sim.py:51(soil_sim)
+      6/2    0.000    0.000    3.559    1.779 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/api.py:14(request)
+      6/2    0.000    0.000    3.558    1.779 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/sessions.py:500(request)
+      6/2    0.000    0.000    3.555    1.777 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/sessions.py:673(send)
+    44/32    0.000    0.000    3.453    0.108 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/models.py:816(generate)
+    44/32    0.000    0.000    3.453    0.108 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/response.py:1044(stream)
+    44/32    0.001    0.000    3.453    0.108 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/response.py:1173(read_chunked)
+    18/12    0.000    0.000    3.452    0.288 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/models.py:890(content)
+    76/61    0.001    0.000    3.451    0.057 {method 'join' of 'bytes' objects}
+    38/28    0.000    0.000    3.448    0.123 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/response.py:1151(_handle_chunk)
+        1    0.000    0.000    3.011    3.011 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2257(process_data_with_rosetta)
+   209/82    0.001    0.000    3.004    0.037 {method 'acquire' of '_thread.lock' objects}
+        1    0.000    0.000    3.004    3.004 /home/jmaynard/miniconda3/lib/python3.12/concurrent/futures/_base.py:646(__exit__)
+        1    0.000    0.000    3.004    3.004 /home/jmaynard/miniconda3/lib/python3.12/concurrent/futures/thread.py:219(shutdown)
+        4    0.000    0.000    3.004    0.751 /home/jmaynard/miniconda3/lib/python3.12/threading.py:1115(join)
+        4    0.000    0.000    3.004    0.751 /home/jmaynard/miniconda3/lib/python3.12/threading.py:1153(_wait_for_tstate_lock)
+      4/1    0.000    0.000    3.003    3.003 /home/jmaynard/miniconda3/lib/python3.12/threading.py:1016(_bootstrap)
+      4/1    0.000    0.000    3.003    3.003 /home/jmaynard/miniconda3/lib/python3.12/threading.py:1056(_bootstrap_inner)
+      4/1    0.000    0.000    3.003    3.003 /home/jmaynard/miniconda3/lib/python3.12/threading.py:999(run)
+      4/1    0.000    0.000    3.003    3.003 /home/jmaynard/miniconda3/lib/python3.12/concurrent/futures/thread.py:69(_worker)
+      4/1    0.000    0.000    3.003    3.003 {method 'get' of '_queue.SimpleQueue' objects}
+      5/1    0.001    0.000    3.000    3.000 /home/jmaynard/miniconda3/lib/python3.12/concurrent/futures/thread.py:53(run)
+      5/1    0.001    0.000    2.996    2.996 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2312(_process_rosetta_chunk)
+      5/1    0.000    0.000    2.986    2.986 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/api.py:103(post)
+      6/3    0.000    0.000    2.039    0.680 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/connection.py:369(request)
+
+
+
+
+✓ Detailed profile saved to: profile_sim_true.txt
+
+================================================================================
+PROFILING COMPLETE
+================================================================================
+
+Next steps:
+1. Review profile_sim_false.txt for database bottlenecks
+2. Review profile_sim_true.txt for simulation bottlenecks
+3. Focus optimization on functions with high cumulative time
+4. Consider:
+   - Caching database queries
+   - Batching Rosetta API calls
+   - Vectorizing numpy operations
+   - Parallel processing for independent simulations
+
