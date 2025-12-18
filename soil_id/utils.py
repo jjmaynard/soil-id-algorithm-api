@@ -2254,7 +2254,7 @@ def slice_and_aggregate_soil_data(df):
     return result_df
 
 
-def process_data_with_rosetta(df, vars, v=3, conf=None, include_sd=False):
+def process_data_with_rosetta(df, vars, v=3, conf=None, include_sd=False, parallel=True):
     """
     Process soil data using the Rosetta REST API for hydraulic property prediction.
     
@@ -2264,9 +2264,54 @@ def process_data_with_rosetta(df, vars, v=3, conf=None, include_sd=False):
     - v (int): The version of the ROSETTA model to use (1-3).
     - conf (dict, optional): Additional request configuration options.
     - include_sd (bool): Whether to include standard deviation in the output.
+    - parallel (bool): Whether to use parallel processing for multiple chunks (default True).
 
     Returns:
     - DataFrame: The processed results from the ROSETTA REST API.
+    """
+    import requests
+    import json
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    
+    # For small datasets or when parallel=False, use single request
+    if len(df) <= 50 or not parallel:
+        return _process_rosetta_chunk(df, vars, v, include_sd)
+    
+    # Split large datasets into chunks for parallel processing
+    chunk_size = max(50, len(df) // 4)  # Split into ~4 chunks, min 50 rows each
+    chunks = [df.iloc[i:i + chunk_size] for i in range(0, len(df), chunk_size)]
+    
+    results = []
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        future_to_chunk = {
+            executor.submit(_process_rosetta_chunk, chunk, vars, v, include_sd): i 
+            for i, chunk in enumerate(chunks)
+        }
+        
+        for future in as_completed(future_to_chunk):
+            chunk_idx = future_to_chunk[future]
+            try:
+                result = future.result()
+                results.append((chunk_idx, result))
+            except Exception as e:
+                logging.warning(f"Rosetta API chunk {chunk_idx} failed: {e}")
+                # Append empty result for failed chunk
+                results.append((chunk_idx, None))
+    
+    # Sort results by chunk index and concatenate
+    results.sort(key=lambda x: x[0])
+    valid_results = [r[1] for r in results if r[1] is not None]
+    
+    if not valid_results:
+        # All chunks failed, return NaN DataFrame
+        return _create_nan_result(df, vars, v)
+    
+    return pd.concat(valid_results, axis=0, ignore_index=True)
+
+
+def _process_rosetta_chunk(df, vars, v, include_sd=False):
+    """
+    Internal function to process a single chunk of data with Rosetta API.
     """
     import requests
     import json
@@ -2329,18 +2374,24 @@ def process_data_with_rosetta(df, vars, v=3, conf=None, include_sd=False):
         return result
         
     except (requests.RequestException, ValueError, KeyError, json.JSONDecodeError) as e:
-        logging.warning(f"Rosetta API processing failed: {e}")
+        logging.warning(f"Rosetta API chunk processing failed: {e}")
         # Return DataFrame with NaN values if API fails
-        vg_params = pd.DataFrame({
-            "theta_r": [np.nan] * len(df),
-            "theta_s": [np.nan] * len(df),
-            "alpha": [np.nan] * len(df),
-            "npar": [np.nan] * len(df),
-            "ksat": [np.nan] * len(df),
-            ".rosetta.model": ["-1"] * len(df),
-            ".rosetta.version": [v] * len(df)
-        })
-        return pd.concat([df_other.reset_index(drop=True), vg_params], axis=1)
+        return _create_nan_result(df, vars, v)
+
+
+def _create_nan_result(df, vars, v):
+    """Create a DataFrame with NaN values when Rosetta API fails."""
+    df_other = df.drop(columns=vars)
+    vg_params = pd.DataFrame({
+        "theta_r": [np.nan] * len(df),
+        "theta_s": [np.nan] * len(df),
+        "alpha": [np.nan] * len(df),
+        "npar": [np.nan] * len(df),
+        "ksat": [np.nan] * len(df),
+        ".rosetta.model": ["-1"] * len(df),
+        ".rosetta.version": [v] * len(df)
+    })
+    return pd.concat([df_other.reset_index(drop=True), vg_params], axis=1)
 
 
 def vg_function(phi, theta_r, theta_s, alpha, n):
