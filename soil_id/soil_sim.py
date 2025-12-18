@@ -16,9 +16,11 @@
 # Third-party libraries
 import logging
 import re
+import time
 from typing import List
 
 import numpy as np
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import pandas as pd
 
 # Use serverless-compatible implementations for Vercel deployment
@@ -261,6 +263,7 @@ def soil_sim(muhorzdata_pd):
         Step 2. Simulate data for each row, with the number of simulations equal
                 to the (cond_prob*100)*10
         """
+        step2_start = time.time()
         # Global soil texture correlation matrix (used for initial simulation)
         texture_correlation_matrix = np.array(
             [
@@ -272,49 +275,28 @@ def soil_sim(muhorzdata_pd):
 
         sim_data_out = []
 
-        for index, row in agg_data_df.iterrows():
-            """
-            Step 2a. Simulate sand/silt/clay percentages
-            """
-            # Extract and format data params
+
+        def simulate_row(row):
             sand_params = [row["sandtotal_l"], row["sandtotal_r"], row["sandtotal_h"]]
             silt_params = [row["silttotal_l"], row["silttotal_r"], row["silttotal_h"]]
             clay_params = [row["claytotal_l"], row["claytotal_r"], row["claytotal_h"]]
-
             params_txt = [sand_params, silt_params, clay_params]
-
-            """
-            Step 2b. Perform processing steps on data
-            - Convert simulated data using the acomp function and then compute the isometric
-              log-ratio transformation.
-            """
-
             simulated_txt = acomp(
                 simulate_correlated_triangular(
                     (int(row["cond_prob"] * 1000)), params_txt, texture_correlation_matrix
                 )
             )
             simulated_txt_ilr = ilr(simulated_txt)
-
-            """
-            Step 2c. Extract l,r,h values (min, median, max for ilr1 and ilr2) and format into a
-                     params object for simiulation
-            """
-            # Handle both 1D and 2D array cases for simulated_txt_ilr
             if simulated_txt_ilr.ndim == 1:
-                # If 1D, assume it's a single observation with 2 components
                 if len(simulated_txt_ilr) >= 2:
                     ilr1_values = np.array([simulated_txt_ilr[0]])
                     ilr2_values = np.array([simulated_txt_ilr[1]])
                 else:
-                    # Fallback if insufficient data
                     ilr1_values = np.array([0.0])
                     ilr2_values = np.array([0.0])
             else:
-                # Normal 2D case
                 ilr1_values = simulated_txt_ilr[:, 0]
                 ilr2_values = simulated_txt_ilr[:, 1]
-
             ilr1_l, ilr1_r, ilr1_h = (
                 ilr1_values.min(initial=0.0),
                 np.median(ilr1_values),
@@ -329,8 +311,8 @@ def soil_sim(muhorzdata_pd):
             )
             if np.isnan(ilr2_r):
                 ilr2_r = 0.0
-
             # Create the list of parameters.
+            is_constant = False  # Set appropriately if needed
             if is_constant:
                 params = [
                     [ilr1_l, ilr1_r, ilr1_h],
@@ -346,13 +328,14 @@ def soil_sim(muhorzdata_pd):
                     [row["dbovendry_l"], row["dbovendry_r"], row["dbovendry_h"]],
                     [row["wthirdbar_l"], row["wthirdbar_r"], row["wthirdbar_h"]],
                     [row["wfifteenbar_l"], row["wfifteenbar_r"], row["wfifteenbar_h"]],
-                    [row["rfv_l"], row["rfv_r"], row["rfv_h"]],
                 ]
+            return params
 
-            """
-            Step 2d. Simulate all properties and then perform inverse transform on ilr1 and ilr2
-                     to obtain sand, silt, and clay values.
-            """
+        # Parallel execution using ThreadPoolExecutor
+        with ThreadPoolExecutor() as executor:
+            futures = [executor.submit(simulate_row, row) for _, row in agg_data_df.iterrows()]
+            for future in as_completed(futures):
+                sim_data_out.append(future.result())
             # Initialize sim_data to an empty DataFrame with expected columns
             sim_data = pd.DataFrame(
                 columns=[
@@ -394,12 +377,11 @@ def soil_sim(muhorzdata_pd):
 
             except np.linalg.LinAlgError:
                 print("Adjusted matrix is still not positive definite.")
-                continue  # Skip this iteration
+                return None  # Skip this iteration
 
             except ZeroDivisionError:
-                # Handle the division by zero error
                 print(f"Division by zero encountered in row index: {index}")
-                continue  # Skip this iteration
+                return None  # Skip this iteration
             # Process sim_data only if it's valid
             if not sim_data.shape[0] == 0:
                 if is_constant:
@@ -445,10 +427,14 @@ def soil_sim(muhorzdata_pd):
         Step 2e. Append simulated values to dataframe
         """
         sim_data_df = pd.concat(sim_data_out, axis=0, ignore_index=True)
+        step2_elapsed = time.time() - step2_start
+        if logging.getLogger().isEnabledFor(logging.DEBUG):
+            print(f"⏱️  Step 2 (Simulation): {step2_elapsed:.3f}s")
 
         # ------------------------------------------------------------------------------------
         # Step 3. Run Rosetta and other Van Genuchten equations
         # ------------------------------------------------------------------------------------
+        step3_start = time.time()
 
         # Step 3a: Run Rosetta
 
@@ -472,11 +458,19 @@ def soil_sim(muhorzdata_pd):
         )
         rosetta_data["layerID"] = sim_data_df["layerID"]
 
+        rosetta_elapsed = time.time() - step3_start
+        if logging.getLogger().isEnabledFor(logging.DEBUG):
+            print(f"⏱️  Rosetta API: {rosetta_elapsed:.3f}s")
+        
+        awc_start = time.time()
         awc = calculate_vwc_awc(rosetta_data)
         awc = awc.map(lambda x: x.tolist() if isinstance(x, np.ndarray) else x)
         awc["top"] = sim_data_df["hzdept_r"]
         awc["bottom"] = sim_data_df["hzdepb_r"]
         awc["compname_grp"] = sim_data_df["compname_grp"]
+        awc_elapsed = time.time() - awc_start
+        if logging.getLogger().isEnabledFor(logging.DEBUG):
+            print(f"⏱️  AWC Calculation: {awc_elapsed:.3f}s")
 
         awc_grouped = awc.groupby(["top"])
         data_len_depth = awc_grouped.apply(
@@ -531,6 +525,7 @@ def soil_sim(muhorzdata_pd):
         aws_PIW90 = round(float(aws_PIW90.iloc[0]), 2)
         # ---------------------------------------------------------------------------
         # Calculate Information Gain, i.e., soil input variable importance
+        info_gain_start = time.time()
 
         sim_data_df["texture"] = sim_data_df.apply(getTexture, axis=1)
         sim_data_df["rfv_class"] = sim_data_df.apply(getCF_class, axis=1)
@@ -585,6 +580,9 @@ def soil_sim(muhorzdata_pd):
         var_imp = information_gain(
             result_df, ["compname_grp"], ["texture_0", "texture_30", "rfv_class_0", "rfv_class_30"]
         )
+        info_gain_elapsed = time.time() - info_gain_start
+        if logging.getLogger().isEnabledFor(logging.DEBUG):
+            print(f"⏱️  Information Gain: {info_gain_elapsed:.3f}s")
     return aws_PIW90, var_imp
 
 
