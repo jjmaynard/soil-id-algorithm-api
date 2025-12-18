@@ -1,0 +1,56 @@
+{
+  "timestamp": "2025-12-17 16:46:12",
+  "base_url": "https://soil-id-algorithm-api.vercel.app",
+  "results": [
+    {
+      "endpoint": "Health Check (GET /)",
+      "iterations": 3,
+      "successful": 0,
+      "min": 3.92736554145813,
+      "max": 4.110554218292236,
+      "mean": 3.9901817639668784,
+      "median": 3.9326255321502686,
+      "stdev": 0.10427877394634613
+    },
+    {
+      "endpoint": "Debug (GET /api/debug)",
+      "iterations": 3,
+      "successful": 0,
+      "min": 3.840876817703247,
+      "max": 3.9800162315368652,
+      "mean": 3.920698404312134,
+      "median": 3.941202163696289,
+      "stdev": 0.07180005036316628
+    },
+    {
+      "endpoint": "List Soils (sim=false)",
+      "iterations": 5,
+      "successful": 0,
+      "min": 3.772268533706665,
+      "max": 4.159029006958008,
+      "mean": 3.9088157653808593,
+      "median": 3.8612682819366455,
+      "stdev": 0.1493924919489322
+    },
+    {
+      "endpoint": "List Soils (sim=true)",
+      "iterations": 5,
+      "successful": 0,
+      "min": 3.7772481441497803,
+      "max": 4.033487319946289,
+      "mean": 3.86606764793396,
+      "median": 3.808025598526001,
+      "stdev": 0.10798120297130655
+    },
+    {
+      "endpoint": "List Soils Texas (sim=true)",
+      "iterations": 3,
+      "successful": 0,
+      "min": 3.8421592712402344,
+      "max": 4.049020528793335,
+      "mean": 3.9333698749542236,
+      "median": 3.9089298248291016,
+      "stdev": 0.10557405934556752
+    }
+  ]
+}

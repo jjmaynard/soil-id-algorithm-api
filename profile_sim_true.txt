@@ -1,0 +1,249 @@
+================================================================================
+Total execution time: 10.83 seconds
+================================================================================
+
+================================================================================
+TOP FUNCTIONS BY CUMULATIVE TIME
+================================================================================
+         5000978 function calls (4925115 primitive calls) in 10.828 seconds
+
+   Ordered by: cumulative time
+   List reduced from 2517 to 50 due to restriction <50>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.001    0.001   10.828   10.828 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/profile_local.py:19(profile_list_soils_with_sim)
+        1    0.007    0.007   10.827   10.827 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/us_soil.py:91(list_soils)
+        1    0.006    0.006    9.109    9.109 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/soil_sim.py:51(soil_sim)
+        2    0.000    0.000    5.495    2.748 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/api.py:14(request)
+        2    0.000    0.000    5.495    2.748 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/sessions.py:500(request)
+        2    0.000    0.000    5.485    2.742 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/sessions.py:673(send)
+        2    0.000    0.000    4.971    2.486 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/adapters.py:613(send)
+        2    0.000    0.000    4.970    2.485 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/connectionpool.py:592(urlopen)
+        2    0.000    0.000    4.970    2.485 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/connectionpool.py:377(_make_request)
+        1    0.000    0.000    4.945    4.945 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2257(process_data_with_rosetta)
+        1    0.000    0.000    4.931    4.931 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/api.py:103(post)
+       56    0.000    0.000    4.842    0.086 /home/jmaynard/miniconda3/lib/python3.12/socket.py:693(readinto)
+       40    4.453    0.111    4.453    0.111 {method 'recv_into' of '_socket.socket' objects}
+        2    0.000    0.000    4.338    2.169 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/connection.py:485(getresponse)
+        2    0.000    0.000    4.337    2.169 /home/jmaynard/miniconda3/lib/python3.12/http/client.py:1379(getresponse)
+        2    0.000    0.000    4.337    2.168 /home/jmaynard/miniconda3/lib/python3.12/http/client.py:324(begin)
+        2    0.000    0.000    4.336    2.168 /home/jmaynard/miniconda3/lib/python3.12/http/client.py:291(_read_status)
+       32    0.000    0.000    4.336    0.136 {method 'readline' of '_io.BufferedReader' objects}
+        1    0.062    0.062    2.958    2.958 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2363(calculate_vwc_awc)
+     2014    0.051    0.000    0.921    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/serverless_soil_stats.py:493(__init__)
+2272/2189    0.018    0.000    0.815    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:4271(__setitem__)
+     8431    0.049    0.000    0.740    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:4062(__getitem__)
+     2259    0.007    0.000    0.735    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:4514(_set_item)
+     2278    0.017    0.000    0.689    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:694(__init__)
+     2014    0.373    0.000    0.662    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/serverless_soil_stats.py:530(_compute_cubic_coefficients)
+     2259    0.020    0.000    0.638    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:4481(_set_item_mgr)
+        1    0.000    0.000    0.566    0.566 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/services.py:145(get_soilweb_data)
+        1    0.000    0.000    0.565    0.565 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/api.py:62(get)
+     2124    0.034    0.000    0.558    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/internals/managers.py:1347(insert)
+       20    0.000    0.000    0.544    0.027 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:10170(apply)
+       20    0.000    0.000    0.544    0.027 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/apply.py:864(apply)
+       20    0.000    0.000    0.543    0.027 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/apply.py:1061(apply_standard)
+       42    0.011    0.000    0.540    0.013 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:412(getProfile)
+       20    0.009    0.000    0.531    0.027 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/apply.py:1070(apply_series_generator)
+        6    0.000    0.000    0.513    0.085 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/models.py:890(content)
+       24    0.000    0.000    0.513    0.021 {method 'join' of 'bytes' objects}
+       35    0.000    0.000    0.513    0.015 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/models.py:816(generate)
+       35    0.000    0.000    0.512    0.015 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/response.py:1044(stream)
+       35    0.000    0.000    0.512    0.015 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/response.py:1173(read_chunked)
+       43    0.002    0.000    0.508    0.012 {method 'read' of '_io.BufferedReader' objects}
+       33    0.000    0.000    0.507    0.015 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/response.py:1151(_handle_chunk)
+       42    0.000    0.000    0.507    0.012 /home/jmaynard/miniconda3/lib/python3.12/http/client.py:633(_safe_read)
+    20683    0.124    0.000    0.461    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/construction.py:517(sanitize_array)
+        2    0.000    0.000    0.460    0.230 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/connection.py:369(request)
+        3    0.000    0.000    0.460    0.153 /home/jmaynard/miniconda3/lib/python3.12/http/client.py:1021(send)
+5080/5078    0.068    0.000    0.418    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/indexes/base.py:475(__new__)
+     2068    0.016    0.000    0.400    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/internals/construction.py:423(dict_to_mgr)
+1131178/1128659    0.250    0.000    0.398    0.000 {built-in method builtins.isinstance}
+     2085    0.034    0.000    0.398    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:166(getTexture)
+    46522    0.088    0.000    0.389    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/series.py:1095(__getitem__)
+
+
+
+================================================================================
+TOP FUNCTIONS BY INTERNAL TIME (excluding subcalls)
+================================================================================
+         5000978 function calls (4925115 primitive calls) in 10.828 seconds
+
+   Ordered by: internal time
+   List reduced from 2517 to 50 due to restriction <50>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       40    4.453    0.111    4.453    0.111 {method 'recv_into' of '_socket.socket' objects}
+       16    0.388    0.024    0.388    0.024 {method 'read' of '_ssl._SSLSocket' objects}
+     2014    0.373    0.000    0.662    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/serverless_soil_stats.py:530(_compute_cubic_coefficients)
+        2    0.349    0.175    0.349    0.175 {method 'sendall' of '_socket.socket' objects}
+1131178/1128659    0.250    0.000    0.398    0.000 {built-in method builtins.isinstance}
+     2014    0.223    0.000    0.264    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/numpy/linalg/_linalg.py:320(solve)
+        2    0.183    0.092    0.183    0.092 {method 'connect' of '_socket.socket' objects}
+    20683    0.124    0.000    0.461    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/construction.py:517(sanitize_array)
+    54263    0.097    0.000    0.158    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/indexes/base.py:3777(get_loc)
+     9575    0.089    0.000    0.135    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/dtypes/cast.py:1156(maybe_infer_to_datetimelike)
+    46522    0.088    0.000    0.389    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/series.py:1095(__getitem__)
+278777/210713    0.076    0.000    0.103    0.000 {built-in method builtins.len}
+        1    0.073    0.073    0.073    0.073 {method 'do_handshake' of '_ssl._SSLSocket' objects}
+5080/5078    0.068    0.000    0.418    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/indexes/base.py:475(__new__)
+     6042    0.062    0.000    0.116    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/serverless_soil_stats.py:573(_evaluate_cubic)
+        1    0.062    0.062    2.958    2.958 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2363(calculate_vwc_awc)
+     6255    0.061    0.000    0.130    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/numpy/lib/_type_check_impl.py:373(nan_to_num)
+78466/74124    0.059    0.000    0.195    0.000 {built-in method numpy.asarray}
+    46486    0.059    0.000    0.207    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/series.py:1220(_get_value)
+   132418    0.054    0.000    0.120    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/dtypes/generic.py:42(_instancecheck)
+    31999    0.054    0.000    0.108    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/generic.py:6301(__setattr__)
+    24215    0.052    0.000    0.085    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/numpy/_core/numeric.py:290(full)
+     2085    0.051    0.000    0.119    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:786(select)
+    12865    0.051    0.000    0.060    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/generic.py:278(__init__)
+     2014    0.051    0.000    0.921    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/serverless_soil_stats.py:493(__init__)
+    10206    0.050    0.000    0.070    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/generic.py:6236(__finalize__)
+     8431    0.049    0.000    0.740    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:4062(__getitem__)
+3398/3368    0.048    0.000    0.341    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/series.py:389(__init__)
+     7406    0.046    0.000    0.114    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/indexes/base.py:842(_engine)
+    11733    0.045    0.000    0.089    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/indexes/base.py:5323(__contains__)
+     5606    0.045    0.000    0.058    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/internals/managers.py:1012(iget)
+   132418    0.045    0.000    0.065    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/dtypes/generic.py:37(_check)
+    58202    0.043    0.000    0.076    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/indexing.py:2765(check_dict_or_set_indexers)
+     2014    0.043    0.000    0.043    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2346(vg_function)
+226765/226758    0.042    0.000    0.042    0.000 {built-in method builtins.getattr}
+     2970    0.041    0.000    0.064    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/algorithms.py:994(duplicated)
+     2148    0.039    0.000    0.088    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:5456(insert)
+    14192    0.039    0.000    0.087    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/indexes/base.py:5373(__getitem__)
+     9734    0.037    0.000    0.048    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/indexes/base.py:649(_simple_new)
+     4028    0.036    0.000    0.041    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py:1369(diff)
+     7736    0.035    0.000    0.059    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/internals/construction.py:1028(convert)
+     2085    0.034    0.000    0.398    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:166(getTexture)
+     2124    0.034    0.000    0.558    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/internals/managers.py:1347(insert)
+    33418    0.032    0.000    0.032    0.000 {built-in method numpy.empty}
+     2151    0.031    0.000    0.083    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/internals/managers.py:2190(_form_blocks)
+    12809    0.031    0.000    0.147    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/generic.py:6284(__getattr__)
+2149/2148    0.030    0.000    0.340    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/indexes/base.py:6956(insert)
+    56972    0.028    0.000    0.028    0.000 {built-in method numpy.array}
+     5494    0.026    0.000    0.026    0.000 {method 'reduce' of 'numpy.ufunc' objects}
+     2463    0.025    0.000    0.056    0.000 /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/dtypes/cast.py:123(maybe_convert_platform)
+
+
+
+================================================================================
+CALLERS (who called what)
+================================================================================
+   Ordered by: cumulative time
+   List reduced from 2517 to 30 due to restriction <30>
+
+Function                                                                                                                                        was called by...
+                                                                                                                                                    ncalls  tottime  cumtime
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/profile_local.py:19(profile_list_soils_with_sim)                                   <- 
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/us_soil.py:91(list_soils)                                                  <-       1    0.007   10.827  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/profile_local.py:19(profile_list_soils_with_sim)
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/soil_sim.py:51(soil_sim)                                                   <-       1    0.006    9.109  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/us_soil.py:91(list_soils)
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/api.py:14(request)                     <-       1    0.000    0.565  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/api.py:62(get)
+                                                                                                                                                         1    0.000    4.931  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/api.py:103(post)
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/sessions.py:500(request)               <-       2    0.000    5.495  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/api.py:14(request)
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/sessions.py:673(send)                  <-       2    0.000    5.485  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/sessions.py:500(request)
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/adapters.py:613(send)                  <-       2    0.000    4.971  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/sessions.py:673(send)
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/connectionpool.py:592(urlopen)          <-       2    0.000    4.970  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/adapters.py:613(send)
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/connectionpool.py:377(_make_request)    <-       2    0.000    4.970  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/connectionpool.py:592(urlopen)
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2257(process_data_with_rosetta)                                   <-       1    0.000    4.945  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/soil_sim.py:51(soil_sim)
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/api.py:103(post)                       <-       1    0.000    4.931  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2257(process_data_with_rosetta)
+/home/jmaynard/miniconda3/lib/python3.12/socket.py:693(readinto)                                                                                <-      54    0.000    0.506  {method 'read' of '_io.BufferedReader' objects}
+                                                                                                                                                         2    0.000    4.336  {method 'readline' of '_io.BufferedReader' objects}
+{method 'recv_into' of '_socket.socket' objects}                                                                                                <-      40    4.453    4.453  /home/jmaynard/miniconda3/lib/python3.12/socket.py:693(readinto)
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/connection.py:485(getresponse)          <-       2    0.000    4.338  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/connectionpool.py:377(_make_request)
+/home/jmaynard/miniconda3/lib/python3.12/http/client.py:1379(getresponse)                                                                       <-       2    0.000    4.337  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/connection.py:485(getresponse)
+/home/jmaynard/miniconda3/lib/python3.12/http/client.py:324(begin)                                                                              <-       2    0.000    4.337  /home/jmaynard/miniconda3/lib/python3.12/http/client.py:1379(getresponse)
+/home/jmaynard/miniconda3/lib/python3.12/http/client.py:291(_read_status)                                                                       <-       2    0.000    4.336  /home/jmaynard/miniconda3/lib/python3.12/http/client.py:324(begin)
+{method 'readline' of '_io.BufferedReader' objects}                                                                                             <-      17    0.000    0.000  /home/jmaynard/miniconda3/lib/python3.12/http/client.py:213(_read_headers)
+                                                                                                                                                         2    0.000    4.336  /home/jmaynard/miniconda3/lib/python3.12/http/client.py:291(_read_status)
+                                                                                                                                                        11    0.000    0.000  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/response.py:1133(_update_chunk_length)
+                                                                                                                                                         2    0.000    0.000  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/urllib3/response.py:1173(read_chunked)
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2363(calculate_vwc_awc)                                           <-       1    0.062    2.958  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/soil_sim.py:51(soil_sim)
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/serverless_soil_stats.py:493(__init__)                                     <-    2014    0.051    0.921  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2363(calculate_vwc_awc)
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:4271(__setitem__)          <-      83    0.001    0.014  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:4320(_setitem_array)
+                                                                                                                                                        16    0.000    0.007  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/color.py:174(getProfileLAB)
+                                                                                                                                                        86    0.001    0.032  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/soil_sim.py:51(soil_sim)
+                                                                                                                                                         6    0.000    0.002  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/soil_sim.py:609(process_group)
+                                                                                                                                                         9    0.000    0.002  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/soil_sim.py:709(infill_parameter_range)
+                                                                                                                                                         6    0.000    0.001  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/soil_sim.py:1036(enforce_range_constraints)
+                                                                                                                                                        22    0.000    0.010  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/us_soil.py:91(list_soils)
+                                                                                                                                                         2    0.000    0.001  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:735(drop_cokey_horz)
+                                                                                                                                                         4    0.000    0.004  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:1544(process_site_data)
+                                                                                                                                                         5    0.000    0.010  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:1619(process_horizon_data)
+                                                                                                                                                         1    0.000    0.000  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:1727(fill_missing_comppct_r)
+                                                                                                                                                         8    0.000    0.003  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:1779(process_distance_scores)
+                                                                                                                                                         2    0.000    0.001  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2257(process_data_with_rosetta)
+                                                                                                                                                      2014    0.016    0.742  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2363(calculate_vwc_awc)
+                                                                                                                                                         8    0.000    0.001  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2616(update_esd_data)
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:4062(__getitem__)          <-       3    0.000    0.000  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/base.py:232(__getitem__)
+                                                                                                                                                        83    0.001    0.006  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:4320(_setitem_array)
+                                                                                                                                                         2    0.000    0.000  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:4514(_set_item)
+                                                                                                                                                        19    0.000    0.005  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:6731(drop_duplicates)
+                                                                                                                                                         2    0.000    0.000  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:6828(duplicated)
+                                                                                                                                                         1    0.000    0.000  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:9735(explode)
+                                                                                                                                                        73    0.000    0.006  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/generic.py:4159(xs)
+                                                                                                                                                       184    0.001    0.013  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/generic.py:6284(__getattr__)
+                                                                                                                                                        12    0.000    0.000  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/generic.py:7142(fillna)
+                                                                                                                                                        18    0.000    0.002  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/groupby/generic.py:1953(_gotitem)
+                                                                                                                                                        48    0.000    0.005  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/groupby/grouper.py:846(get_grouper)
+                                                                                                                                                        28    0.000    0.003  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/reshape/merge.py:825(_reindex_and_concat)
+                                                                                                                                                         4    0.000    0.000  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/reshape/pivot.py:507(pivot)
+                                                                                                                                                        75    0.000    0.001  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/color.py:24(find_closest_rgb_in_reference)
+                                                                                                                                                         4    0.000    0.003  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/color.py:174(getProfileLAB)
+                                                                                                                                                        84    0.001    0.030  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/soil_sim.py:51(soil_sim)
+                                                                                                                                                         4    0.000    0.000  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/soil_sim.py:493(<lambda>)
+                                                                                                                                                        12    0.000    0.004  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/soil_sim.py:609(process_group)
+                                                                                                                                                        33    0.000    0.002  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/soil_sim.py:709(infill_parameter_range)
+                                                                                                                                                       462    0.002    0.063  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/soil_sim.py:769(learn_parameter_ranges)
+                                                                                                                                                        15    0.000    0.002  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/soil_sim.py:1036(enforce_range_constraints)
+                                                                                                                                                       423    0.003    0.071  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/us_soil.py:91(list_soils)
+                                                                                                                                                      2649    0.017    0.225  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:412(getProfile)
+                                                                                                                                                        14    0.000    0.001  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:562(max_comp_depth)
+                                                                                                                                                        11    0.000    0.002  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:735(drop_cokey_horz)
+                                                                                                                                                         5    0.000    0.003  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:1544(process_site_data)
+                                                                                                                                                         6    0.000    0.004  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:1619(process_horizon_data)
+                                                                                                                                                         2    0.000    0.000  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:1727(fill_missing_comppct_r)
+                                                                                                                                                        12    0.000    0.003  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:1779(process_distance_scores)
+                                                                                                                                                        12    0.000    0.002  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2091(process_group)
+                                                                                                                                                        42    0.000    0.006  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2198(slice_and_aggregate_soil_data)
+                                                                                                                                                         1    0.000    0.001  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2257(process_data_with_rosetta)
+                                                                                                                                                      4029    0.021    0.274  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2363(calculate_vwc_awc)
+                                                                                                                                                         5    0.000    0.001  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2413(information_gain)
+                                                                                                                                                         6    0.000    0.000  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2603(calculate_aws)
+                                                                                                                                                        48    0.000    0.002  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2616(update_esd_data)
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:4514(_set_item)            <-    2259    0.007    0.735  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:4271(__setitem__)
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:694(__init__)              <-       6    0.000    0.004  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/apply.py:1198(wrap_results_for_axis)
+                                                                                                                                                         1    0.000    0.001  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/apply.py:1358(infer_to_same_shape)
+                                                                                                                                                        56    0.001    0.004  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:3767(transpose)
+                                                                                                                                                        12    0.000    0.000  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:8282(_construct_result)
+                                                                                                                                                         1    0.000    0.000  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:10580(join)
+                                                                                                                                                         3    0.000    0.001  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/groupby/generic.py:331(_aggregate_multiple_funcs)
+                                                                                                                                                         6    0.000    0.002  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/reshape/concat.py:622(get_result)
+                                                                                                                                                         1    0.000    0.000  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/reshape/reshape.py:231(get_result)
+                                                                                                                                                         5    0.000    0.007  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/io/json/_normalize.py:245(json_normalize)
+                                                                                                                                                         1    0.000    0.002  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/io/parsers/readers.py:1907(read)
+                                                                                                                                                         4    0.000    0.001  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/color.py:174(getProfileLAB)
+                                                                                                                                                        36    0.001    0.022  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/soil_sim.py:51(soil_sim)
+                                                                                                                                                         2    0.000    0.001  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/soil_sim.py:483(<lambda>)
+                                                                                                                                                         2    0.000    0.001  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/soil_sim.py:493(<lambda>)
+                                                                                                                                                        40    0.000    0.014  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/us_soil.py:91(list_soils)
+                                                                                                                                                        72    0.001    0.194  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:412(getProfile)
+                                                                                                                                                        12    0.000    0.018  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2198(slice_and_aggregate_soil_data)
+                                                                                                                                                         1    0.000    0.001  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2257(process_data_with_rosetta)
+                                                                                                                                                      2015    0.014    0.415  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2363(calculate_vwc_awc)
+                                                                                                                                                         2    0.000    0.000  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:2603(calculate_aws)
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/serverless_soil_stats.py:530(_compute_cubic_coefficients)                  <-    2014    0.373    0.662  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/serverless_soil_stats.py:493(__init__)
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:4481(_set_item_mgr)        <-    2259    0.020    0.638  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:4514(_set_item)
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/services.py:145(get_soilweb_data)                                          <-       1    0.000    0.566  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/us_soil.py:91(list_soils)
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/requests/api.py:62(get)                         <-       1    0.000    0.565  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/services.py:145(get_soilweb_data)
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/internals/managers.py:1347(insert)  <-    2111    0.033    0.554  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:4481(_set_item_mgr)
+                                                                                                                                                        13    0.000    0.004  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:5095(insert)
+/mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:10170(apply)               <-       1    0.000    0.001  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/apply.py:918(agg)
+                                                                                                                                                         1    0.000    0.007  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/.venv/lib/python3.12/site-packages/pandas/core/frame.py:10376(map)
+                                                                                                                                                         8    0.000    0.048  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/color.py:174(getProfileLAB)
+                                                                                                                                                         2    0.000    0.435  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/soil_sim.py:51(soil_sim)
+                                                                                                                                                         1    0.000    0.012  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/soil_sim.py:595(infill_soil_data)
+                                                                                                                                                         4    0.000    0.012  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/soil_sim.py:709(infill_parameter_range)
+                                                                                                                                                         2    0.000    0.027  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:1619(process_horizon_data)
+                                                                                                                                                         1    0.000    0.001  /mnt/c/Users/jmaynard/Documents/GitHub/soil-id-algorithm-api/soil_id/utils.py:1779(process_distance_scores)
+
+
