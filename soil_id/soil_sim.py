@@ -334,19 +334,15 @@ def soil_sim(muhorzdata_pd):
         # Parallel execution using ThreadPoolExecutor
         with ThreadPoolExecutor() as executor:
             futures = [executor.submit(simulate_row, row) for _, row in agg_data_df.iterrows()]
+            params_list = []
             for future in as_completed(futures):
-                sim_data_out.append(future.result())
-            # Initialize sim_data to an empty DataFrame with expected columns
-            sim_data = pd.DataFrame(
-                columns=[
-                    "ilr1",
-                    "ilr2",
-                    "bulk_density_third_bar",
-                    "water_retention_third_bar",
-                    "water_retention_15_bar",
-                    "rfv",
-                ]
-            )
+                result = future.result()
+                if result is not None:
+                    params_list.append(result)
+
+        # Now params_list contains all parameter sets from simulation
+        # Further processing should use params_list, not 'row'
+        # Example: convert params_list to DataFrame or use as needed
 
             # Check diagonal elements and off-diagonal range
             if not np.all(np.diag(local_correlation_matrix) >= 0.99999999999999) or np.any(
