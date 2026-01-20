@@ -166,6 +166,7 @@ def silt_calc(row):
 def getTexture(row=None, sand=None, silt=None, clay=None):
     """
     Classify soil texture based on sand, silt, and clay proportions.
+    Matches the legacy gettt function logic.
 
     Parameters:
     - row (dict): Dictionary-like object with 'sandtotal_r', 'silttotal_r', 'claytotal_r' keys.
@@ -174,7 +175,7 @@ def getTexture(row=None, sand=None, silt=None, clay=None):
     - clay (float): Percentage of clay.
 
     Returns:
-    - str: Soil texture classification.
+    - str: Soil texture classification, or None if any input is NaN.
     """
 
     # Handle missing inputs: if not provided individually, try to get from row.
@@ -183,29 +184,31 @@ def getTexture(row=None, sand=None, silt=None, clay=None):
             sand = row.get("sandtotal_r", np.nan)
             silt = row.get("silttotal_r", np.nan)
             clay = row.get("claytotal_r", np.nan)
-
-    # Replace any NaN with 0 for the calculation.
-    sand = np.nan_to_num(sand, nan=0)
-    silt = np.nan_to_num(silt, nan=0)
-    clay = np.nan_to_num(clay, nan=0)
+    
+    # Return None if any value is NaN (matches legacy behavior)
+    if np.isnan(sand) or np.isnan(silt) or np.isnan(clay):
+        return None
 
     # Calculate derived values.
     silt_clay = silt + 1.5 * clay
     silt_2x_clay = silt + 2.0 * clay
 
     # Define conditions and corresponding texture classifications.
+    # These match the legacy gettt function exactly
     conditions = [
         silt_clay < 15,
-        (silt_clay >= 15) & (silt_clay < 30),
-        (((7 <= clay) & (clay <= 20)) & (sand > 52))
+        (silt_clay >= 15) & (silt_2x_clay < 30),  # Fixed: was using silt_clay for both
+        (((clay >= 7) & (clay <= 20)) & (sand > 52) & (silt_2x_clay >= 30))
         | ((clay < 7) & (silt < 50) & (silt_2x_clay >= 30)),
-        (7 <= clay) & (clay <= 27) & (28 <= silt) & (silt < 50) & (sand <= 52),
-        (silt >= 50) & (((12 <= clay) & (clay < 27)) | ((silt < 80) & (clay < 12))),
+        (clay >= 7) & (clay <= 27) & (silt >= 28) & (silt < 50) & (sand <= 52),
+        ((silt >= 50) & (clay >= 12) & (clay < 27)) | ((silt >= 50) & (silt < 80) & (clay < 12)),
         (silt >= 80) & (clay < 12),
-        (20 <= clay) & (clay < 35) & (silt < 28) & (sand > 45),
-        (27 <= clay) & (clay < 40) & (sand <= 45) & (sand > 20),
+        (clay >= 20) & (clay < 35) & (silt < 28) & (sand > 45),
+        (clay >= 27) & (clay < 40) & (sand > 20) & (sand <= 45),
+        (clay >= 27) & (clay < 40) & (sand <= 20),
         (clay >= 35) & (sand >= 45),
-        (clay >= 40) & (silt >= 40) & (sand <= 45),
+        (clay >= 40) & (silt >= 40),
+        (clay >= 40) & (sand <= 45) & (silt < 40),
     ]
 
     choices = [
@@ -217,12 +220,14 @@ def getTexture(row=None, sand=None, silt=None, clay=None):
         "Silt",
         "Sandy clay loam",
         "Clay loam",
+        "Silty clay loam",
         "Sandy clay",
+        "Silty clay",
         "Clay",
     ]
 
     # Compute the texture classification.
-    result = np.select(conditions, choices, default="Unknown")
+    result = np.select(conditions, choices, default=None)
 
     # Ensure that a plain Python string is returned.
     if isinstance(result, np.ndarray):
@@ -1080,142 +1085,6 @@ def compute_site_similarity(
     # 3) fill NaNs
     D = np.where(np.isnan(D), np.nanmax(D), D)
     return D
-
-
-def compute_text_comp(bedrock, p_sandpct_intpl, soilHorizon):
-    """
-    Computes a value based on the depth of bedrock and length of sand percentages.
-
-    Args:
-    - bedrock (int or None): Depth of bedrock.
-    - p_sandpct_intpl (Series): Series of sand percentages.
-    - soilHorizon (list): List of soil horizons.
-
-    Returns:
-    - int: A computed value based on lookup table and input parameters.
-    """
-
-    # Return 0 if all values in soilHorizon are None
-    if all(x is None for x in soilHorizon):
-        return 0
-
-    len_sand = len(p_sandpct_intpl.dropna())
-
-    # Lookup table for determining return values
-    lookup = {
-        None: {1: 3, 10: 8, 20: 15, 50: 23, 70: 30, 100: 37, float("inf"): 45},
-        10: {1: 3, 10: 45, float("inf"): 0},
-        20: {1: 3, 10: 8, 20: 45, float("inf"): 0},
-        50: {1: 3, 10: 8, 20: 15, 50: 45, float("inf"): 0},
-        70: {1: 3, 10: 8, 20: 15, 50: 25, 70: 45, float("inf"): 0},
-        100: {1: 3, 10: 8, 20: 15, 50: 25, 70: 35, 100: 45, float("inf"): 0},
-    }
-
-    # Categorize bedrock depth
-    if bedrock is None or bedrock > 100:
-        bedrock = None
-    elif bedrock <= 10:
-        bedrock = 10
-    elif bedrock <= 20:
-        bedrock = 20
-    elif bedrock <= 50:
-        bedrock = 50
-    elif bedrock <= 70:
-        bedrock = 70
-    else:
-        bedrock = 100
-
-    # Return appropriate value from lookup table based on len_sand
-    for key in lookup[bedrock]:
-        if len_sand <= key:
-            return lookup[bedrock][key]
-
-    return 0
-
-
-def compute_rf_comp(bedrock, p_cfg_intpl, rfvDepth):
-    if all(x is None for x in rfvDepth):
-        return 0
-
-    len_cfg = len(p_cfg_intpl.dropna())
-
-    lookup = {
-        None: {1: 3, 10: 6, 20: 10, 50: 16, 70: 22, 100: 26, float("inf"): 30},
-        10: {1: 3, 10: 30, float("inf"): 0},
-        20: {1: 3, 10: 6, 20: 30, float("inf"): 0},
-        50: {1: 3, 10: 6, 20: 10, 50: 30, float("inf"): 0},
-        70: {1: 3, 10: 6, 20: 10, 50: 15, 70: 30, float("inf"): 0},
-        100: {1: 3, 10: 6, 20: 10, 50: 15, 70: 20, 100: 30, float("inf"): 0},
-    }
-
-    if bedrock is None or bedrock > 100:
-        bedrock = None
-    elif bedrock <= 10:
-        bedrock = 10
-    elif bedrock <= 20:
-        bedrock = 20
-    elif bedrock <= 50:
-        bedrock = 50
-    elif bedrock <= 70:
-        bedrock = 70
-    else:
-        bedrock = 100
-
-    for key in lookup[bedrock]:
-        if len_cfg <= key:
-            return lookup[bedrock][key]
-
-    return 0
-
-
-def compute_crack_comp(cracks):
-    return 5 if cracks is not None else 0
-
-
-def compute_lab_comp(cr_df):
-    return 20 if not cr_df.dropna().empty else 0
-
-
-def compute_data_completeness(
-    bedrock, p_sandpct_intpl, soilHorizon, p_cfg_intpl, rfvDepth, cracks, cr_df
-):
-    text_comp = compute_text_comp(bedrock, p_sandpct_intpl, soilHorizon)
-    rf_comp = compute_rf_comp(bedrock, p_cfg_intpl, rfvDepth)
-    crack_comp = compute_crack_comp(cracks)
-    lab_comp = compute_lab_comp(cr_df)
-
-    data_completeness = text_comp + rf_comp + crack_comp + lab_comp
-
-    # Generate data completeness comment
-    if text_comp < 45:
-        text_comment = " soil texture,"
-    else:
-        text_comment = ""
-    if rf_comp < 30:
-        rf_comment = " soil rock fragments,"
-    else:
-        rf_comment = ""
-    if lab_comp < 20:
-        lab_comment = " soil color (20-50cm),"
-    else:
-        lab_comment = ""
-    if crack_comp < 5:
-        crack_comment = " soil cracking,"
-    else:
-        crack_comment = ""
-    if data_completeness < 100:
-        text_completeness = (
-            "To improve predictions, complete data entry for:"
-            + crack_comment
-            + text_comment
-            + rf_comment
-            + lab_comment
-            + " and re-sync."
-        )
-    else:
-        text_completeness = "SoilID data entry for this site is complete."
-
-    return data_completeness, text_completeness
 
 
 def trim_fraction(text):
