@@ -1571,10 +1571,9 @@ def process_horizon_data(muhorzdata_pd):
         ["cokey", "chkey", "hzname"]
     ].astype(str)
 
-    # Infill missing CEC values with ECEC
-    muhorzdata_pd["CEC"] = muhorzdata_pd["cec7_r"].fillna(muhorzdata_pd["ecec_r"])
-
-    # Rename columns for better clarity
+    # Infill missing CEC values with ECEC and rename columns for better clarity
+    muhorzdata_pd["cec7_r"] = muhorzdata_pd["cec7_r"].fillna(muhorzdata_pd["ecec_r"])
+    
     muhorzdata_pd = muhorzdata_pd.rename(
         columns={"cec7_r": "CEC", "ph1to1h2o_r": "pH", "ec_r": "EC"}
     )
