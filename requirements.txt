@@ -30,4 +30,3 @@ charset-normalizer==3.4.3
 url-normalize==1.4.3
 idna==3.10
 urllib3==2.3.0
-statsmodels==0.14.4
