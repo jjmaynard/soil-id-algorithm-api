@@ -93,6 +93,11 @@ class RankSoilsRequest(BaseModel):
     pElev: Optional[float] = Field(None, description="Site elevation (m)")
     bedrock: Optional[float] = Field(None, description="Bedrock depth (cm)")
     cracks: Optional[bool] = Field(None, description="Presence of soil cracks")
+    pAspect: Optional[float] = Field(None, description="Site aspect in degrees (0-360); use null for flat/no-aspect")
+    pSlopeShapeVert: Optional[str] = Field(None, description="Vertical slope shape label (e.g., Concave, Convex, Linear)")
+    pSlopeShapeHoriz: Optional[str] = Field(None, description="Horizontal slope shape label (e.g., Concave, Convex, Planar)")
+    pLandscape: Optional[str] = Field(None, description="Landscape position label (e.g., Alluvial Fan, Floodplain/Basin)")
+    pLandscapeMode: Optional[str] = Field("base", description="Landscape crosswalk sensitivity: base, strict, or loose")
     
     class Config:
         json_schema_extra = {
@@ -110,7 +115,12 @@ class RankSoilsRequest(BaseModel):
                 "pSlope": 5.0,
                 "pElev": 800.0,
                 "bedrock": None,
-                "cracks": False
+                "cracks": False,
+                "pAspect": 225.0,
+                "pSlopeShapeVert": "Concave",
+                "pSlopeShapeHoriz": "Linear",
+                "pLandscape": "Alluvial Fan",
+                "pLandscapeMode": "base"
             }
         }
 
@@ -253,7 +263,12 @@ async def api_rank_soils(request: RankSoilsRequest):
             pSlope=request.pSlope,
             pElev=request.pElev,
             bedrock=request.bedrock,
-            cracks=request.cracks
+            cracks=request.cracks,
+            pAspect=request.pAspect,
+            pSlopeShapeVert=request.pSlopeShapeVert,
+            pSlopeShapeHoriz=request.pSlopeShapeHoriz,
+            pLandscape=request.pLandscape,
+            pLandscapeMode=request.pLandscapeMode,
         )
         
         return result
@@ -299,7 +314,12 @@ async def api_analyze_soil_combined(request: RankSoilsRequest):
             pSlope=request.pSlope,
             pElev=request.pElev,
             bedrock=request.bedrock,
-            cracks=request.cracks
+            cracks=request.cracks,
+            pAspect=request.pAspect,
+            pSlopeShapeVert=request.pSlopeShapeVert,
+            pSlopeShapeHoriz=request.pSlopeShapeHoriz,
+            pLandscape=request.pLandscape,
+            pLandscapeMode=request.pLandscapeMode,
         )
         
         # Combine list and rank results

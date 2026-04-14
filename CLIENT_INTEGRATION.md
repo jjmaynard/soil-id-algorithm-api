@@ -64,6 +64,11 @@ export default function SoilAnalysis() {
           pElev: 800.0,
           bedrock: null,
           cracks: false,
+          pAspect: 225.0,
+          pSlopeShapeVert: 'Concave',
+          pSlopeShapeHoriz: 'Linear',
+          pLandscape: 'Alluvial Fan',
+          pLandscapeMode: 'base',
         }),
       });
 
@@ -137,9 +142,26 @@ const result = await analyzeSoil(
     rfvDepth: ['0-1%'],
     lab_Color: [[50.5, 5.2, 20.1]],
     pSlope: 5.0,
+    pAspect: 225.0,
+    pSlopeShapeVert: 'Concave',
+    pSlopeShapeHoriz: 'Linear',
+    pLandscape: 'Alluvial Fan',
+    pLandscapeMode: 'base',
   }
 );
 ```
+
+#### Terrain And Landscape Inputs
+
+The `rank-soils` and `analyze-soil` endpoints now accept these optional site inputs:
+
+- `pAspect`: Aspect in degrees (0-360)
+- `pSlopeShapeVert`: Vertical slope shape text (for example `Concave`, `Linear`)
+- `pSlopeShapeHoriz`: Horizontal slope shape text (for example `Convex`, `Planar`)
+- `pLandscape`: Landscape position text (for example `Alluvial Fan`, `Floodplain/Basin`)
+- `pLandscapeMode`: Crosswalk sensitivity (`base`, `strict`, `loose`)
+
+If omitted or null, terrain/landscape variables are excluded from that part of similarity scoring.
 
 ### Option 2: Separate Endpoints (For Two-Step Workflow)
 
@@ -258,6 +280,11 @@ export interface FieldMeasurements {
   pElev?: number | null;
   bedrock?: number | null;
   cracks?: boolean | null;
+  pAspect?: number | null;
+  pSlopeShapeVert?: string | null;
+  pSlopeShapeHoriz?: string | null;
+  pLandscape?: string | null;
+  pLandscapeMode?: 'base' | 'strict' | 'loose' | null;
 }
 
 export interface SoilListData {
@@ -374,6 +401,11 @@ export default function SoilAnalysisPage() {
           topDepth: [0],
           bottomDepth: [20],
           pSlope: 5.0,
+          pAspect: 225.0,
+          pSlopeShapeVert: 'Concave',
+          pSlopeShapeHoriz: 'Linear',
+          pLandscape: 'Alluvial Fan',
+          pLandscapeMode: 'base',
         }
       );
       console.log('Analysis result:', result);
@@ -393,7 +425,16 @@ export default function SoilAnalysisPage() {
       const ranking = await soilApi.rankSoils(
         { lon: -101.97, lat: 33.81 },
         soilList,
-        { soilHorizon: ['Sandy loam'], topDepth: [0], bottomDepth: [20] }
+        {
+          soilHorizon: ['Sandy loam'],
+          topDepth: [0],
+          bottomDepth: [20],
+          pAspect: 225.0,
+          pSlopeShapeVert: 'Concave',
+          pSlopeShapeHoriz: 'Linear',
+          pLandscape: 'Alluvial Fan',
+          pLandscapeMode: 'base',
+        }
       );
       console.log('Ranking result:', ranking);
     } catch (error) {

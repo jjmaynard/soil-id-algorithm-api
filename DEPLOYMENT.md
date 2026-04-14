@@ -118,7 +118,12 @@ curl -X POST https://your-project.vercel.app/api/analyze-soil \
     "bottomDepth": [20],
     "rfvDepth": ["0-1%"],
     "lab_Color": [[50.5, 5.2, 20.1]],
-    "pSlope": 5.0
+    "pSlope": 5.0,
+    "pAspect": 225.0,
+    "pSlopeShapeVert": "Concave",
+    "pSlopeShapeHoriz": "Linear",
+    "pLandscape": "Alluvial Fan",
+    "pLandscapeMode": "base"
   }'
 ```
 
@@ -201,11 +206,28 @@ const response = await fetch('https://your-api.vercel.app/api/analyze-soil', {
     pSlope: 5.0,
     pElev: 800.0,
     bedrock: null,
-    cracks: false
+    cracks: false,
+    pAspect: 225.0,
+    pSlopeShapeVert: 'Concave',
+    pSlopeShapeHoriz: 'Linear',
+    pLandscape: 'Alluvial Fan',
+    pLandscapeMode: 'base'
   })
 });
 const result = await response.json();
 ```
+
+### New Optional Terrain/Landscape Inputs
+
+`POST /api/rank-soils` and `POST /api/analyze-soil` support additional optional inputs:
+
+- `pAspect` (0-360)
+- `pSlopeShapeVert`
+- `pSlopeShapeHoriz`
+- `pLandscape`
+- `pLandscapeMode` (`base`, `strict`, `loose`)
+
+These can be omitted when terrain observations are unavailable.
 
 ## Performance Considerations
 
