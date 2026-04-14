@@ -1,24 +1,7 @@
 {
   "list": {
-    "AWS_PIW90": 12.07,
-    "Soil Data Value": [
-      [
-        "rfv_class_0",
-        1.7621306108711137
-      ],
-      [
-        "rfv_class_30",
-        1.6416647689252122
-      ],
-      [
-        "texture_30",
-        0.9858150371789198
-      ],
-      [
-        "texture_0",
-        0.0
-      ]
-    ],
+    "AWS_PIW90": null,
+    "Soil Data Value": null,
     "metadata": {
       "location": "us",
       "model": "v3",
@@ -40,9 +23,15 @@
         "ec": {},
         "esd": {
           "ESD": {
-            "ecoclassid": "",
-            "ecoclassname": "",
-            "edit_url": ""
+            "ecoclassid": [
+              "F230XY612AK"
+            ],
+            "ecoclassname": [
+              "Boreal Forest Loamy Slopes"
+            ],
+            "edit_url": [
+              "https://edit.sc.egov.usda.gov/catalogs/esd/230X/F230XY612AK"
+            ]
           }
         },
         "id": {
@@ -58,23 +47,23 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "24913863",
+            "componentID": "27026711",
             "componentKind": "Taxon above family",
             "componentPct": 30,
             "dataSource": "SSURGO",
-            "distance": 0.0,
+            "distance": 0,
             "irrcapcl": "None",
             "irrcapscl": "None",
             "irrcapunit": "None",
             "mapunitID": "3352670",
-            "minCompDistance": 0.0,
+            "minCompDistance": 0,
             "nirrcapcl": "7",
             "nirrcapscl": "e",
             "nirrcapunit": "None",
             "rfvInfill": "No",
             "sdeURL": "",
             "seeURL": "",
-            "slope": 18.0,
+            "slope": 18,
             "taxsubgrp": "Typic Haplocryods",
             "textureInfill": "No"
           },
@@ -90,9 +79,15 @@
         "ec": {},
         "esd": {
           "ESD": {
-            "ecoclassid": "",
-            "ecoclassname": "",
-            "edit_url": ""
+            "ecoclassid": [
+              ""
+            ],
+            "ecoclassname": [
+              ""
+            ],
+            "edit_url": [
+              ""
+            ]
           }
         },
         "id": {
@@ -108,23 +103,23 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "24913856",
+            "componentID": "27026717",
             "componentKind": "Taxon above family",
             "componentPct": 29,
             "dataSource": "SSURGO",
-            "distance": 0.0,
+            "distance": 0,
             "irrcapcl": "None",
             "irrcapscl": "None",
             "irrcapunit": "None",
             "mapunitID": "3352670",
-            "minCompDistance": 0.0,
+            "minCompDistance": 0,
             "nirrcapcl": "7",
             "nirrcapscl": "e",
             "nirrcapunit": "None",
             "rfvInfill": "No",
             "sdeURL": "",
             "seeURL": "",
-            "slope": 25.0,
+            "slope": 25,
             "taxsubgrp": "Typic Haplogelepts",
             "textureInfill": "No"
           },
@@ -140,9 +135,15 @@
         "ec": {},
         "esd": {
           "ESD": {
-            "ecoclassid": "",
-            "ecoclassname": "",
-            "edit_url": ""
+            "ecoclassid": [
+              ""
+            ],
+            "ecoclassname": [
+              ""
+            ],
+            "edit_url": [
+              ""
+            ]
           }
         },
         "id": {
@@ -158,23 +159,23 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "24913864",
+            "componentID": "27026716",
             "componentKind": "Taxon above family",
             "componentPct": 13,
             "dataSource": "SSURGO",
-            "distance": 0.0,
+            "distance": 0,
             "irrcapcl": "None",
             "irrcapscl": "None",
             "irrcapunit": "None",
             "mapunitID": "3352670",
-            "minCompDistance": 0.0,
+            "minCompDistance": 0,
             "nirrcapcl": "7",
             "nirrcapscl": "e",
             "nirrcapunit": "None",
             "rfvInfill": "No",
             "sdeURL": "",
             "seeURL": "",
-            "slope": 14.0,
+            "slope": 14,
             "taxsubgrp": "Typic Histoturbels",
             "textureInfill": "No"
           },
@@ -190,9 +191,15 @@
         "ec": {},
         "esd": {
           "ESD": {
-            "ecoclassid": "",
-            "ecoclassname": "",
-            "edit_url": ""
+            "ecoclassid": [
+              ""
+            ],
+            "ecoclassname": [
+              ""
+            ],
+            "edit_url": [
+              ""
+            ]
           }
         },
         "id": {
@@ -208,23 +215,23 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "24913862",
+            "componentID": "27026714",
             "componentKind": "Taxon above family",
             "componentPct": 7,
             "dataSource": "SSURGO",
-            "distance": 0.0,
+            "distance": 0,
             "irrcapcl": "None",
             "irrcapscl": "None",
             "irrcapunit": "None",
             "mapunitID": "3352670",
-            "minCompDistance": 0.0,
+            "minCompDistance": 0,
             "nirrcapcl": "6",
             "nirrcapscl": "e",
             "nirrcapunit": "None",
             "rfvInfill": "No",
             "sdeURL": "",
             "seeURL": "",
-            "slope": 15.0,
+            "slope": 15,
             "taxsubgrp": "Typic Dystrocryepts",
             "textureInfill": "No"
           },
@@ -240,9 +247,15 @@
         "ec": {},
         "esd": {
           "ESD": {
-            "ecoclassid": "",
-            "ecoclassname": "",
-            "edit_url": ""
+            "ecoclassid": [
+              ""
+            ],
+            "ecoclassname": [
+              ""
+            ],
+            "edit_url": [
+              ""
+            ]
           }
         },
         "id": {
@@ -258,23 +271,23 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "24913861",
+            "componentID": "27026715",
             "componentKind": "Taxon above family",
             "componentPct": 6,
             "dataSource": "SSURGO",
-            "distance": 0.0,
+            "distance": 0,
             "irrcapcl": "None",
             "irrcapscl": "None",
             "irrcapunit": "None",
             "mapunitID": "3352670",
-            "minCompDistance": 0.0,
+            "minCompDistance": 0,
             "nirrcapcl": "6",
             "nirrcapscl": "s",
             "nirrcapunit": "None",
             "rfvInfill": "No",
             "sdeURL": "",
             "seeURL": "",
-            "slope": 2.0,
+            "slope": 2,
             "taxsubgrp": "Typic Histoturbels",
             "textureInfill": "No"
           },
@@ -290,9 +303,15 @@
         "ec": {},
         "esd": {
           "ESD": {
-            "ecoclassid": "",
-            "ecoclassname": "",
-            "edit_url": ""
+            "ecoclassid": [
+              "F230XY611AK"
+            ],
+            "ecoclassname": [
+              "Boreal Forest Loamy Frozen Slopes"
+            ],
+            "edit_url": [
+              "https://edit.sc.egov.usda.gov/catalogs/esd/230X/F230XY611AK"
+            ]
           }
         },
         "id": {
@@ -308,23 +327,23 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "24913860",
+            "componentID": "27026713",
             "componentKind": "Taxon above family",
             "componentPct": 5,
             "dataSource": "SSURGO",
-            "distance": 0.0,
+            "distance": 0,
             "irrcapcl": "None",
             "irrcapscl": "None",
             "irrcapunit": "None",
             "mapunitID": "3352670",
-            "minCompDistance": 0.0,
+            "minCompDistance": 0,
             "nirrcapcl": "7",
             "nirrcapscl": "e",
             "nirrcapunit": "None",
             "rfvInfill": "No",
             "sdeURL": "",
             "seeURL": "",
-            "slope": 14.0,
+            "slope": 14,
             "taxsubgrp": "Typic Dystrocryepts",
             "textureInfill": "No"
           },
@@ -340,9 +359,15 @@
         "ec": {},
         "esd": {
           "ESD": {
-            "ecoclassid": "",
-            "ecoclassname": "",
-            "edit_url": ""
+            "ecoclassid": [
+              "R230XY630AK"
+            ],
+            "ecoclassname": [
+              "Alpine Dwarf Scrub Gravelly Slopes"
+            ],
+            "edit_url": [
+              "https://edit.sc.egov.usda.gov/catalogs/esd/230X/R230XY630AK"
+            ]
           }
         },
         "id": {
@@ -358,23 +383,23 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "24913859",
+            "componentID": "27026712",
             "componentKind": "Taxon above family",
             "componentPct": 4,
             "dataSource": "SSURGO",
-            "distance": 0.0,
+            "distance": 0,
             "irrcapcl": "None",
             "irrcapscl": "None",
             "irrcapunit": "None",
             "mapunitID": "3352670",
-            "minCompDistance": 0.0,
+            "minCompDistance": 0,
             "nirrcapcl": "6",
             "nirrcapscl": "s",
             "nirrcapunit": "None",
             "rfvInfill": "No",
             "sdeURL": "",
             "seeURL": "",
-            "slope": 1.0,
+            "slope": 1,
             "taxsubgrp": "Fluvaquentic Historthels",
             "textureInfill": "No"
           },
@@ -390,9 +415,15 @@
         "ec": {},
         "esd": {
           "ESD": {
-            "ecoclassid": "",
-            "ecoclassname": "",
-            "edit_url": ""
+            "ecoclassid": [
+              ""
+            ],
+            "ecoclassname": [
+              ""
+            ],
+            "edit_url": [
+              ""
+            ]
           }
         },
         "id": {
@@ -408,23 +439,23 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "24913857",
+            "componentID": "27026718",
             "componentKind": "Taxon above family",
             "componentPct": 3,
             "dataSource": "SSURGO",
-            "distance": 0.0,
+            "distance": 0,
             "irrcapcl": "None",
             "irrcapscl": "None",
             "irrcapunit": "None",
             "mapunitID": "3352670",
-            "minCompDistance": 0.0,
+            "minCompDistance": 0,
             "nirrcapcl": "7",
             "nirrcapscl": "e",
             "nirrcapunit": "None",
             "rfvInfill": "No",
             "sdeURL": "",
             "seeURL": "",
-            "slope": 35.0,
+            "slope": 35,
             "taxsubgrp": "Typic Haplogelepts",
             "textureInfill": "No"
           },
@@ -440,9 +471,15 @@
         "ec": {},
         "esd": {
           "ESD": {
-            "ecoclassid": "",
-            "ecoclassname": "",
-            "edit_url": ""
+            "ecoclassid": [
+              ""
+            ],
+            "ecoclassname": [
+              ""
+            ],
+            "edit_url": [
+              ""
+            ]
           }
         },
         "id": {
@@ -458,23 +495,23 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "24913858",
+            "componentID": "27026719",
             "componentKind": "Taxon above family",
             "componentPct": 3,
             "dataSource": "SSURGO",
-            "distance": 0.0,
+            "distance": 0,
             "irrcapcl": "None",
             "irrcapscl": "None",
             "irrcapunit": "None",
             "mapunitID": "3352670",
-            "minCompDistance": 0.0,
+            "minCompDistance": 0,
             "nirrcapcl": "7",
             "nirrcapscl": "e",
             "nirrcapunit": "None",
             "rfvInfill": "No",
             "sdeURL": "",
             "seeURL": "",
-            "slope": 20.0,
+            "slope": 20,
             "taxsubgrp": "Typic Dystrocryepts",
             "textureInfill": "No"
           },
@@ -494,7 +531,7 @@
       {
         "component": "E30-boreal forest-silty slopes",
         "componentData": "Missing Data",
-        "componentID": 24913863,
+        "componentID": 27026711,
         "name": "E30-boreal forest-silty slopes",
         "not_displayed": false,
         "rank_data": "1",
@@ -503,17 +540,17 @@
         "rank_data_loc_group": "1",
         "rank_loc": 1,
         "rank_loc_group": 1,
-        "score_data": 0.822,
-        "score_data_group": 0.822,
-        "score_data_loc": 0.561,
-        "score_data_loc_group": 0.561,
+        "score_data": 0.849,
+        "score_data_group": 0.849,
+        "score_data_loc": 0.574,
+        "score_data_loc_group": 0.574,
         "score_loc": 0.3,
         "score_loc_group": 0.3
       },
       {
         "component": "E30-boreal alpine scrub-gravelly colluvial slopes",
         "componentData": "Missing Data",
-        "componentID": 24913856,
+        "componentID": 27026717,
         "name": "E30-boreal alpine scrub-gravelly colluvial slopes",
         "not_displayed": false,
         "rank_data": "4",
@@ -522,17 +559,17 @@
         "rank_data_loc_group": "2",
         "rank_loc": 2,
         "rank_loc_group": 2,
-        "score_data": 0.678,
-        "score_data_group": 0.678,
-        "score_data_loc": 0.484,
-        "score_data_loc_group": 0.484,
+        "score_data": 0.706,
+        "score_data_group": 0.706,
+        "score_data_loc": 0.498,
+        "score_data_loc_group": 0.498,
         "score_loc": 0.29,
         "score_loc_group": 0.29
       },
       {
         "component": "E30-boreal taiga-loamy frozen colluvial slopes",
         "componentData": "Missing Data",
-        "componentID": 24913864,
+        "componentID": 27026716,
         "name": "E30-boreal taiga-loamy frozen colluvial slopes",
         "not_displayed": false,
         "rank_data": "2",
@@ -541,17 +578,17 @@
         "rank_data_loc_group": "3",
         "rank_loc": 3,
         "rank_loc_group": 3,
-        "score_data": 0.771,
-        "score_data_group": 0.771,
-        "score_data_loc": 0.45,
-        "score_data_loc_group": 0.45,
+        "score_data": 0.778,
+        "score_data_group": 0.778,
+        "score_data_loc": 0.454,
+        "score_data_loc_group": 0.454,
         "score_loc": 0.13,
         "score_loc_group": 0.13
       },
       {
         "component": "E30-boreal taiga-silty slopes",
         "componentData": "Missing Data",
-        "componentID": 24913862,
+        "componentID": 27026714,
         "name": "E30-boreal taiga-silty slopes",
         "not_displayed": false,
         "rank_data": "3",
@@ -560,74 +597,74 @@
         "rank_data_loc_group": "4",
         "rank_loc": 4,
         "rank_loc_group": 4,
-        "score_data": 0.736,
-        "score_data_group": 0.736,
-        "score_data_loc": 0.403,
-        "score_data_loc_group": 0.403,
+        "score_data": 0.763,
+        "score_data_group": 0.763,
+        "score_data_loc": 0.417,
+        "score_data_loc_group": 0.417,
         "score_loc": 0.07,
         "score_loc_group": 0.07
       },
       {
-        "component": "E30-boreal taiga/tussock-silty frozen slopes",
-        "componentData": "Missing Data",
-        "componentID": 24913861,
-        "name": "E30-boreal taiga/tussock-silty frozen slopes",
-        "not_displayed": false,
-        "rank_data": "6",
-        "rank_data_group": "6",
-        "rank_data_loc": "5",
-        "rank_data_loc_group": "5",
-        "rank_loc": 5,
-        "rank_loc_group": 5,
-        "score_data": 0.605,
-        "score_data_group": 0.605,
-        "score_data_loc": 0.332,
-        "score_data_loc_group": 0.332,
-        "score_loc": 0.06,
-        "score_loc_group": 0.06
-      },
-      {
         "component": "E30-boreal scrub-silty frozen drainageways",
         "componentData": "Missing Data",
-        "componentID": 24913859,
+        "componentID": 27026712,
         "name": "E30-boreal scrub-silty frozen drainageways",
         "not_displayed": false,
         "rank_data": "5",
         "rank_data_group": "5",
-        "rank_data_loc": "6",
-        "rank_data_loc_group": "6",
+        "rank_data_loc": "5",
+        "rank_data_loc_group": "5",
         "rank_loc": 7,
         "rank_loc_group": 7,
-        "score_data": 0.616,
-        "score_data_group": 0.616,
-        "score_data_loc": 0.328,
-        "score_data_loc_group": 0.328,
+        "score_data": 0.676,
+        "score_data_group": 0.676,
+        "score_data_loc": 0.358,
+        "score_data_loc_group": 0.358,
         "score_loc": 0.04,
         "score_loc_group": 0.04
       },
       {
-        "component": "E30-boreal subalpine woodland-gravelly colluvial slopes",
+        "component": "E30-boreal taiga/tussock-silty frozen slopes",
         "componentData": "Missing Data",
-        "componentID": 24913858,
-        "name": "E30-boreal subalpine woodland-gravelly colluvial slopes",
+        "componentID": 27026715,
+        "name": "E30-boreal taiga/tussock-silty frozen slopes",
         "not_displayed": false,
         "rank_data": "7",
         "rank_data_group": "7",
+        "rank_data_loc": "6",
+        "rank_data_loc_group": "6",
+        "rank_loc": 5,
+        "rank_loc_group": 5,
+        "score_data": 0.618,
+        "score_data_group": 0.618,
+        "score_data_loc": 0.339,
+        "score_data_loc_group": 0.339,
+        "score_loc": 0.06,
+        "score_loc_group": 0.06
+      },
+      {
+        "component": "E30-boreal subalpine woodland-gravelly colluvial slopes",
+        "componentData": "Missing Data",
+        "componentID": 27026719,
+        "name": "E30-boreal subalpine woodland-gravelly colluvial slopes",
+        "not_displayed": false,
+        "rank_data": "6",
+        "rank_data_group": "6",
         "rank_data_loc": "7",
         "rank_data_loc_group": "7",
         "rank_loc": 9,
         "rank_loc_group": 9,
-        "score_data": 0.567,
-        "score_data_group": 0.567,
-        "score_data_loc": 0.298,
-        "score_data_loc_group": 0.298,
+        "score_data": 0.646,
+        "score_data_group": 0.646,
+        "score_data_loc": 0.338,
+        "score_data_loc_group": 0.338,
         "score_loc": 0.03,
         "score_loc_group": 0.03
       },
       {
         "component": "E30-boreal alpine dwarf scrub-gravelly colluvial slopes",
         "componentData": "Missing Data",
-        "componentID": 24913857,
+        "componentID": 27026718,
         "name": "E30-boreal alpine dwarf scrub-gravelly colluvial slopes",
         "not_displayed": false,
         "rank_data": "8",
@@ -636,17 +673,17 @@
         "rank_data_loc_group": "8",
         "rank_loc": 8,
         "rank_loc_group": 8,
-        "score_data": 0.565,
-        "score_data_group": 0.565,
-        "score_data_loc": 0.298,
-        "score_data_loc_group": 0.298,
+        "score_data": 0.594,
+        "score_data_group": 0.594,
+        "score_data_loc": 0.312,
+        "score_data_loc_group": 0.312,
         "score_loc": 0.03,
         "score_loc_group": 0.03
       },
       {
         "component": "E30-boreal subalpine scrub-loamy colluvial slopes",
         "componentData": "Missing Data",
-        "componentID": 24913860,
+        "componentID": 27026713,
         "name": "E30-boreal subalpine scrub-loamy colluvial slopes",
         "not_displayed": false,
         "rank_data": "9",
@@ -655,10 +692,10 @@
         "rank_data_loc_group": "9",
         "rank_loc": 6,
         "rank_loc_group": 6,
-        "score_data": 0.494,
-        "score_data_group": 0.494,
-        "score_data_loc": 0.272,
-        "score_data_loc_group": 0.272,
+        "score_data": 0.518,
+        "score_data_group": 0.518,
+        "score_data_loc": 0.284,
+        "score_data_loc_group": 0.284,
         "score_loc": 0.05,
         "score_loc_group": 0.05
       }

@@ -1,0 +1,861 @@
+{
+  "metadata": {
+    "location": "us",
+    "model": "v3",
+    "unit_measure": {
+      "distance": "m",
+      "depth": "cm",
+      "cec": "cmol(c)/kg",
+      "clay": "%",
+      "rock_fragments": "cm3/100cm3",
+      "sand": "%",
+      "ec": "ds/m"
+    }
+  },
+  "soilList": [
+    {
+      "id": {
+        "name": "Humic nitisols",
+        "component": "Humic nitisols",
+        "score_loc": 0.645,
+        "rank_loc": "1"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": 16795,
+          "componentID": 110068,
+          "share": 90,
+          "distance": 0.0,
+          "minCompDistance": 0.0,
+          "soilDepth": 200
+        },
+        "siteDescription": {
+          "Description_en": "Humic Nitisols are the most productive humid subtropical and tropical soils. <br> They have well developed structure with relatively clayey and iron enriched subsoils which retain water and nutrients. <br>Humic Nitisols have relatively higher organic matter in surface horizons.",
+          "Management_en": "These are productive soils, and can be used for crop production. <br> They have excellent internal drainage and good water holding capacity. <br> These soils do have a high degree of phosphorus sorption, and will fix phosphorus, making it unavailable for plant uptake during the cropping season. <br> Phosphorus fertilization will be needed for best productivity. <br> Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation.",
+          "Description_es": "Los Nitisoles H\u00famicos son los suelos subtropicales y tropicales h\u00famedos m\u00e1s productivos. <br>Tienen una estructura bien desarrollada con subsuelos relativamente arcillosos y enriquecidos en hierro que retienen agua y nutrientes. *Los Nitisoles H\u00famicos tienen relativamente m\u00e1s materia org\u00e1nica en los horizontes superficiales.",
+          "Management_es": "Son suelos productivos y pueden utilizarse para la producci\u00f3n de cultivos. <br>Tienen un excelente drenaje interno y una buena capacidad de retenci\u00f3n de agua. <br>Estos suelos tienen un alto grado de absorci\u00f3n de f\u00f3sforo y fijan el f\u00f3sforo, por lo que no est\u00e1 disponible para la planta durante la temporada de cultivo. <br>La fertilizaci\u00f3n con f\u00f3sforo ser\u00e1 necesaria para obtener la mejor productividad. <br>Las pr\u00e1cticas bien documentadas, como la aplicaci\u00f3n de fertilizantes fosfatados en banda (directamente sobre la semilla o a un lado y abajo de la semilla), ayudar\u00e1n a reducir la fijaci\u00f3n de P.",
+          "Description_ks": "Humic Nitisols are the most productive humid subtropical and tropical soils. <br> They have well developed structure with relatively clayey and iron enriched subsoils which retain water and nutrients. <br>Humic Nitisols have relatively higher organic matter in surface horizons.",
+          "Management_ks": "These are productive soils, and can be used for crop production. <br> They have excellent internal drainage and good water holding capacity. <br> These soils do have a high degree of phosphorus sorption, and will fix phosphorus, making it unavailable for plant uptake during the cropping season. <br> Phosphorus fertilization will be needed for best productivity. <br> Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation.",
+          "Description_fr": "Humic Nitisols are the most productive humid subtropical and tropical soils. <br> They have well developed structure with relatively clayey and iron enriched subsoils which retain water and nutrients. <br>Humic Nitisols have relatively higher organic matter in surface horizons.",
+          "Management_fr": "These are productive soils, and can be used for crop production. <br> They have excellent internal drainage and good water holding capacity. <br> These soils do have a high degree of phosphorus sorption, and will fix phosphorus, making it unavailable for plant uptake during the cropping season. <br> Phosphorus fertilization will be needed for best productivity. <br> Well documented practices such as band application (either directly on the seed or to the side and down from the seed) of phosphate fertilizers will help to reduce P fixation."
+        }
+      },
+      "bottom_depth": {
+        "sl1": 1,
+        "sl2": 10,
+        "sl3": 20,
+        "sl4": 50,
+        "sl5": 70,
+        "sl6": 100,
+        "sl7": 120
+      },
+      "sand": {
+        "sl1": 26.0,
+        "sl2": 26.0,
+        "sl3": 26.0,
+        "sl4": 24.0,
+        "sl5": 22.86,
+        "sl6": 21.2,
+        "sl7": 20.17
+      },
+      "clay": {
+        "sl1": 44.0,
+        "sl2": 44.0,
+        "sl3": 44.0,
+        "sl4": 48.8,
+        "sl5": 51.57,
+        "sl6": 54.8,
+        "sl7": 56.33
+      },
+      "texture": {
+        "sl1": "Clay",
+        "sl2": "Clay",
+        "sl3": "Clay",
+        "sl4": "Clay",
+        "sl5": "Clay",
+        "sl6": "Clay",
+        "sl7": "Clay"
+      },
+      "rock_fragments": {
+        "sl1": 5.0,
+        "sl2": 5.0,
+        "sl3": 5.0,
+        "sl4": 6.6,
+        "sl5": 6.71,
+        "sl6": 7.2,
+        "sl7": 6.5
+      },
+      "cec": {
+        "sl1": 27.0,
+        "sl2": 27.0,
+        "sl3": 27.0,
+        "sl4": 25.0,
+        "sl5": 24.29,
+        "sl6": 23.4,
+        "sl7": 22.83
+      },
+      "ph": {
+        "sl1": 5.4,
+        "sl2": 5.4,
+        "sl3": 5.4,
+        "sl4": 5.42,
+        "sl5": 5.44,
+        "sl6": 5.42,
+        "sl7": 5.4
+      },
+      "ec": {
+        "sl1": 0.0,
+        "sl2": 0.0,
+        "sl3": 0.0,
+        "sl4": 0.0,
+        "sl5": 0.0,
+        "sl6": 0.0,
+        "sl7": 0.0
+      }
+    },
+    {
+      "id": {
+        "name": "Lithic leptosols",
+        "component": "Lithic leptosols",
+        "score_loc": 0.119,
+        "rank_loc": "2"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": 16787,
+          "componentID": 110048,
+          "share": 10,
+          "distance": 5898.848,
+          "minCompDistance": 5898.84809338,
+          "soilDepth": 20
+        },
+        "siteDescription": {
+          "Description_en": "Lithic Leptosols have very limited rooting volume due to continuous rock, highly calcareous material, cemented horizons, or many rocks and coarse fragments in the upper portion of the soil. <br> Leptosols on steep slopes are highly erodible. <br> Lithic Leptosols have hard rock within 10 cm of the soil surface. ",
+          "Management_en": "Because these soils are shallow, rocky and erodible they should be used for perennial crops, and not tilled. <br> Practices to maintain organic matter and cover should be used. <br> Only uses for grazing or agroforestry should be considered. <br> Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. <br> Land management practices should maximize soil cover. <br> Any agricultural use should be for grazing, with cover continuously maintained. ",
+          "Description_es": "Los leptosoles L\u00edticos tienen un volumen de enraizamiento muy limitado debido a la presencia de roca continua, material altamente calc\u00e1reo, horizontes cementados o muchas rocas y fragmentos gruesos en la parte superior del suelo. <br>Los leptosoles en pendientes pronunciadas son muy erosionables. <br>Los leptosoles l\u00edticos tienen rocas duras a menos de 10 cm de la superficie del suelo. ",
+          "Management_es": "Debido a que estos suelos son poco profundos, rocosos y erosionables, deben utilizarse para cultivos perennes, y no deben ser labrados. <br>Deben utilizarse pr\u00e1cticas para mantener la materia org\u00e1nica y la cobertura. <br>S\u00f3lo deben considerarse los usos para pastoreo o agroforestales. <br>La preservaci\u00f3n del suelo superficial con su materia org\u00e1nica es importante, y la prevenci\u00f3n de la erosi\u00f3n es fundamental. <br>Las pr\u00e1cticas de gesti\u00f3n de la tierra deben maximizar la cobertura del suelo. <br>Cualquier uso agr\u00edcola debe ser para el pastoreo, con el mantenimiento continuo de la cobertura.",
+          "Description_ks": "Lithic Leptosols have very limited rooting volume due to continuous rock, highly calcareous material, cemented horizons, or many rocks and coarse fragments in the upper portion of the soil. <br> Leptosols on steep slopes are highly erodible. <br> Lithic Leptosols have hard rock within 10 cm of the soil surface. ",
+          "Management_ks": "Because these soils are shallow, rocky and erodible they should be used for perennial crops, and not tilled. <br> Practices to maintain organic matter and cover should be used. <br> Only uses for grazing or agroforestry should be considered. <br> Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. <br> Land management practices should maximize soil cover. <br> Any agricultural use should be for grazing, with cover continuously maintained. ",
+          "Description_fr": "Lithic Leptosols have very limited rooting volume due to continuous rock, highly calcareous material, cemented horizons, or many rocks and coarse fragments in the upper portion of the soil. <br> Leptosols on steep slopes are highly erodible. <br> Lithic Leptosols have hard rock within 10 cm of the soil surface. ",
+          "Management_fr": "Because these soils are shallow, rocky and erodible they should be used for perennial crops, and not tilled. <br> Practices to maintain organic matter and cover should be used. <br> Only uses for grazing or agroforestry should be considered. <br> Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. <br> Land management practices should maximize soil cover. <br> Any agricultural use should be for grazing, with cover continuously maintained. "
+        }
+      },
+      "bottom_depth": {
+        "sl1": 1,
+        "sl2": 10,
+        "sl3": 20
+      },
+      "sand": {
+        "sl1": 51.0,
+        "sl2": 51.0,
+        "sl3": 51.0
+      },
+      "clay": {
+        "sl1": 20.0,
+        "sl2": 20.0,
+        "sl3": 20.0
+      },
+      "texture": {
+        "sl1": "Loam",
+        "sl2": "Loam",
+        "sl3": "Loam"
+      },
+      "rock_fragments": {
+        "sl1": 22.0,
+        "sl2": 22.0,
+        "sl3": 22.0
+      },
+      "cec": {
+        "sl1": 16.0,
+        "sl2": 16.0,
+        "sl3": 16.0
+      },
+      "ph": {
+        "sl1": 6.7,
+        "sl2": 6.7,
+        "sl3": 6.7
+      },
+      "ec": {
+        "sl1": 1.0,
+        "sl2": 1.0,
+        "sl3": 1.0
+      }
+    },
+    {
+      "id": {
+        "name": "Eutric vertisols",
+        "component": "Eutric vertisols",
+        "score_loc": 0.071,
+        "rank_loc": "3"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": 16830,
+          "componentID": 110154,
+          "share": 90,
+          "distance": 10443.661,
+          "minCompDistance": 10443.66065878,
+          "soilDepth": 200
+        },
+        "siteDescription": {
+          "Description_en": "Eutric Vertisols are clayey soils that are sticky and plastic when wet and hard and massive when dry. <br> These soils generally have favorable chemical properties but the high amount of expansive clay presents challenging physical properties particularly with regard to water management. <br> Eutric Vertisols are relatively productive soils with high base saturation in the subsoil.",
+          "Management_en": "Vertisols can be highly productive soils, yet the characteristics of the clay in this soil can make management an issue. <br> Due to the clay type these soils swell when wet and shrink when dry, creating issues for cultivation (avoid excessive tillage when wet), or other issues such as construction. <br> Their fertility makes them suitable for agriculture, but additional fertilization will be needed for best productivity. <br> Additionally, water management is a key, and practices that promote drainage and water infiltration are needed. <br> With proper drainage and water management, these soils can be highly productive, as the native soil fertility is high. ",
+          "Description_es": "Los Vertisoles \u00c9utricos son suelos arcillosos que son pegajosos y pl\u00e1sticos cuando est\u00e1n h\u00famedos y duros y masivos cuando est\u00e1n secos. <br>En general, estos suelos tienen propiedades qu\u00edmicas favorables, pero la gran cantidad de arcilla expansiva presenta propiedades f\u00edsicas desafiantes, especialmente en lo que respecta a la gesti\u00f3n del agua. <br>Los Vertisoles Eutricos son suelos relativamente productivos con una alta saturaci\u00f3n de base en el subsuelo. ",
+          "Management_es": "Los Vertisoles pueden ser suelos altamente productivos, pero las caracter\u00edsticas de la arcilla en este suelo pueden hacer que su manejo sea un problema. <br>Debido al tipo de arcilla, estos suelos se hinchan cuando se humedecen y se encogen cuando se secan, lo que crea problemas para el cultivo (evite la labranza excesiva cuando est\u00e1 h\u00famedo), u otros problemas como la construcci\u00f3n. <br>Su fertilidad los hace aptos para la agricultura, pero ser\u00e1 necesaria una fertilizaci\u00f3n adicional para obtener la mejor productividad. <br>Adem\u00e1s, la gesti\u00f3n del agua es clave, y se necesitan pr\u00e1cticas que promuevan el drenaje y la infiltraci\u00f3n del agua. <br>Con un drenaje y una gesti\u00f3n del agua adecuados, estos suelos pueden ser muy productivos, ya que la fertilidad del suelo nativo es alta.",
+          "Description_ks": "Eutric Vertisols are clayey soils that are sticky and plastic when wet and hard and massive when dry. <br> These soils generally have favorable chemical properties but the high amount of expansive clay presents challenging physical properties particularly with regard to water management. <br> Eutric Vertisols are relatively productive soils with high base saturation in the subsoil.",
+          "Management_ks": "Vertisols can be highly productive soils, yet the characteristics of the clay in this soil can make management an issue. <br> Due to the clay type these soils swell when wet and shrink when dry, creating issues for cultivation (avoid excessive tillage when wet), or other issues such as construction. <br> Their fertility makes them suitable for agriculture, but additional fertilization will be needed for best productivity. <br> Additionally, water management is a key, and practices that promote drainage and water infiltration are needed. <br> With proper drainage and water management, these soils can be highly productive, as the native soil fertility is high. ",
+          "Description_fr": "Eutric Vertisols are clayey soils that are sticky and plastic when wet and hard and massive when dry. <br> These soils generally have favorable chemical properties but the high amount of expansive clay presents challenging physical properties particularly with regard to water management. <br> Eutric Vertisols are relatively productive soils with high base saturation in the subsoil.",
+          "Management_fr": "Vertisols can be highly productive soils, yet the characteristics of the clay in this soil can make management an issue. <br> Due to the clay type these soils swell when wet and shrink when dry, creating issues for cultivation (avoid excessive tillage when wet), or other issues such as construction. <br> Their fertility makes them suitable for agriculture, but additional fertilization will be needed for best productivity. <br> Additionally, water management is a key, and practices that promote drainage and water infiltration are needed. <br> With proper drainage and water management, these soils can be highly productive, as the native soil fertility is high. "
+        }
+      },
+      "bottom_depth": {
+        "sl1": 1,
+        "sl2": 10,
+        "sl3": 20,
+        "sl4": 50,
+        "sl5": 70,
+        "sl6": 100,
+        "sl7": 120
+      },
+      "sand": {
+        "sl1": 13.0,
+        "sl2": 13.0,
+        "sl3": 13.0,
+        "sl4": 12.4,
+        "sl5": 12.29,
+        "sl6": 12.4,
+        "sl7": 12.5
+      },
+      "clay": {
+        "sl1": 55.0,
+        "sl2": 55.0,
+        "sl3": 55.0,
+        "sl4": 56.8,
+        "sl5": 57.14,
+        "sl6": 57.0,
+        "sl7": 56.5
+      },
+      "texture": {
+        "sl1": "Clay",
+        "sl2": "Clay",
+        "sl3": "Clay",
+        "sl4": "Clay",
+        "sl5": "Clay",
+        "sl6": "Clay",
+        "sl7": "Clay"
+      },
+      "rock_fragments": {
+        "sl1": 4.0,
+        "sl2": 4.0,
+        "sl3": 4.0,
+        "sl4": 4.0,
+        "sl5": 4.14,
+        "sl6": 4.2,
+        "sl7": 4.0
+      },
+      "cec": {
+        "sl1": 41.0,
+        "sl2": 41.0,
+        "sl3": 41.0,
+        "sl4": 41.0,
+        "sl5": 41.0,
+        "sl6": 41.0,
+        "sl7": 40.5
+      },
+      "ph": {
+        "sl1": 6.8,
+        "sl2": 6.8,
+        "sl3": 6.8,
+        "sl4": 7.02,
+        "sl5": 7.13,
+        "sl6": 7.26,
+        "sl7": 7.33
+      },
+      "ec": {
+        "sl1": 0.0,
+        "sl2": 0.0,
+        "sl3": 0.0,
+        "sl4": 0.2,
+        "sl5": 0.43,
+        "sl6": 0.6,
+        "sl7": 0.67
+      }
+    },
+    {
+      "id": {
+        "name": "Haplic alisols",
+        "component": "Haplic alisols",
+        "score_loc": 0.063,
+        "rank_loc": "4"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": 16779,
+          "componentID": 110028,
+          "share": 30,
+          "distance": 1131.092,
+          "minCompDistance": 1131.09247117,
+          "soilDepth": 200
+        },
+        "siteDescription": {
+          "Description_en": "Haplic Alisols are acidic soils that are often found on hilly areas, and are thus prone to erosion. <br> They also have high levels of soluble aluminum, which is toxic to plants. <br> They are shallow soils and usually unproductive for cropping, and so their use should be limited to low volume grazing or other uses with continuous plant cover. ",
+          "Management_en": "Application of lime (which both increases soil pH and ties up soluble aluminum) or gypsum (calcium sulfate), which takes Al out of solution, can help to reduce aluminum toxicity.  <br> Because they are shallow these soils are not well suited for cultivation for crops, and so use for grazing should be considered. <br> Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. <br> Land management practices should maximize soil cover, crop rotation and agroforestry. <br>Although not usually recommended, if the soil is used for cultivated cropping then fertilization should be combined with crop rotations andcover crops, or other means of organic matter addition for the development of improved fertility and water holding capacity.  ",
+          "Description_es": "Los Alisoles H\u00e1plicos son suelos \u00e1cidos que suelen encontrarse en zonas de colinas, por lo que son propensos a la erosi\u00f3n. <br>Tambi\u00e9n tienen altos niveles de aluminio soluble, que es t\u00f3xico para las plantas. <br>Son suelos poco profundos y, por lo general, poco productivos para el cultivo, por lo que su uso debe limitarse al pastoreo de bajo volumen o a otros usos con cobertura vegetal continua. ",
+          "Management_es": "La aplicaci\u00f3n de cal (que aumenta el pH del suelo y retiene el aluminio soluble) o de yeso (sulfato de calcio), que extrae el Al de la soluci\u00f3n, puede ayudar a reducir la toxicidad del aluminio.  <br>Debido a su poca profundidad, estos suelos no son adecuados para el cultivo, por lo que debe considerarse su uso para el pastoreo. <br>La preservaci\u00f3n de la superficie del suelo con su materia org\u00e1nica es importante, y la prevenci\u00f3n de la erosi\u00f3n es fundamental. <br>Las pr\u00e1cticas de gesti\u00f3n de la tierra deben maximizar la cobertura del suelo, la rotaci\u00f3n de cultivos y la agrosilvicultura. *Aunque no suele recomendarse, si el suelo se utiliza para cultivos, la fertilizaci\u00f3n debe combinarse con la rotaci\u00f3n de cultivos y/o los cultivos de cobertura, u otros medios de adici\u00f3n de materia org\u00e1nica para el desarrollo de una mayor fertilidad y capacidad de retenci\u00f3n de agua.  ",
+          "Description_ks": "Haplic Alisols are acidic soils that are often found on hilly areas, and are thus prone to erosion. <br> They also have high levels of soluble aluminum, which is toxic to plants. <br> They are shallow soils and usually unproductive for cropping, and so their use should be limited to low volume grazing or other uses with continuous plant cover. ",
+          "Management_ks": "Application of lime (which both increases soil pH and ties up soluble aluminum) or gypsum (calcium sulfate), which takes Al out of solution, can help to reduce aluminum toxicity.  <br> Because they are shallow these soils are not well suited for cultivation for crops, and so use for grazing should be considered. <br> Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. <br> Land management practices should maximize soil cover, crop rotation and agroforestry. <br>Although not usually recommended, if the soil is used for cultivated cropping then fertilization should be combined with crop rotations andcover crops, or other means of organic matter addition for the development of improved fertility and water holding capacity.  ",
+          "Description_fr": "Haplic Alisols are acidic soils that are often found on hilly areas, and are thus prone to erosion. <br> They also have high levels of soluble aluminum, which is toxic to plants. <br> They are shallow soils and usually unproductive for cropping, and so their use should be limited to low volume grazing or other uses with continuous plant cover. ",
+          "Management_fr": "Application of lime (which both increases soil pH and ties up soluble aluminum) or gypsum (calcium sulfate), which takes Al out of solution, can help to reduce aluminum toxicity.  <br> Because they are shallow these soils are not well suited for cultivation for crops, and so use for grazing should be considered. <br> Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. <br> Land management practices should maximize soil cover, crop rotation and agroforestry. <br>Although not usually recommended, if the soil is used for cultivated cropping then fertilization should be combined with crop rotations andcover crops, or other means of organic matter addition for the development of improved fertility and water holding capacity.  "
+        }
+      },
+      "bottom_depth": {
+        "sl1": 1,
+        "sl2": 10,
+        "sl3": 20,
+        "sl4": 50,
+        "sl5": 70,
+        "sl6": 100,
+        "sl7": 120
+      },
+      "sand": {
+        "sl1": 40.0,
+        "sl2": 40.0,
+        "sl3": 40.0,
+        "sl4": 37.4,
+        "sl5": 36.86,
+        "sl6": 36.8,
+        "sl7": 37.33
+      },
+      "clay": {
+        "sl1": 19.0,
+        "sl2": 19.0,
+        "sl3": 19.0,
+        "sl4": 23.2,
+        "sl5": 24.57,
+        "sl6": 25.6,
+        "sl7": 25.83
+      },
+      "texture": {
+        "sl1": "Loam",
+        "sl2": "Loam",
+        "sl3": "Loam",
+        "sl4": "Loam",
+        "sl5": "Loam",
+        "sl6": "Loam",
+        "sl7": "Loam"
+      },
+      "rock_fragments": {
+        "sl1": 11.0,
+        "sl2": 11.0,
+        "sl3": 11.0,
+        "sl4": 11.4,
+        "sl5": 12.14,
+        "sl6": 13.4,
+        "sl7": 14.0
+      },
+      "cec": {
+        "sl1": 11.0,
+        "sl2": 11.0,
+        "sl3": 11.0,
+        "sl4": 10.4,
+        "sl5": 10.43,
+        "sl6": 10.4,
+        "sl7": 10.5
+      },
+      "ph": {
+        "sl1": 5.3,
+        "sl2": 5.3,
+        "sl3": 5.3,
+        "sl4": 5.24,
+        "sl5": 5.21,
+        "sl6": 5.18,
+        "sl7": 5.17
+      },
+      "ec": {
+        "sl1": 0.0,
+        "sl2": 0.0,
+        "sl3": 0.0,
+        "sl4": 0.0,
+        "sl5": 0.0,
+        "sl6": 0.0,
+        "sl7": 0.0
+      }
+    },
+    {
+      "id": {
+        "name": "Dystric gleysols",
+        "component": "Dystric gleysols",
+        "score_loc": 0.032,
+        "rank_loc": "5"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": 16795,
+          "componentID": 110069,
+          "share": 10,
+          "distance": 0.0,
+          "minCompDistance": 0.0,
+          "soilDepth": 200
+        },
+        "siteDescription": {
+          "Description_en": "Dystric Gleysols have shallow groundwater and are saturated for significant portions of the year. <br> Deep drainage is necessary for cultivation.    <br> Dystric Gleysols are less productive soils with low base saturation in the upper portion of soil.",
+          "Management_en": "These soils are saturated, and if they are cultivated significant drainage is required. <br> Once drained, these soils can be highly productive. <br> The water table must be lowered using deep drainage. <br> Once drained, liming may be required as organic matter begins to decompose. <br> These soils have little available calcium, magnesium or other bases in the soil, and may require supplemental fertilization. <br> If needed, liming will supply  the calcium, and possibly the magnesium (dolomitic lime).. ",
+          "Description_es": "Los Gleysoles D\u00edstricos tienen aguas subterr\u00e1neas poco profundas y est\u00e1n saturados durante gran parte del a\u00f1o. <br>Es necesario un drenaje profundo para su cultivo.    <br>Los Gleysoles D\u00edstricos son suelos menos productivos con una baja saturaci\u00f3n de la base en la parte superior del suelo.",
+          "Management_es": "Estos suelos est\u00e1n saturados, y si se cultivan se requiere un drenaje significativo. <br>Una vez drenados, estos suelos pueden ser altamente productivos. <br>El nivel fre\u00e1tico debe bajarse mediante un drenaje profundo. <br>Una vez drenados, puede ser necesario el encalado, ya que la materia org\u00e1nica comienza a descomponerse. <br>Estos suelos tienen poco calcio, magnesio u otras bases disponibles en el suelo, y pueden requerir fertilizaci\u00f3n suplementaria. <br>Si es necesario, el encalado aportar\u00e1 el calcio, y posiblemente el magnesio (cal dolom\u00edtica)..",
+          "Description_ks": "Dystric Gleysols have shallow groundwater and are saturated for significant portions of the year. <br> Deep drainage is necessary for cultivation.    <br> Dystric Gleysols are less productive soils with low base saturation in the upper portion of soil.",
+          "Management_ks": "These soils are saturated, and if they are cultivated significant drainage is required. <br> Once drained, these soils can be highly productive. <br> The water table must be lowered using deep drainage. <br> Once drained, liming may be required as organic matter begins to decompose. <br> These soils have little available calcium, magnesium or other bases in the soil, and may require supplemental fertilization. <br> If needed, liming will supply  the calcium, and possibly the magnesium (dolomitic lime).. ",
+          "Description_fr": "Dystric Gleysols have shallow groundwater and are saturated for significant portions of the year. <br> Deep drainage is necessary for cultivation.    <br> Dystric Gleysols are less productive soils with low base saturation in the upper portion of soil.",
+          "Management_fr": "These soils are saturated, and if they are cultivated significant drainage is required. <br> Once drained, these soils can be highly productive. <br> The water table must be lowered using deep drainage. <br> Once drained, liming may be required as organic matter begins to decompose. <br> These soils have little available calcium, magnesium or other bases in the soil, and may require supplemental fertilization. <br> If needed, liming will supply  the calcium, and possibly the magnesium (dolomitic lime).. "
+        }
+      },
+      "bottom_depth": {
+        "sl1": 1,
+        "sl2": 10,
+        "sl3": 20,
+        "sl4": 50,
+        "sl5": 70,
+        "sl6": 100,
+        "sl7": 120
+      },
+      "sand": {
+        "sl1": 35.0,
+        "sl2": 35.0,
+        "sl3": 35.0,
+        "sl4": 34.0,
+        "sl5": 34.43,
+        "sl6": 35.6,
+        "sl7": 36.33
+      },
+      "clay": {
+        "sl1": 30.0,
+        "sl2": 30.0,
+        "sl3": 30.0,
+        "sl4": 30.6,
+        "sl5": 30.57,
+        "sl6": 30.4,
+        "sl7": 30.17
+      },
+      "texture": {
+        "sl1": "Clay loam",
+        "sl2": "Clay loam",
+        "sl3": "Clay loam",
+        "sl4": "Clay loam",
+        "sl5": "Clay loam",
+        "sl6": "Clay loam",
+        "sl7": "Clay loam"
+      },
+      "rock_fragments": {
+        "sl1": 2.0,
+        "sl2": 2.0,
+        "sl3": 2.0,
+        "sl4": 7.0,
+        "sl5": 8.43,
+        "sl6": 9.6,
+        "sl7": 10.17
+      },
+      "cec": {
+        "sl1": 16.0,
+        "sl2": 16.0,
+        "sl3": 16.0,
+        "sl4": 12.4,
+        "sl5": 12.0,
+        "sl6": 12.0,
+        "sl7": 12.0
+      },
+      "ph": {
+        "sl1": 5.0,
+        "sl2": 5.0,
+        "sl3": 5.0,
+        "sl4": 5.02,
+        "sl5": 5.04,
+        "sl6": 5.1,
+        "sl7": 5.12
+      },
+      "ec": {
+        "sl1": 1.0,
+        "sl2": 1.0,
+        "sl3": 1.0,
+        "sl4": 0.8,
+        "sl5": 0.57,
+        "sl6": 0.4,
+        "sl7": 0.33
+      }
+    },
+    {
+      "id": {
+        "name": "Humic alisols",
+        "component": "Humic alisols",
+        "score_loc": 0.024,
+        "rank_loc": "6"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": 16787,
+          "componentID": 110049,
+          "share": 10,
+          "distance": 5898.848,
+          "minCompDistance": 5898.84809338,
+          "soilDepth": 200
+        },
+        "siteDescription": {
+          "Description_en": "Humic Alisols are acidic soils that are often found on hilly areas, and are thus prone to erosion. <br> They also have high levels of soluble aluminum, which is toxic to plants. <br> They are shallow soils and usually unproductive for cropping, and so their use should be limited to low volume grazing or other uses with continuous plant cover. <br> These soils have a high amount of organic matter in the top layer of soil. ",
+          "Management_en": "Application of lime (which both increases soil pH and ties up soluble aluminum) or gypsum (calcium sulfate), which takes Al out of solution, can help to reduce aluminum toxicity. <br> Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. <br> Land management practices should maximize soil cover, crop rotation and agroforestry. <br>Although not usually recommended, if the soil is used for cultivated cropping then fertilization should be combined with crop rotation andcover crops, or other means of organic matter addition for the development of improved soil fertility and water holding capacity.  ",
+          "Description_es": "Los Alisoles H\u00famicos son suelos \u00e1cidos que suelen encontrarse en zonas de colinas, por lo que son propensos a la erosi\u00f3n. <br>Tambi\u00e9n tienen altos niveles de aluminio soluble, que es t\u00f3xico para las plantas. <br>Son suelos poco profundos y normalmente improductivos para el cultivo, por lo que su uso debe limitarse al pastoreo de bajo volumen o a otros usos con cobertura vegetal continua. <br>Estos suelos tienen una gran cantidad de materia org\u00e1nica en la capa superior del suelo. ",
+          "Management_es": "La aplicaci\u00f3n de cal (que aumenta el pH del suelo y retiene el aluminio soluble) o de yeso (sulfato de calcio), que extrae el Al de la soluci\u00f3n, puede ayudar a reducir la toxicidad del aluminio. <br>La conservaci\u00f3n del suelo superficial con su materia org\u00e1nica es importante, y la prevenci\u00f3n de la erosi\u00f3n es fundamental. <br>Las pr\u00e1cticas de gesti\u00f3n de la tierra deben maximizar la cobertura del suelo, la rotaci\u00f3n de cultivos y la agrosilvicultura. *Aunque no se suele recomendar, si el suelo se utiliza para cultivos, la fertilizaci\u00f3n debe combinarse con la rotaci\u00f3n de cultivos y/o los cultivos de cobertura, u otros medios de adici\u00f3n de materia org\u00e1nica para el desarrollo de una mayor fertilidad del suelo y capacidad de retenci\u00f3n de agua.  ",
+          "Description_ks": "Humic Alisols are acidic soils that are often found on hilly areas, and are thus prone to erosion. <br> They also have high levels of soluble aluminum, which is toxic to plants. <br> They are shallow soils and usually unproductive for cropping, and so their use should be limited to low volume grazing or other uses with continuous plant cover. <br> These soils have a high amount of organic matter in the top layer of soil. ",
+          "Management_ks": "Application of lime (which both increases soil pH and ties up soluble aluminum) or gypsum (calcium sulfate), which takes Al out of solution, can help to reduce aluminum toxicity. <br> Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. <br> Land management practices should maximize soil cover, crop rotation and agroforestry. <br>Although not usually recommended, if the soil is used for cultivated cropping then fertilization should be combined with crop rotation andcover crops, or other means of organic matter addition for the development of improved soil fertility and water holding capacity.  ",
+          "Description_fr": "Humic Alisols are acidic soils that are often found on hilly areas, and are thus prone to erosion. <br> They also have high levels of soluble aluminum, which is toxic to plants. <br> They are shallow soils and usually unproductive for cropping, and so their use should be limited to low volume grazing or other uses with continuous plant cover. <br> These soils have a high amount of organic matter in the top layer of soil. ",
+          "Management_fr": "Application of lime (which both increases soil pH and ties up soluble aluminum) or gypsum (calcium sulfate), which takes Al out of solution, can help to reduce aluminum toxicity. <br> Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. <br> Land management practices should maximize soil cover, crop rotation and agroforestry. <br>Although not usually recommended, if the soil is used for cultivated cropping then fertilization should be combined with crop rotation andcover crops, or other means of organic matter addition for the development of improved soil fertility and water holding capacity.  "
+        }
+      },
+      "bottom_depth": {
+        "sl1": 1,
+        "sl2": 10,
+        "sl3": 20,
+        "sl4": 50,
+        "sl5": 70,
+        "sl6": 100,
+        "sl7": 120
+      },
+      "sand": {
+        "sl1": 28.0,
+        "sl2": 28.0,
+        "sl3": 28.0,
+        "sl4": 27.4,
+        "sl5": 27.43,
+        "sl6": 28.0,
+        "sl7": 29.17
+      },
+      "clay": {
+        "sl1": 25.0,
+        "sl2": 25.0,
+        "sl3": 25.0,
+        "sl4": 27.4,
+        "sl5": 28.57,
+        "sl6": 29.4,
+        "sl7": 29.33
+      },
+      "texture": {
+        "sl1": "Loam",
+        "sl2": "Loam",
+        "sl3": "Loam",
+        "sl4": "Clay loam",
+        "sl5": "Clay loam",
+        "sl6": "Clay loam",
+        "sl7": "Clay loam"
+      },
+      "rock_fragments": {
+        "sl1": 16.0,
+        "sl2": 16.0,
+        "sl3": 16.0,
+        "sl4": 16.8,
+        "sl5": 18.57,
+        "sl6": 20.8,
+        "sl7": 22.0
+      },
+      "cec": {
+        "sl1": 27.0,
+        "sl2": 27.0,
+        "sl3": 27.0,
+        "sl4": 22.4,
+        "sl5": 21.0,
+        "sl6": 19.4,
+        "sl7": 18.33
+      },
+      "ph": {
+        "sl1": 5.3,
+        "sl2": 5.3,
+        "sl3": 5.3,
+        "sl4": 5.28,
+        "sl5": 5.26,
+        "sl6": 5.24,
+        "sl7": 5.23
+      },
+      "ec": {
+        "sl1": 0.0,
+        "sl2": 0.0,
+        "sl3": 0.0,
+        "sl4": 0.0,
+        "sl5": 0.0,
+        "sl6": 0.0,
+        "sl7": 0.0
+      }
+    },
+    {
+      "id": {
+        "name": "Eutric leptosols",
+        "component": "Eutric leptosols",
+        "score_loc": 0.024,
+        "rank_loc": "7"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": 16664,
+          "componentID": 109710,
+          "share": 30,
+          "distance": 25978.326,
+          "minCompDistance": 25978.32641607,
+          "soilDepth": 40
+        },
+        "siteDescription": {
+          "Description_en": "Eutric Leptosols have very limited rooting volume due to continuous rock, highly calcareous material, cemented horizons, or many rocks and coarse fragments in the upper portion of the soil. <br> Leptosols on steep slopes are highly erodible. <br> Eutric Leptosols have high base saturation over the shallow root limiting layer. ",
+          "Management_en": "Because these soils are shallow, rocky and erodible they should be used for perennial crops, and not tilled. <br> Practices to maintain organic matter and cover should be used. <br> Onlyuses for grazing or agroforestry should be considered. <br> Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. <br> These soils can be productive for agriculture, but the focus should be on use for grazing. <br> Any use for cropping must be limited and combined with soil conservation practices. ",
+          "Description_es": "Los Leptosoles E\u00fatricos tienen un volumen de enraizamiento muy limitado debido a la presencia de roca continua, material altamente calc\u00e1reo, horizontes cementados o muchas rocas y fragmentos gruesos en la parte superior del suelo. <br>Los leptosoles en pendientes pronunciadas son muy erosionables. <br>Los Leptosoles e\u00fatricos tienen una alta saturaci\u00f3n de la base sobre la capa limitante de las ra\u00edces poco profundas. ",
+          "Management_es": "Debido a que estos suelos son poco profundos, rocosos y erosionables deben ser utilizados para cultivos perennes, y no deben ser labrados. <br>Deben utilizarse pr\u00e1cticas para mantener la materia org\u00e1nica y la cobertura. <br>Se debe considerar el uso exclusivo para el pastoreo o la agroforester\u00eda. <br>La preservaci\u00f3n del suelo superficial con su materia org\u00e1nica es importante, y la prevenci\u00f3n de la erosi\u00f3n es fundamental. <br>Estos suelos pueden ser productivos para la agricultura, pero el enfoque debe ser el uso para el pastoreo. <br>Cualquier uso para el cultivo debe limitarse y combinarse con pr\u00e1cticas de conservaci\u00f3n del suelo.",
+          "Description_ks": "Eutric Leptosols have very limited rooting volume due to continuous rock, highly calcareous material, cemented horizons, or many rocks and coarse fragments in the upper portion of the soil. <br> Leptosols on steep slopes are highly erodible. <br> Eutric Leptosols have high base saturation over the shallow root limiting layer. ",
+          "Management_ks": "Because these soils are shallow, rocky and erodible they should be used for perennial crops, and not tilled. <br> Practices to maintain organic matter and cover should be used. <br> Onlyuses for grazing or agroforestry should be considered. <br> Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. <br> These soils can be productive for agriculture, but the focus should be on use for grazing. <br> Any use for cropping must be limited and combined with soil conservation practices. ",
+          "Description_fr": "Eutric Leptosols have very limited rooting volume due to continuous rock, highly calcareous material, cemented horizons, or many rocks and coarse fragments in the upper portion of the soil. <br> Leptosols on steep slopes are highly erodible. <br> Eutric Leptosols have high base saturation over the shallow root limiting layer. ",
+          "Management_fr": "Because these soils are shallow, rocky and erodible they should be used for perennial crops, and not tilled. <br> Practices to maintain organic matter and cover should be used. <br> Onlyuses for grazing or agroforestry should be considered. <br> Preservation of the surface soil with its organic matter is important, and erosion prevention is critical. <br> These soils can be productive for agriculture, but the focus should be on use for grazing. <br> Any use for cropping must be limited and combined with soil conservation practices. "
+        }
+      },
+      "bottom_depth": {
+        "sl1": 1,
+        "sl2": 10,
+        "sl3": 20,
+        "sl4": 40
+      },
+      "sand": {
+        "sl1": 41.0,
+        "sl2": 41.0,
+        "sl3": 41.0,
+        "sl4": 36.5
+      },
+      "clay": {
+        "sl1": 27.0,
+        "sl2": 27.0,
+        "sl3": 27.0,
+        "sl4": 34.5
+      },
+      "texture": {
+        "sl1": "Loam",
+        "sl2": "Loam",
+        "sl3": "Loam",
+        "sl4": "Clay loam"
+      },
+      "rock_fragments": {
+        "sl1": 19.0,
+        "sl2": 19.0,
+        "sl3": 19.0,
+        "sl4": 40.5
+      },
+      "cec": {
+        "sl1": 19.0,
+        "sl2": 19.0,
+        "sl3": 19.0,
+        "sl4": 21.5
+      },
+      "ph": {
+        "sl1": 6.7,
+        "sl2": 6.7,
+        "sl3": 6.7,
+        "sl4": 6.55
+      },
+      "ec": {
+        "sl1": 1.0,
+        "sl2": 1.0,
+        "sl3": 1.0,
+        "sl4": 1.0
+      }
+    },
+    {
+      "id": {
+        "name": "Eutric cambisols",
+        "component": "Eutric cambisols",
+        "score_loc": 0.016,
+        "rank_loc": "8"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": 16664,
+          "componentID": 109711,
+          "share": 20,
+          "distance": 25978.326,
+          "minCompDistance": 25978.32641607,
+          "soilDepth": 200
+        },
+        "siteDescription": {
+          "Description_en": "Eutric Cambisols are widely occurring soils with limited soil development. <br> These are productive soils with high base saturation (Ca, Mg and K) in the upper portion of soil. ",
+          "Management_en": "In temperate regions the soils will have a high content of basic cations (potassium, calcium and magnesium), while in more humid regions they may have lower levels of soil nutrients. <br> Eutric Cambisols will have high base saturation, which means that the available soil nutrients will be predominantly calcium, potassium, and magnesium. <br> These soils are well suited for crop production, and can be intensively used. <br> Fertilization should be used to improve productivity, and irrigation can be included to further boost productivity. ",
+          "Description_es": "Los Cambisoles E\u00fatricos son suelos que se dan ampliamente con un desarrollo limitado del suelo. <br>Son suelos productivos con alta saturaci\u00f3n de bases (Ca, Mg y K) en la parte superior del suelo. ",
+          "Management_es": "En regiones templadas los suelos tendr\u00e1n un alto contenido de cationes b\u00e1sicos (potasio, calcio y magnesio), mientras que en regiones m\u00e1s h\u00famedas pueden tener niveles m\u00e1s bajos de nutrientes en el suelo. <br>Los Cambisoles e\u00fatricos tendr\u00e1n una alta saturaci\u00f3n de bases, lo que significa que los nutrientes disponibles en el suelo ser\u00e1n predominantemente calcio, potasio y magnesio. <br>Estos suelos son muy adecuados para la producci\u00f3n de cultivos y pueden utilizarse de forma intensiva. <br>La fertilizaci\u00f3n debe utilizarse para mejorar la productividad, y puede incluirse el riego para aumentar a\u00fan m\u00e1s la productividad.",
+          "Description_ks": "Eutric Cambisols are widely occurring soils with limited soil development. <br> These are productive soils with high base saturation (Ca, Mg and K) in the upper portion of soil. ",
+          "Management_ks": "In temperate regions the soils will have a high content of basic cations (potassium, calcium and magnesium), while in more humid regions they may have lower levels of soil nutrients. <br> Eutric Cambisols will have high base saturation, which means that the available soil nutrients will be predominantly calcium, potassium, and magnesium. <br> These soils are well suited for crop production, and can be intensively used. <br> Fertilization should be used to improve productivity, and irrigation can be included to further boost productivity. ",
+          "Description_fr": "Eutric Cambisols are widely occurring soils with limited soil development. <br> These are productive soils with high base saturation (Ca, Mg and K) in the upper portion of soil. ",
+          "Management_fr": "In temperate regions the soils will have a high content of basic cations (potassium, calcium and magnesium), while in more humid regions they may have lower levels of soil nutrients. <br> Eutric Cambisols will have high base saturation, which means that the available soil nutrients will be predominantly calcium, potassium, and magnesium. <br> These soils are well suited for crop production, and can be intensively used. <br> Fertilization should be used to improve productivity, and irrigation can be included to further boost productivity. "
+        }
+      },
+      "bottom_depth": {
+        "sl1": 1,
+        "sl2": 10,
+        "sl3": 20,
+        "sl4": 50,
+        "sl5": 70,
+        "sl6": 100,
+        "sl7": 120
+      },
+      "sand": {
+        "sl1": 40.0,
+        "sl2": 40.0,
+        "sl3": 40.0,
+        "sl4": 40.8,
+        "sl5": 41.14,
+        "sl6": 41.8,
+        "sl7": 42.17
+      },
+      "clay": {
+        "sl1": 20.0,
+        "sl2": 20.0,
+        "sl3": 20.0,
+        "sl4": 20.6,
+        "sl5": 20.86,
+        "sl6": 21.0,
+        "sl7": 20.83
+      },
+      "texture": {
+        "sl1": "Loam",
+        "sl2": "Loam",
+        "sl3": "Loam",
+        "sl4": "Loam",
+        "sl5": "Loam",
+        "sl6": "Loam",
+        "sl7": "Loam"
+      },
+      "rock_fragments": {
+        "sl1": 13.0,
+        "sl2": 13.0,
+        "sl3": 13.0,
+        "sl4": 15.0,
+        "sl5": 16.57,
+        "sl6": 18.8,
+        "sl7": 19.17
+      },
+      "cec": {
+        "sl1": 16.0,
+        "sl2": 16.0,
+        "sl3": 16.0,
+        "sl4": 14.8,
+        "sl5": 14.57,
+        "sl6": 14.2,
+        "sl7": 14.0
+      },
+      "ph": {
+        "sl1": 6.4,
+        "sl2": 6.4,
+        "sl3": 6.4,
+        "sl4": 6.54,
+        "sl5": 6.6,
+        "sl6": 6.66,
+        "sl7": 6.7
+      },
+      "ec": {
+        "sl1": 2.0,
+        "sl2": 2.0,
+        "sl3": 2.0,
+        "sl4": 0.8,
+        "sl5": 0.71,
+        "sl6": 0.8,
+        "sl7": 0.83
+      }
+    },
+    {
+      "id": {
+        "name": "Eutric fluvisols",
+        "component": "Eutric fluvisols",
+        "score_loc": 0.008,
+        "rank_loc": "9"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": 16654,
+          "componentID": 109679,
+          "share": 10,
+          "distance": 8694.495,
+          "minCompDistance": 8694.49483021,
+          "soilDepth": 200
+        },
+        "siteDescription": {
+          "Description_en": "Eutric Fluvisols are mostly found in floodplains and coastal areas, and have limited profile development with a range of properties. <br> Hydrological management is essential for production.   <br> Eutric Fluvisols are productive soils with high base saturation in the upper portion of soil. ",
+          "Management_en": "These soils are all naturally fertile and productive. <br> Drainage andmanagement of floodwaters can make them suitable for continuous cultivation. <br> However, drainage may affect soil pH, and so sampling should be done to evaluate the need for lime. <br> Once under continuous cultivation care should be taken to avoid soil erosion. <br> Production methods that protect the soil surface (mulches, cover crops), improve water infiltration, or provide a route for water movement from the field in a non-erosive velocity (terraces, drainage ways) should be considered.",
+          "Description_es": "Los Fluvisoles E\u00fatricos se encuentran principalmente en llanuras de inundaci\u00f3n y zonas costeras, y tienen un desarrollo de perfil limitado con una serie de propiedades. <br>La gesti\u00f3n hidrol\u00f3gica es esencial para la producci\u00f3n.   <br>Los fluvisoles e\u00fatricos son suelos productivos con una alta saturaci\u00f3n de bases en la parte superior del suelo. ",
+          "Management_es": "Estos suelos son todos naturalmente f\u00e9rtiles y productivos. <br>El drenaje y/o la gesti\u00f3n de las aguas de inundaci\u00f3n pueden hacerlos aptos para el cultivo continuo. <br>Sin embargo, el drenaje puede afectar al pH del suelo, por lo que debe realizarse un muestreo para evaluar la necesidad de cal. <br>Una vez en cultivo continuo hay que tener cuidado para evitar la erosi\u00f3n del suelo. <br>Deben considerarse m\u00e9todos de producci\u00f3n que protejan la superficie del suelo (mantillos, cultivos de cobertura), mejoren la infiltraci\u00f3n del agua o proporcionen una ruta para el movimiento del agua desde el campo a una velocidad no erosiva (terrazas, v\u00edas de drenaje).",
+          "Description_ks": "Eutric Fluvisols are mostly found in floodplains and coastal areas, and have limited profile development with a range of properties. <br> Hydrological management is essential for production.   <br> Eutric Fluvisols are productive soils with high base saturation in the upper portion of soil. ",
+          "Management_ks": "These soils are all naturally fertile and productive. <br> Drainage andmanagement of floodwaters can make them suitable for continuous cultivation. <br> However, drainage may affect soil pH, and so sampling should be done to evaluate the need for lime. <br> Once under continuous cultivation care should be taken to avoid soil erosion. <br> Production methods that protect the soil surface (mulches, cover crops), improve water infiltration, or provide a route for water movement from the field in a non-erosive velocity (terraces, drainage ways) should be considered.",
+          "Description_fr": "Eutric Fluvisols are mostly found in floodplains and coastal areas, and have limited profile development with a range of properties. <br> Hydrological management is essential for production.   <br> Eutric Fluvisols are productive soils with high base saturation in the upper portion of soil. ",
+          "Management_fr": "These soils are all naturally fertile and productive. <br> Drainage andmanagement of floodwaters can make them suitable for continuous cultivation. <br> However, drainage may affect soil pH, and so sampling should be done to evaluate the need for lime. <br> Once under continuous cultivation care should be taken to avoid soil erosion. <br> Production methods that protect the soil surface (mulches, cover crops), improve water infiltration, or provide a route for water movement from the field in a non-erosive velocity (terraces, drainage ways) should be considered."
+        }
+      },
+      "bottom_depth": {
+        "sl1": 1,
+        "sl2": 10,
+        "sl3": 20,
+        "sl4": 50,
+        "sl5": 70,
+        "sl6": 100,
+        "sl7": 120
+      },
+      "sand": {
+        "sl1": 37.0,
+        "sl2": 37.0,
+        "sl3": 37.0,
+        "sl4": 36.4,
+        "sl5": 36.43,
+        "sl6": 36.4,
+        "sl7": 35.5
+      },
+      "clay": {
+        "sl1": 21.0,
+        "sl2": 21.0,
+        "sl3": 21.0,
+        "sl4": 21.6,
+        "sl5": 21.57,
+        "sl6": 21.6,
+        "sl7": 22.0
+      },
+      "texture": {
+        "sl1": "Loam",
+        "sl2": "Loam",
+        "sl3": "Loam",
+        "sl4": "Loam",
+        "sl5": "Loam",
+        "sl6": "Loam",
+        "sl7": "Loam"
+      },
+      "rock_fragments": {
+        "sl1": 2.0,
+        "sl2": 2.0,
+        "sl3": 2.0,
+        "sl4": 4.2,
+        "sl5": 4.0,
+        "sl6": 3.4,
+        "sl7": 4.83
+      },
+      "cec": {
+        "sl1": 17.0,
+        "sl2": 17.0,
+        "sl3": 17.0,
+        "sl4": 16.4,
+        "sl5": 16.29,
+        "sl6": 16.4,
+        "sl7": 16.83
+      },
+      "ph": {
+        "sl1": 6.8,
+        "sl2": 6.8,
+        "sl3": 6.8,
+        "sl4": 7.0,
+        "sl5": 7.07,
+        "sl6": 7.16,
+        "sl7": 7.2
+      },
+      "ec": {
+        "sl1": 2.0,
+        "sl2": 2.0,
+        "sl3": 2.0,
+        "sl4": 2.0,
+        "sl5": 2.29,
+        "sl6": 2.4,
+        "sl7": 2.33
+      }
+    }
+  ]
+}

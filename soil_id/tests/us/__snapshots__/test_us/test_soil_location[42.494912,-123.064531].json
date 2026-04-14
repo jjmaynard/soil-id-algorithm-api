@@ -1,24 +1,7 @@
 {
   "list": {
-    "AWS_PIW90": 10.16,
-    "Soil Data Value": [
-      [
-        "rfv_class_30",
-        1.490207948287594
-      ],
-      [
-        "rfv_class_0",
-        0.8817108392902311
-      ],
-      [
-        "texture_0",
-        0.0
-      ],
-      [
-        "texture_30",
-        0.0
-      ]
-    ],
+    "AWS_PIW90": null,
+    "Soil Data Value": null,
     "metadata": {
       "location": "us",
       "model": "v3",
@@ -41,13 +24,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "F005XZ018CA"
+              "F005XZ014CA"
             ],
             "ecoclassname": [
-              "Moderately Deep Gravelly Mesic Mountains 40-60Ppt"
+              "Mesic Mountains <40Ppt"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/005X/F005XZ018CA"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/005X/F005XZ014CA"
             ]
           }
         },
@@ -55,7 +38,7 @@
           "component": "Ruch",
           "name": "Ruch",
           "rank_loc": "1",
-          "score_loc": 0.267
+          "score_loc": 0.266
         },
         "lab": {},
         "munsell": {},
@@ -64,16 +47,16 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "25443415",
+            "componentID": "27529401",
             "componentKind": "Series",
             "componentPct": 80,
             "dataSource": "SSURGO",
-            "distance": 0.0,
+            "distance": 0,
             "irrcapcl": "4",
             "irrcapscl": "e",
             "irrcapunit": "None",
             "mapunitID": "469633",
-            "minCompDistance": 0.0,
+            "minCompDistance": 0,
             "nirrcapcl": "4",
             "nirrcapscl": "e",
             "nirrcapunit": "None",
@@ -97,13 +80,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "F005XZ018CA"
+              "F005XZ014CA"
             ],
             "ecoclassname": [
-              "Moderately Deep Gravelly Mesic Mountains 40-60Ppt"
+              "Mesic Mountains <40Ppt"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/005X/F005XZ018CA"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/005X/F005XZ014CA"
             ]
           }
         },
@@ -120,16 +103,16 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "25443480",
+            "componentID": "27529336",
             "componentKind": "Series",
             "componentPct": 40,
             "dataSource": "SSURGO",
-            "distance": 712.0,
+            "distance": 712,
             "irrcapcl": "nan",
             "irrcapscl": "None",
             "irrcapunit": "None",
             "mapunitID": "469660",
-            "minCompDistance": 712.0,
+            "minCompDistance": 712,
             "nirrcapcl": "6",
             "nirrcapscl": "e",
             "nirrcapunit": "None",
@@ -153,13 +136,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "F005XZ003CA"
+              "F005XZ024CA"
             ],
             "ecoclassname": [
-              "Terraces"
+              "Ridges"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/005X/F005XZ003CA"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/005X/F005XZ024CA"
             ]
           }
         },
@@ -176,16 +159,16 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "25443548",
+            "componentID": "27529265",
             "componentKind": "Series",
             "componentPct": 83,
             "dataSource": "SSURGO",
-            "distance": 310.0,
+            "distance": 310,
             "irrcapcl": "4",
             "irrcapscl": "e",
             "irrcapunit": "None",
             "mapunitID": "469691",
-            "minCompDistance": 310.0,
+            "minCompDistance": 310,
             "nirrcapcl": "3",
             "nirrcapscl": "s",
             "nirrcapunit": "None",
@@ -196,7 +179,7 @@
             "taxsubgrp": "Ultic Haploxeralfs",
             "textureInfill": "No"
           },
-          "siteDescription": "The Abegg series consists of very deep, well drained soils that formed in alluvium and colluvium weathered from metamorphosed sedimentary and volcanic bedrock.  Abegg soils are on stream terraces and alluvial fans and have slopes of 2 to 30 percent. The mean annual precipitation is about 45 inches and the mean annual temperature is about 52 degrees F."
+          "siteDescription": "The Abegg series consists of very deep, well drained soils that formed in alluvium and colluvium weathered from metamorphosed sedimentary and volcanic bedrock.  Abegg soils are on stream terraces and alluvial fans and have slopes of 2 to 30 percent. The mean annual precipitation is about 45 inches (1140 mm) and the mean annual temperature is about 52 degrees F (11 degrees C)."
         },
         "texture": {},
         "top_depth": {}
@@ -209,13 +192,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "F005XZ024CA"
+              "R005XY016OR"
             ],
             "ecoclassname": [
-              "Ridges"
+              "Poorly Drained Bottom"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/005X/F005XZ024CA"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/005X/R005XY016OR"
             ]
           }
         },
@@ -232,16 +215,16 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "25443598",
+            "componentID": "27529223",
             "componentKind": "Series",
             "componentPct": 60,
             "dataSource": "SSURGO",
-            "distance": 347.0,
+            "distance": 347,
             "irrcapcl": "nan",
             "irrcapscl": "None",
             "irrcapunit": "None",
             "mapunitID": "469709",
-            "minCompDistance": 347.0,
+            "minCompDistance": 347,
             "nirrcapcl": "7",
             "nirrcapscl": "s",
             "nirrcapunit": "None",
@@ -288,16 +271,16 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "25443287",
+            "componentID": "27529518",
             "componentKind": "Series",
             "componentPct": 55,
             "dataSource": "SSURGO",
-            "distance": 497.0,
+            "distance": 497,
             "irrcapcl": "nan",
             "irrcapscl": "None",
             "irrcapunit": "None",
             "mapunitID": "469583",
-            "minCompDistance": 497.0,
+            "minCompDistance": 497,
             "nirrcapcl": "7",
             "nirrcapscl": "s",
             "nirrcapunit": "None",
@@ -321,13 +304,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "F005XZ014CA"
+              "F005XZ018CA"
             ],
             "ecoclassname": [
-              "Mesic Mountains <40Ppt"
+              "Moderately Deep Gravelly Mesic Mountains 40-60Ppt"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/005X/F005XZ014CA"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/005X/F005XZ018CA"
             ]
           }
         },
@@ -344,16 +327,16 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "25443286",
+            "componentID": "27529517",
             "componentKind": "Series",
             "componentPct": 30,
             "dataSource": "SSURGO",
-            "distance": 497.0,
+            "distance": 497,
             "irrcapcl": "nan",
             "irrcapscl": "None",
             "irrcapunit": "None",
             "mapunitID": "469583",
-            "minCompDistance": 497.0,
+            "minCompDistance": 497,
             "nirrcapcl": "7",
             "nirrcapscl": "e",
             "nirrcapunit": "None",
@@ -377,13 +360,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "F005XZ014CA"
+              "F005XZ018CA"
             ],
             "ecoclassname": [
-              "Mesic Mountains <40Ppt"
+              "Moderately Deep Gravelly Mesic Mountains 40-60Ppt"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/005X/F005XZ014CA"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/005X/F005XZ018CA"
             ]
           }
         },
@@ -400,16 +383,16 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "25443850",
+            "componentID": "27529611",
             "componentKind": "Series",
             "componentPct": 30,
             "dataSource": "SSURGO",
-            "distance": 829.0,
+            "distance": 829,
             "irrcapcl": "nan",
             "irrcapscl": "None",
             "irrcapunit": "None",
             "mapunitID": "469806",
-            "minCompDistance": 829.0,
+            "minCompDistance": 829,
             "nirrcapcl": "6",
             "nirrcapscl": "e",
             "nirrcapunit": "None",
@@ -433,13 +416,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "F005XZ024CA"
+              "F005XZ009CA"
             ],
             "ecoclassname": [
-              "Ridges"
+              "Very Deep Mesic Hills 40-60Ppt"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/005X/F005XZ024CA"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/005X/F005XZ009CA"
             ]
           }
         },
@@ -456,16 +439,16 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "25443597",
+            "componentID": "27529224",
             "componentKind": "Series",
             "componentPct": 20,
             "dataSource": "SSURGO",
-            "distance": 347.0,
+            "distance": 347,
             "irrcapcl": "nan",
             "irrcapscl": "None",
             "irrcapunit": "None",
             "mapunitID": "469709",
-            "minCompDistance": 347.0,
+            "minCompDistance": 347,
             "nirrcapcl": "7",
             "nirrcapscl": "e",
             "nirrcapunit": "None",
@@ -489,13 +472,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "F005XZ009CA"
+              "F005XZ024CA"
             ],
             "ecoclassname": [
-              "Very Deep Mesic Hills 40-60Ppt"
+              "Ridges"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/005X/F005XZ009CA"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/005X/F005XZ024CA"
             ]
           }
         },
@@ -512,16 +495,16 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "25443414",
+            "componentID": "27529400",
             "componentKind": "Series",
             "componentPct": 2,
             "dataSource": "SSURGO",
-            "distance": 0.0,
+            "distance": 0,
             "irrcapcl": "2",
             "irrcapscl": "w",
             "irrcapunit": "None",
             "mapunitID": "469633",
-            "minCompDistance": 0.0,
+            "minCompDistance": 0,
             "nirrcapcl": "4",
             "nirrcapscl": "w",
             "nirrcapunit": "None",
@@ -545,13 +528,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "R005XY016OR"
+              "F005XZ003CA"
             ],
             "ecoclassname": [
-              "Poorly Drained Bottom"
+              "Terraces"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/005X/R005XY016OR"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/005X/F005XZ003CA"
             ]
           }
         },
@@ -568,16 +551,16 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "25443848",
+            "componentID": "27529612",
             "componentKind": "Series",
             "componentPct": 55,
             "dataSource": "SSURGO",
-            "distance": 829.0,
+            "distance": 829,
             "irrcapcl": "nan",
             "irrcapscl": "None",
             "irrcapunit": "None",
             "mapunitID": "469806",
-            "minCompDistance": 712.0,
+            "minCompDistance": 712,
             "nirrcapcl": "4",
             "nirrcapscl": "e",
             "nirrcapunit": "None",
@@ -602,192 +585,192 @@
     },
     "soilRank": [
       {
-        "component": "Ruch",
-        "componentData": "Data Complete",
-        "componentID": 25443415,
-        "name": "Ruch",
-        "not_displayed": false,
-        "rank_data": "3",
-        "rank_data_group": "3",
-        "rank_data_loc": "1",
-        "rank_data_loc_group": "1",
-        "rank_loc": "1",
-        "rank_loc_group": "1",
-        "score_data": 0.671,
-        "score_data_group": 0.671,
-        "score_data_loc": 0.469,
-        "score_data_loc_group": 0.469,
-        "score_loc": 0.267,
-        "score_loc_group": 0.267
-      },
-      {
         "component": "Josephine",
         "componentData": NaN,
-        "componentID": 25443848,
+        "componentID": 27529612,
         "name": "Josephine2",
         "not_displayed": false,
-        "rank_data": "4",
-        "rank_data_group": "4",
-        "rank_data_loc": "2",
-        "rank_data_loc_group": "2",
+        "rank_data": "2",
+        "rank_data_group": "2",
+        "rank_data_loc": "1",
+        "rank_data_loc_group": "1",
         "rank_loc": "Not Displayed",
         "rank_loc_group": "2",
-        "score_data": 0.664,
-        "score_data_group": 0.664,
-        "score_data_loc": 0.395,
-        "score_data_loc_group": 0.395,
+        "score_data": 0.692,
+        "score_data_group": 0.692,
+        "score_data_loc": 0.409,
+        "score_data_loc_group": 0.409,
         "score_loc": 0.125,
         "score_loc_group": 0.125
       },
       {
-        "component": "Abegg",
+        "component": "Colestine",
         "componentData": "Data Complete",
-        "componentID": 25443548,
-        "name": "Abegg",
-        "not_displayed": false,
-        "rank_data": "2",
-        "rank_data_group": "2",
-        "rank_data_loc": "3",
-        "rank_data_loc_group": "3",
-        "rank_loc": "3",
-        "rank_loc_group": "3",
-        "score_data": 0.709,
-        "score_data_group": 0.709,
-        "score_data_loc": 0.389,
-        "score_data_loc_group": 0.389,
-        "score_loc": 0.069,
-        "score_loc_group": 0.069
-      },
-      {
-        "component": "Gregory",
-        "componentData": "Data Complete",
-        "componentID": 25443414,
-        "name": "Gregory",
+        "componentID": 27529517,
+        "name": "Colestine",
         "not_displayed": false,
         "rank_data": "1",
         "rank_data_group": "1",
-        "rank_data_loc": "4",
-        "rank_data_loc_group": "4",
-        "rank_loc": "9",
-        "rank_loc_group": "9",
-        "score_data": 0.746,
-        "score_data_group": 0.746,
-        "score_data_loc": 0.376,
-        "score_data_loc_group": 0.376,
-        "score_loc": 0.007,
-        "score_loc_group": 0.007
-      },
-      {
-        "component": "Pollard",
-        "componentData": NaN,
-        "componentID": 25443850,
-        "name": "Pollard",
-        "not_displayed": false,
-        "rank_data": "5",
-        "rank_data_group": "5",
-        "rank_data_loc": "5",
-        "rank_data_loc_group": "5",
-        "rank_loc": "7",
-        "rank_loc_group": "7",
-        "score_data": 0.626,
-        "score_data_group": 0.626,
-        "score_data_loc": 0.326,
-        "score_data_loc_group": 0.326,
+        "rank_data_loc": "2",
+        "rank_data_loc_group": "2",
+        "rank_loc": "6",
+        "rank_loc_group": "6",
+        "score_data": 0.704,
+        "score_data_group": 0.704,
+        "score_data_loc": 0.364,
+        "score_data_loc_group": 0.364,
         "score_loc": 0.025,
         "score_loc_group": 0.025
       },
       {
+        "component": "Abegg",
+        "componentData": "Data Complete",
+        "componentID": 27529265,
+        "name": "Abegg",
+        "not_displayed": false,
+        "rank_data": "4",
+        "rank_data_group": "4",
+        "rank_data_loc": "3",
+        "rank_data_loc_group": "3",
+        "rank_loc": "3",
+        "rank_loc_group": "3",
+        "score_data": 0.651,
+        "score_data_group": 0.651,
+        "score_data_loc": 0.36,
+        "score_data_loc_group": 0.36,
+        "score_loc": 0.069,
+        "score_loc_group": 0.069
+      },
+      {
+        "component": "Ruch",
+        "componentData": "Data Complete",
+        "componentID": 27529401,
+        "name": "Ruch",
+        "not_displayed": false,
+        "rank_data": "9",
+        "rank_data_group": "9",
+        "rank_data_loc": "4",
+        "rank_data_loc_group": "4",
+        "rank_loc": "1",
+        "rank_loc_group": "1",
+        "score_data": 0.428,
+        "score_data_group": 0.428,
+        "score_data_loc": 0.347,
+        "score_data_loc_group": 0.347,
+        "score_loc": 0.266,
+        "score_loc_group": 0.266
+      },
+      {
         "component": "Offenbacher",
         "componentData": "Data Complete",
-        "componentID": 25443597,
+        "componentID": 27529224,
         "name": "Offenbacher",
         "not_displayed": false,
-        "rank_data": "6",
-        "rank_data_group": "6",
-        "rank_data_loc": "6",
-        "rank_data_loc_group": "6",
+        "rank_data": "3",
+        "rank_data_group": "3",
+        "rank_data_loc": "5",
+        "rank_data_loc_group": "5",
         "rank_loc": "8",
         "rank_loc_group": "8",
-        "score_data": 0.473,
-        "score_data_group": 0.473,
-        "score_data_loc": 0.245,
-        "score_data_loc_group": 0.245,
+        "score_data": 0.652,
+        "score_data_group": 0.652,
+        "score_data_loc": 0.335,
+        "score_data_loc_group": 0.335,
         "score_loc": 0.017,
         "score_loc_group": 0.017
       },
       {
         "component": "Caris",
-        "componentData": NaN,
-        "componentID": 25443598,
+        "componentData": "Data Complete",
+        "componentID": 27529223,
         "name": "Caris",
         "not_displayed": false,
-        "rank_data": "7",
-        "rank_data_group": "7",
-        "rank_data_loc": "7",
-        "rank_data_loc_group": "7",
+        "rank_data": "6",
+        "rank_data_group": "6",
+        "rank_data_loc": "6",
+        "rank_data_loc_group": "6",
         "rank_loc": "4",
         "rank_loc_group": "4",
-        "score_data": 0.406,
-        "score_data_group": 0.406,
-        "score_data_loc": 0.228,
-        "score_data_loc_group": 0.228,
+        "score_data": 0.603,
+        "score_data_group": 0.603,
+        "score_data_loc": 0.327,
+        "score_data_loc_group": 0.327,
         "score_loc": 0.05,
         "score_loc_group": 0.05
       },
       {
-        "component": "Beekman",
-        "componentData": "Data Complete",
-        "componentID": 25443287,
-        "name": "Beekman",
+        "component": "Pollard",
+        "componentData": NaN,
+        "componentID": 27529611,
+        "name": "Pollard",
         "not_displayed": false,
-        "rank_data": "9",
-        "rank_data_group": "9",
-        "rank_data_loc": "8",
-        "rank_data_loc_group": "8",
-        "rank_loc": "5",
-        "rank_loc_group": "5",
-        "score_data": 0.388,
-        "score_data_group": 0.388,
-        "score_data_loc": 0.217,
-        "score_data_loc_group": 0.217,
-        "score_loc": 0.046,
-        "score_loc_group": 0.046
-      },
-      {
-        "component": "Colestine",
-        "componentData": "Data Complete",
-        "componentID": 25443286,
-        "name": "Colestine",
-        "not_displayed": false,
-        "rank_data": "8",
-        "rank_data_group": "8",
-        "rank_data_loc": "9",
-        "rank_data_loc_group": "9",
-        "rank_loc": "6",
-        "rank_loc_group": "6",
-        "score_data": 0.392,
-        "score_data_group": 0.392,
-        "score_data_loc": 0.209,
-        "score_data_loc_group": 0.209,
+        "rank_data": "5",
+        "rank_data_group": "5",
+        "rank_data_loc": "7",
+        "rank_data_loc_group": "7",
+        "rank_loc": "7",
+        "rank_loc_group": "7",
+        "score_data": 0.61,
+        "score_data_group": 0.61,
+        "score_data_loc": 0.317,
+        "score_data_loc_group": 0.317,
         "score_loc": 0.025,
         "score_loc_group": 0.025
       },
       {
+        "component": "Beekman",
+        "componentData": NaN,
+        "componentID": 27529518,
+        "name": "Beekman",
+        "not_displayed": false,
+        "rank_data": "8",
+        "rank_data_group": "8",
+        "rank_data_loc": "8",
+        "rank_data_loc_group": "8",
+        "rank_loc": "5",
+        "rank_loc_group": "5",
+        "score_data": 0.477,
+        "score_data_group": 0.477,
+        "score_data_loc": 0.261,
+        "score_data_loc_group": 0.261,
+        "score_loc": 0.046,
+        "score_loc_group": 0.046
+      },
+      {
+        "component": "Gregory",
+        "componentData": "Data Complete",
+        "componentID": 27529400,
+        "name": "Gregory",
+        "not_displayed": false,
+        "rank_data": "7",
+        "rank_data_group": "7",
+        "rank_data_loc": "9",
+        "rank_data_loc_group": "9",
+        "rank_loc": "9",
+        "rank_loc_group": "9",
+        "score_data": 0.514,
+        "score_data_group": 0.514,
+        "score_data_loc": 0.26,
+        "score_data_loc_group": 0.26,
+        "score_loc": 0.007,
+        "score_loc_group": 0.007
+      },
+      {
         "component": "Josephine",
         "componentData": "Data Complete",
-        "componentID": 25443480,
+        "componentID": 27529336,
         "name": "Josephine",
         "not_displayed": true,
         "rank_data": "Not Displayed",
-        "rank_data_group": "4",
+        "rank_data_group": "2",
         "rank_data_loc": "Not Displayed",
-        "rank_data_loc_group": "2",
+        "rank_data_loc_group": "1",
         "rank_loc": "2",
         "rank_loc_group": "2",
-        "score_data": 0.531,
-        "score_data_group": 0.664,
-        "score_data_loc": 0.328,
-        "score_data_loc_group": 0.395,
+        "score_data": 0.623,
+        "score_data_group": 0.692,
+        "score_data_loc": 0.374,
+        "score_data_loc_group": 0.409,
         "score_loc": 0.125,
         "score_loc_group": 0.125
       }

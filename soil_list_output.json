@@ -1,0 +1,2273 @@
+{
+  "metadata": {
+    "location": "us",
+    "model": "v3",
+    "unit_measure": {
+      "distance": "m",
+      "depth": "cm",
+      "cec": "cmol(c)/kg",
+      "clay": "%",
+      "rock_fragments": "cm3/100cm3",
+      "sand": "%",
+      "ec": "ds/m"
+    }
+  },
+  "AWS_PIW90": null,
+  "Soil Data Value": null,
+  "soilList": [
+    {
+      "id": {
+        "name": "Harkey",
+        "component": "Harkey",
+        "score_loc": 0.466,
+        "rank_loc": "1"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": "634570",
+          "componentID": "27479665",
+          "componentKind": "Series",
+          "dataSource": "SSURGO",
+          "textureInfill": "No",
+          "rfvInfill": "No",
+          "componentPct": 85,
+          "distance": 0.0,
+          "minCompDistance": 0.0,
+          "slope": 0.5,
+          "nirrcapcl": "7",
+          "nirrcapscl": "c",
+          "nirrcapunit": "None",
+          "irrcapcl": "1",
+          "irrcapscl": "None",
+          "irrcapunit": "None",
+          "taxsubgrp": "Typic Torrifluvents",
+          "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=harkey",
+          "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#harkey"
+        },
+        "siteDescription": "The Harkey series consists of very deep, well drained soils that formed in calcareous mixed alluvial sediments derived from sedimentary material.  Harkey soils are on floodplains and stream terraces and have slopes of 0 to 3 percent.  The average annual precipitation is about 11 inches and the average annual temperature is about 62 degrees F."
+      },
+      "esd": {
+        "ESD": {
+          "ecoclassid": [
+            "R042BB014NM"
+          ],
+          "ecoclassname": [
+            "Loamy, Desert Shrub"
+          ],
+          "edit_url": [
+            "https://edit.sc.egov.usda.gov/catalogs/esd/042B/R042BB014NM"
+          ]
+        }
+      },
+      "top_depth": {
+        "0": 0,
+        "1": 41,
+        "2": 71
+      },
+      "bottom_depth": {
+        "0": 41,
+        "1": 71,
+        "2": 152
+      },
+      "sand": {
+        "0": 27.1,
+        "1": 27.1,
+        "2": 92.2
+      },
+      "clay": {
+        "0": 31.0,
+        "1": 31.0,
+        "2": 6.5
+      },
+      "texture": {
+        "0": "Clay loam",
+        "1": "Clay loam",
+        "2": "Sand"
+      },
+      "rock_fragments": {
+        "0": 0,
+        "1": 0,
+        "2": 0
+      },
+      "cec": {
+        "0": 17.5,
+        "1": 13.5,
+        "2": 1.0
+      },
+      "ph": {
+        "0": 8.2,
+        "1": 8.2,
+        "2": 8.2
+      },
+      "ec": {
+        "0": 3.0,
+        "1": 3.0,
+        "2": 5.0
+      },
+      "lab": {
+        "0": [
+          61.73,
+          6.45,
+          20.59
+        ],
+        "1": [
+          61.73,
+          9.33,
+          22.49
+        ],
+        "2": [
+          61.73,
+          9.33,
+          22.49
+        ]
+      },
+      "munsell": {
+        "0": "10YR 6/3",
+        "1": "7.5YR 6/4",
+        "2": "7.5YR 6/4"
+      }
+    },
+    {
+      "id": {
+        "name": "Brazito",
+        "component": "Brazito",
+        "score_loc": 0.127,
+        "rank_loc": "2"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": "634570",
+          "componentID": "27479667",
+          "componentKind": "Series",
+          "dataSource": "SSURGO",
+          "textureInfill": "No",
+          "rfvInfill": "No",
+          "componentPct": 2,
+          "distance": 0.0,
+          "minCompDistance": 0.0,
+          "slope": 0.5,
+          "nirrcapcl": "7",
+          "nirrcapscl": "s",
+          "nirrcapunit": "None",
+          "irrcapcl": "4",
+          "irrcapscl": "s",
+          "irrcapunit": "None",
+          "taxsubgrp": "Typic Torripsamments",
+          "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=harkey",
+          "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#harkey"
+        },
+        "siteDescription": "The Brazito series consists of very deep, well drained, rapidly permeable soils that formed in sandy alluvium derived from a variety of igneous and sedimentary rocks.  Brazito soils are on the flood plains and low terraces of major streams, and dunes.  Slopes range from 0 to 5 percent.  The mean annual precipitation is about 8 inches.  The mean annual air temperature is about 61 degrees F."
+      },
+      "esd": {
+        "ESD": {
+          "ecoclassid": [
+            "R042BB012NM"
+          ],
+          "ecoclassname": [
+            "Sandy, Desert Shrub"
+          ],
+          "edit_url": [
+            "https://edit.sc.egov.usda.gov/catalogs/esd/042B/R042BB012NM"
+          ]
+        }
+      },
+      "top_depth": {
+        "0": 0,
+        "1": 33,
+        "2": 104
+      },
+      "bottom_depth": {
+        "0": 33,
+        "1": 104,
+        "2": 152
+      },
+      "sand": {
+        "0": 70.9,
+        "1": 78.6,
+        "2": 63.8
+      },
+      "clay": {
+        "0": 12.5,
+        "1": 5.0,
+        "2": 12.5
+      },
+      "texture": {
+        "0": "Sandy loam",
+        "1": "Loamy sand",
+        "2": "Sandy loam"
+      },
+      "rock_fragments": {
+        "0": 0,
+        "1": 0,
+        "2": 0
+      },
+      "cec": {
+        "0": 9.0,
+        "1": 0.5,
+        "2": 8.0
+      },
+      "ph": {
+        "0": 7.9,
+        "1": 7.9,
+        "2": 7.9
+      },
+      "ec": {
+        "0": 1.0,
+        "1": 1.0,
+        "2": 1.0
+      },
+      "lab": {
+        "0": [
+          61.73,
+          5.76,
+          20.13
+        ],
+        "1": [
+          61.73,
+          9.33,
+          22.49
+        ],
+        "2": [
+          61.73,
+          9.33,
+          22.49
+        ]
+      },
+      "munsell": {
+        "0": "10YR 6/3",
+        "1": "7.5YR 6/4",
+        "2": "7.5YR 6/4"
+      }
+    },
+    {
+      "id": {
+        "name": "Anthony",
+        "component": "Anthony",
+        "score_loc": 0.108,
+        "rank_loc": "3"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": "634570",
+          "componentID": "27479670",
+          "componentKind": "Series",
+          "dataSource": "SSURGO",
+          "textureInfill": "Yes",
+          "rfvInfill": "No",
+          "componentPct": 3,
+          "distance": 0.0,
+          "minCompDistance": 0.0,
+          "slope": 0.5,
+          "nirrcapcl": "7",
+          "nirrcapscl": "s",
+          "nirrcapunit": "None",
+          "irrcapcl": "2",
+          "irrcapscl": "s",
+          "irrcapunit": "None",
+          "taxsubgrp": "Typic Torrifluvents",
+          "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=brazito",
+          "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#brazito"
+        },
+        "siteDescription": "The Anthony series consists of very deep, well drained soils formed in stratified alluvium.  Anthony soils are on alluvial fans and floodplains and have slopes of 0 to 15 percent.  The mean annual precipitation is about 8 inches and the mean annual air temperature is about 65 degrees F."
+      },
+      "esd": {
+        "ESD": {
+          "ecoclassid": [
+            "R070BC036NM"
+          ],
+          "ecoclassname": [
+            "Salt Flats"
+          ],
+          "edit_url": [
+            "https://edit.sc.egov.usda.gov/catalogs/esd/070B/R070BC036NM"
+          ]
+        }
+      },
+      "top_depth": {
+        "0": 0,
+        "1": 30
+      },
+      "bottom_depth": {
+        "0": 30,
+        "1": 152
+      },
+      "sand": {
+        "0": 86.8,
+        "1": 92.0
+      },
+      "clay": {
+        "0": 6.08,
+        "1": 5.0
+      },
+      "texture": {
+        "0": "Loamy sand",
+        "1": "Sand"
+      },
+      "rock_fragments": {
+        "0": 0,
+        "1": 0
+      },
+      "cec": {
+        "0": 17.0,
+        "1": 14.0
+      },
+      "ph": {
+        "0": 8.5,
+        "1": 8.5
+      },
+      "ec": {
+        "0": 10.0,
+        "1": 10.0
+      },
+      "lab": {
+        "0": [
+          62.97,
+          4.31,
+          19.29
+        ],
+        "1": [
+          71.64,
+          3.89,
+          19.54
+        ]
+      },
+      "munsell": {
+        "0": "10YR 6/3",
+        "1": "10YR 7/3"
+      }
+    },
+    {
+      "id": {
+        "name": "Anapra",
+        "component": "Anapra",
+        "score_loc": 0.105,
+        "rank_loc": "4"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": "634539",
+          "componentID": "27479546",
+          "componentKind": "Series",
+          "dataSource": "SSURGO",
+          "textureInfill": "No",
+          "rfvInfill": "No",
+          "componentPct": 85,
+          "distance": 99.0,
+          "minCompDistance": 99.0,
+          "slope": 0.5,
+          "nirrcapcl": "7",
+          "nirrcapscl": "s",
+          "nirrcapunit": "None",
+          "irrcapcl": "4",
+          "irrcapscl": "e",
+          "irrcapunit": "None",
+          "taxsubgrp": "Typic Torrifluvents",
+          "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=anthony",
+          "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#anthony"
+        },
+        "siteDescription": "The Anapra series consists of deep, well drained, moderately slowly permeable soils on bottomlands.  These nearly level soils formed in stratified loamy material underlain by sandy material.  Slopes range from 0 to 1 percent."
+      },
+      "esd": {
+        "ESD": {
+          "ecoclassid": [
+            "R042BB014NM"
+          ],
+          "ecoclassname": [
+            "Loamy, Desert Shrub"
+          ],
+          "edit_url": [
+            "https://edit.sc.egov.usda.gov/catalogs/esd/042B/R042BB014NM"
+          ]
+        }
+      },
+      "top_depth": {
+        "0": 0,
+        "1": 33
+      },
+      "bottom_depth": {
+        "0": 33,
+        "1": 152
+      },
+      "sand": {
+        "0": 61.5,
+        "1": 61.5
+      },
+      "clay": {
+        "0": 10.0,
+        "1": 10.0
+      },
+      "texture": {
+        "0": "Sandy loam",
+        "1": "Sandy loam"
+      },
+      "rock_fragments": {
+        "0": 0,
+        "1": 0
+      },
+      "cec": {
+        "0": 11.0,
+        "1": 7.0
+      },
+      "ph": {
+        "0": 7.9,
+        "1": 7.9
+      },
+      "ec": {
+        "0": 2.0,
+        "1": 2.0
+      },
+      "lab": {
+        "0": [
+          60.2,
+          4.3,
+          19.08
+        ],
+        "1": [
+          55.27,
+          4.63,
+          19.01
+        ]
+      },
+      "munsell": {
+        "0": "10YR 6/3",
+        "1": "10YR 5/3"
+      }
+    },
+    {
+      "id": {
+        "name": "Glendale",
+        "component": "Glendale",
+        "score_loc": 0.08,
+        "rank_loc": "5"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": "634570",
+          "componentID": "27479671",
+          "componentKind": "Series",
+          "dataSource": "SSURGO",
+          "textureInfill": "Yes",
+          "rfvInfill": "No",
+          "componentPct": 3,
+          "distance": 0.0,
+          "minCompDistance": 0.0,
+          "slope": 0.5,
+          "nirrcapcl": "7",
+          "nirrcapscl": "c",
+          "nirrcapunit": "None",
+          "irrcapcl": "1",
+          "irrcapscl": "None",
+          "irrcapunit": "None",
+          "taxsubgrp": "Typic Torrifluvents",
+          "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=anapra",
+          "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#anapra"
+        },
+        "siteDescription": "The Glendale series consists of very deep, well drained soils formed in stratified alluvium.  Glendale soils are on alluvial fans, flood plains, and stream terraces and have slopes of 0 to 5 percent.  The mean annual precipitation is about 8 inches and the mean annual air temperature is about 65 degrees F."
+      },
+      "esd": {
+        "ESD": {
+          "ecoclassid": [
+            "R042BB018NM"
+          ],
+          "ecoclassname": [
+            "Bottomland, Desert Shrub"
+          ],
+          "edit_url": [
+            "https://edit.sc.egov.usda.gov/catalogs/esd/042B/R042BB018NM"
+          ]
+        }
+      },
+      "top_depth": {
+        "0": 0,
+        "1": 30,
+        "2": 61
+      },
+      "bottom_depth": {
+        "0": 30,
+        "1": 61,
+        "2": 152
+      },
+      "sand": {
+        "0": "",
+        "1": "",
+        "2": 94.6
+      },
+      "clay": {
+        "0": 35.0,
+        "1": 14.0,
+        "2": 4.0
+      },
+      "texture": {
+        "0": "",
+        "1": "",
+        "2": "Sand"
+      },
+      "rock_fragments": {
+        "0": 0,
+        "1": 3,
+        "2": 33
+      },
+      "cec": {
+        "0": 20.0,
+        "1": 7.0,
+        "2": ""
+      },
+      "ph": {
+        "0": 8.2,
+        "1": 8.2,
+        "2": 8.2
+      },
+      "ec": {
+        "0": 2.0,
+        "1": 2.0,
+        "2": 1.0
+      },
+      "lab": {
+        "0": [
+          51.62,
+          4.87,
+          18.96
+        ],
+        "1": [
+          51.62,
+          4.87,
+          18.96
+        ],
+        "2": [
+          70.53,
+          4.44,
+          11.94
+        ]
+      },
+      "munsell": {
+        "0": "10YR 5/3",
+        "1": "10YR 5/3",
+        "2": "7.5YR 7/2"
+      }
+    },
+    {
+      "id": {
+        "name": "Vinton",
+        "component": "Vinton",
+        "score_loc": 0.071,
+        "rank_loc": "6"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": "634570",
+          "componentID": "27479669",
+          "componentKind": "Series",
+          "dataSource": "SSURGO",
+          "textureInfill": "No",
+          "rfvInfill": "No",
+          "componentPct": 2,
+          "distance": 0.0,
+          "minCompDistance": 0.0,
+          "slope": 0.5,
+          "nirrcapcl": "7",
+          "nirrcapscl": "s",
+          "nirrcapunit": "None",
+          "irrcapcl": "3",
+          "irrcapscl": "s",
+          "irrcapunit": "None",
+          "taxsubgrp": "Typic Torrifluvents",
+          "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=glendale",
+          "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#glendale"
+        },
+        "siteDescription": "The Vinton series consists of deep, somewhat excessively drained soils that formed in mixed alluvium.   Vinton soils are on flood plains and have slopes of 0 to 3 percent.  The mean annual precipitation is about 10 inches and the mean annual air temperature is about 62 degrees F."
+      },
+      "esd": {
+        "ESD": {
+          "ecoclassid": [
+            "R042BB014NM"
+          ],
+          "ecoclassname": [
+            "Loamy, Desert Shrub"
+          ],
+          "edit_url": [
+            "https://edit.sc.egov.usda.gov/catalogs/esd/042B/R042BB014NM"
+          ]
+        }
+      },
+      "top_depth": {
+        "0": 0,
+        "1": 30
+      },
+      "bottom_depth": {
+        "0": 30,
+        "1": 152
+      },
+      "sand": {
+        "0": 27.1,
+        "1": 11.8
+      },
+      "clay": {
+        "0": 31.0,
+        "1": 18.0
+      },
+      "texture": {
+        "0": "Clay loam",
+        "1": "Silt loam"
+      },
+      "rock_fragments": {
+        "0": 0,
+        "1": 0
+      },
+      "cec": {
+        "0": 17.5,
+        "1": 12.9
+      },
+      "ph": {
+        "0": 7.9,
+        "1": 7.9
+      },
+      "ec": {
+        "0": 2.0,
+        "1": 2.0
+      },
+      "lab": {
+        "0": [
+          58.35,
+          3.01,
+          12.96
+        ],
+        "1": [
+          51.61,
+          3.24,
+          12.7
+        ]
+      },
+      "munsell": {
+        "0": "10YR 6/2",
+        "1": "10YR 5/2"
+      }
+    },
+    {
+      "id": {
+        "name": "Agua",
+        "component": "Agua",
+        "score_loc": 0.042,
+        "rank_loc": "7"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": "634570",
+          "componentID": "27479668",
+          "componentKind": "Series",
+          "dataSource": "SSURGO",
+          "textureInfill": "No",
+          "rfvInfill": "No",
+          "componentPct": 2,
+          "distance": 0.0,
+          "minCompDistance": 0.0,
+          "slope": 0.5,
+          "nirrcapcl": "7",
+          "nirrcapscl": "s",
+          "nirrcapunit": "None",
+          "irrcapcl": "2",
+          "irrcapscl": "s",
+          "irrcapunit": "None",
+          "taxsubgrp": "Typic Torrifluvents",
+          "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=vinton",
+          "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#vinton"
+        },
+        "siteDescription": "The Agua series consists of very deep, well drained soils that formed in recent stream alluvium from mixed sources. Agua soils are on flood plains, and alluvial fans. They have slopes of 0 to 3 percent. The average annual precipitation is about 9 inches (229 mm) and the mean annual air temperature is about 63 degrees F (17 degrees C)."
+      },
+      "esd": {
+        "ESD": {
+          "ecoclassid": [
+            "R042BB018NM"
+          ],
+          "ecoclassname": [
+            "Bottomland, Desert Shrub"
+          ],
+          "edit_url": [
+            "https://edit.sc.egov.usda.gov/catalogs/esd/042B/R042BB018NM"
+          ]
+        }
+      },
+      "top_depth": {
+        "0": 0
+      },
+      "bottom_depth": {
+        "0": 0
+      },
+      "sand": {
+        "0": NaN
+      },
+      "clay": {
+        "0": NaN
+      },
+      "texture": {
+        "0": NaN
+      },
+      "rock_fragments": {
+        "0": 0
+      },
+      "cec": {
+        "0": ""
+      },
+      "ph": {
+        "0": ""
+      },
+      "ec": {
+        "0": ""
+      },
+      "lab": {
+        "0": [
+          "",
+          "",
+          ""
+        ]
+      },
+      "munsell": {
+        "0": ""
+      }
+    },
+    {
+      "id": {
+        "name": "Harkey2",
+        "component": "Harkey",
+        "score_loc": 0.466,
+        "rank_loc": "Not Displayed"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": "634570",
+          "componentID": "27479666",
+          "componentKind": "Series",
+          "dataSource": "SSURGO",
+          "textureInfill": "Yes",
+          "rfvInfill": "No",
+          "componentPct": 3,
+          "distance": 0.0,
+          "minCompDistance": 0.0,
+          "slope": 0.5,
+          "nirrcapcl": "7",
+          "nirrcapscl": "e",
+          "nirrcapunit": "None",
+          "irrcapcl": "2",
+          "irrcapscl": "e",
+          "irrcapunit": "None",
+          "taxsubgrp": "Typic Torrifluvents",
+          "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=harkey",
+          "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#harkey"
+        },
+        "siteDescription": "The Harkey series consists of very deep, well drained soils that formed in calcareous mixed alluvial sediments derived from sedimentary material.  Harkey soils are on floodplains and stream terraces and have slopes of 0 to 3 percent.  The average annual precipitation is about 11 inches and the average annual temperature is about 62 degrees F."
+      },
+      "esd": {
+        "ESD": {
+          "ecoclassid": [
+            "R042BB012NM"
+          ],
+          "ecoclassname": [
+            "Sandy, Desert Shrub"
+          ],
+          "edit_url": [
+            "https://edit.sc.egov.usda.gov/catalogs/esd/042B/R042BB012NM"
+          ]
+        }
+      },
+      "top_depth": {
+        "0": 0,
+        "1": 36,
+        "2": 81,
+        "3": 107
+      },
+      "bottom_depth": {
+        "0": 36,
+        "1": 81,
+        "2": 107,
+        "3": 152
+      },
+      "sand": {
+        "0": NaN,
+        "1": 37.5,
+        "2": 37.5,
+        "3": 37.5
+      },
+      "clay": {
+        "0": NaN,
+        "1": 17.0,
+        "2": 17.0,
+        "3": 17.0
+      },
+      "texture": {
+        "0": NaN,
+        "1": "Loam",
+        "2": "Loam",
+        "3": "Loam"
+      },
+      "rock_fragments": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 0
+      },
+      "cec": {
+        "0": 10.0,
+        "1": 1.0,
+        "2": 15.0,
+        "3": 0.5
+      },
+      "ph": {
+        "0": 8.2,
+        "1": 8.2,
+        "2": 8.2,
+        "3": 8.2
+      },
+      "ec": {
+        "0": 1.0,
+        "1": 1.0,
+        "2": 1.0,
+        "3": 1.0
+      },
+      "lab": {
+        "0": [
+          61.73,
+          6.05,
+          20.32
+        ],
+        "1": [
+          61.73,
+          9.33,
+          22.49
+        ],
+        "2": [
+          61.73,
+          9.33,
+          22.49
+        ],
+        "3": [
+          61.73,
+          9.33,
+          22.49
+        ]
+      },
+      "munsell": {
+        "0": "10YR 6/3",
+        "1": "7.5YR 6/4",
+        "2": "7.5YR 6/4",
+        "3": "7.5YR 6/4"
+      }
+    },
+    {
+      "id": {
+        "name": "Harkey3",
+        "component": "Harkey",
+        "score_loc": 0.466,
+        "rank_loc": "Not Displayed"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": "634572",
+          "componentID": "27479676",
+          "componentKind": "Series",
+          "dataSource": "SSURGO",
+          "textureInfill": "Yes",
+          "rfvInfill": "No",
+          "componentPct": 85,
+          "distance": 2.0,
+          "minCompDistance": 0.0,
+          "slope": 0.5,
+          "nirrcapcl": "7",
+          "nirrcapscl": "c",
+          "nirrcapunit": "None",
+          "irrcapcl": "1",
+          "irrcapscl": "None",
+          "irrcapunit": "None",
+          "taxsubgrp": "Typic Torrifluvents",
+          "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=harkey",
+          "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#harkey"
+        },
+        "siteDescription": "The Harkey series consists of very deep, well drained soils that formed in calcareous mixed alluvial sediments derived from sedimentary material.  Harkey soils are on floodplains and stream terraces and have slopes of 0 to 3 percent.  The average annual precipitation is about 11 inches and the average annual temperature is about 62 degrees F."
+      },
+      "esd": {
+        "ESD": {
+          "ecoclassid": [
+            "R042BB014NM"
+          ],
+          "ecoclassname": [
+            "Loamy, Desert Shrub"
+          ],
+          "edit_url": [
+            "https://edit.sc.egov.usda.gov/catalogs/esd/042B/R042BB014NM"
+          ]
+        }
+      },
+      "top_depth": {
+        "0": 0,
+        "1": 41,
+        "2": 71
+      },
+      "bottom_depth": {
+        "0": 41,
+        "1": 71,
+        "2": 152
+      },
+      "sand": {
+        "0": NaN,
+        "1": NaN,
+        "2": 37.5
+      },
+      "clay": {
+        "0": NaN,
+        "1": NaN,
+        "2": 17.0
+      },
+      "texture": {
+        "0": NaN,
+        "1": NaN,
+        "2": "Loam"
+      },
+      "rock_fragments": {
+        "0": 0,
+        "1": 0,
+        "2": 2
+      },
+      "cec": {
+        "0": 14.0,
+        "1": 13.5,
+        "2": 1.0
+      },
+      "ph": {
+        "0": 8.2,
+        "1": 8.2,
+        "2": 8.2
+      },
+      "ec": {
+        "0": 3.0,
+        "1": 3.0,
+        "2": 5.0
+      },
+      "lab": {
+        "0": [
+          61.73,
+          6.45,
+          20.59
+        ],
+        "1": [
+          61.73,
+          9.33,
+          22.49
+        ],
+        "2": [
+          61.73,
+          9.33,
+          22.49
+        ]
+      },
+      "munsell": {
+        "0": "10YR 6/3",
+        "1": "7.5YR 6/4",
+        "2": "7.5YR 6/4"
+      }
+    },
+    {
+      "id": {
+        "name": "Harkey4",
+        "component": "Harkey",
+        "score_loc": 0.466,
+        "rank_loc": "Not Displayed"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": "634572",
+          "componentID": "27479677",
+          "componentKind": "Series",
+          "dataSource": "SSURGO",
+          "textureInfill": "No",
+          "rfvInfill": "No",
+          "componentPct": 4,
+          "distance": 2.0,
+          "minCompDistance": 0.0,
+          "slope": 0.5,
+          "nirrcapcl": "7",
+          "nirrcapscl": "c",
+          "nirrcapunit": "None",
+          "irrcapcl": "1",
+          "irrcapscl": "None",
+          "irrcapunit": "None",
+          "taxsubgrp": "Typic Torrifluvents",
+          "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=harkey",
+          "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#harkey"
+        },
+        "siteDescription": "The Harkey series consists of very deep, well drained soils that formed in calcareous mixed alluvial sediments derived from sedimentary material.  Harkey soils are on floodplains and stream terraces and have slopes of 0 to 3 percent.  The average annual precipitation is about 11 inches and the average annual temperature is about 62 degrees F."
+      },
+      "esd": {
+        "ESD": {
+          "ecoclassid": [
+            "R042BB012NM"
+          ],
+          "ecoclassname": [
+            "Sandy, Desert Shrub"
+          ],
+          "edit_url": [
+            "https://edit.sc.egov.usda.gov/catalogs/esd/042B/R042BB012NM"
+          ]
+        }
+      },
+      "top_depth": {
+        "0": 0,
+        "1": 46,
+        "2": 97
+      },
+      "bottom_depth": {
+        "0": 46,
+        "1": 97,
+        "2": 152
+      },
+      "sand": {
+        "0": 70.9,
+        "1": 70.5,
+        "2": 77.9
+      },
+      "clay": {
+        "0": 12.5,
+        "1": 13.0,
+        "2": 5.0
+      },
+      "texture": {
+        "0": "Sandy loam",
+        "1": "Sandy loam",
+        "2": "Loamy sand"
+      },
+      "rock_fragments": {
+        "0": 0,
+        "1": 0,
+        "2": 0
+      },
+      "cec": {
+        "0": 9.0,
+        "1": 8.0,
+        "2": 8.0
+      },
+      "ph": {
+        "0": 7.9,
+        "1": 7.9,
+        "2": 7.9
+      },
+      "ec": {
+        "0": 2.0,
+        "1": 2.0,
+        "2": 2.0
+      },
+      "lab": {
+        "0": [
+          61.73,
+          6.77,
+          20.8
+        ],
+        "1": [
+          61.73,
+          9.33,
+          22.49
+        ],
+        "2": [
+          61.73,
+          9.33,
+          22.49
+        ]
+      },
+      "munsell": {
+        "0": "7.5YR 6/4",
+        "1": "7.5YR 6/4",
+        "2": "7.5YR 6/4"
+      }
+    },
+    {
+      "id": {
+        "name": "Brazito2",
+        "component": "Brazito",
+        "score_loc": 0.127,
+        "rank_loc": "Not Displayed"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": "634558",
+          "componentID": "27479614",
+          "componentKind": "Series",
+          "dataSource": "SSURGO",
+          "textureInfill": "No",
+          "rfvInfill": "No",
+          "componentPct": 80,
+          "distance": 150.0,
+          "minCompDistance": 0.0,
+          "slope": 0.5,
+          "nirrcapcl": "7",
+          "nirrcapscl": "s",
+          "nirrcapunit": "None",
+          "irrcapcl": "4",
+          "irrcapscl": "e",
+          "irrcapunit": "None",
+          "taxsubgrp": "Typic Torripsamments",
+          "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=brazito",
+          "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#brazito"
+        },
+        "siteDescription": "The Brazito series consists of very deep, well drained, rapidly permeable soils that formed in sandy alluvium derived from a variety of igneous and sedimentary rocks.  Brazito soils are on the flood plains and low terraces of major streams, and dunes.  Slopes range from 0 to 5 percent.  The mean annual precipitation is about 8 inches.  The mean annual air temperature is about 61 degrees F."
+      },
+      "esd": {
+        "ESD": {
+          "ecoclassid": [
+            "R042BB012NM"
+          ],
+          "ecoclassname": [
+            "Sandy, Desert Shrub"
+          ],
+          "edit_url": [
+            "https://edit.sc.egov.usda.gov/catalogs/esd/042B/R042BB012NM"
+          ]
+        }
+      },
+      "top_depth": {
+        "0": 0,
+        "1": 38
+      },
+      "bottom_depth": {
+        "0": 38,
+        "1": 152
+      },
+      "sand": {
+        "0": 59.3,
+        "1": 92.7
+      },
+      "clay": {
+        "0": 17.5,
+        "1": 6.0
+      },
+      "texture": {
+        "0": "Sandy loam",
+        "1": "Sand"
+      },
+      "rock_fragments": {
+        "0": 0,
+        "1": 0
+      },
+      "cec": {
+        "0": 11.0,
+        "1": 1.0
+      },
+      "ph": {
+        "0": 7.9,
+        "1": 7.9
+      },
+      "ec": {
+        "0": 2.0,
+        "1": 2.0
+      },
+      "lab": {
+        "0": [
+          64.79,
+          4.23,
+          19.34
+        ],
+        "1": [
+          71.64,
+          3.89,
+          19.54
+        ]
+      },
+      "munsell": {
+        "0": "10YR 6/3",
+        "1": "10YR 7/3"
+      }
+    },
+    {
+      "id": {
+        "name": "Brazito3",
+        "component": "Brazito",
+        "score_loc": 0.127,
+        "rank_loc": "Not Displayed"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": "634557",
+          "componentID": "27479850",
+          "componentKind": "Series",
+          "dataSource": "SSURGO",
+          "textureInfill": "Yes",
+          "rfvInfill": "No",
+          "componentPct": 80,
+          "distance": 168.0,
+          "minCompDistance": 0.0,
+          "slope": 1.0,
+          "nirrcapcl": "7",
+          "nirrcapscl": "s",
+          "nirrcapunit": "None",
+          "irrcapcl": "4",
+          "irrcapscl": "s",
+          "irrcapunit": "None",
+          "taxsubgrp": "Typic Torripsamments",
+          "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=brazito",
+          "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#brazito"
+        },
+        "siteDescription": "The Brazito series consists of very deep, well drained, rapidly permeable soils that formed in sandy alluvium derived from a variety of igneous and sedimentary rocks.  Brazito soils are on the flood plains and low terraces of major streams, and dunes.  Slopes range from 0 to 5 percent.  The mean annual precipitation is about 8 inches.  The mean annual air temperature is about 61 degrees F."
+      },
+      "esd": {
+        "ESD": {
+          "ecoclassid": [
+            "R042BB018NM"
+          ],
+          "ecoclassname": [
+            "Bottomland, Desert Shrub"
+          ],
+          "edit_url": [
+            "https://edit.sc.egov.usda.gov/catalogs/esd/042B/R042BB018NM"
+          ]
+        }
+      },
+      "top_depth": {
+        "0": 0,
+        "1": 30,
+        "2": 102
+      },
+      "bottom_depth": {
+        "0": 30,
+        "1": 102,
+        "2": 152
+      },
+      "sand": {
+        "0": 37.4,
+        "1": 27.1,
+        "2": 62.7
+      },
+      "clay": {
+        "0": 20.0,
+        "1": 31.0,
+        "2": 14.0
+      },
+      "texture": {
+        "0": "Loam",
+        "1": "Clay loam",
+        "2": "Sandy loam"
+      },
+      "rock_fragments": {
+        "0": 0,
+        "1": 0,
+        "2": 0
+      },
+      "cec": {
+        "0": 11.0,
+        "1": 15.0,
+        "2": 9.0
+      },
+      "ph": {
+        "0": 8.2,
+        "1": 8.2,
+        "2": 8.2
+      },
+      "ec": {
+        "0": 3.0,
+        "1": 3.0,
+        "2": 3.0
+      },
+      "lab": {
+        "0": [
+          62.97,
+          4.31,
+          19.29
+        ],
+        "1": [
+          71.64,
+          3.89,
+          19.54
+        ],
+        "2": [
+          71.64,
+          3.89,
+          19.54
+        ]
+      },
+      "munsell": {
+        "0": "10YR 6/3",
+        "1": "10YR 7/3",
+        "2": "10YR 7/3"
+      }
+    },
+    {
+      "id": {
+        "name": "Anthony2",
+        "component": "Anthony",
+        "score_loc": 0.108,
+        "rank_loc": "Not Displayed"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": "634541",
+          "componentID": "27479859",
+          "componentKind": "Series",
+          "dataSource": "SSURGO",
+          "textureInfill": "No",
+          "rfvInfill": "No",
+          "componentPct": 50,
+          "distance": 117.0,
+          "minCompDistance": 0.0,
+          "slope": 1.0,
+          "nirrcapcl": "7",
+          "nirrcapscl": "s",
+          "nirrcapunit": "None",
+          "irrcapcl": "2",
+          "irrcapscl": "s",
+          "irrcapunit": "None",
+          "taxsubgrp": "Typic Torrifluvents",
+          "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=anthony",
+          "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#anthony"
+        },
+        "siteDescription": "The Anthony series consists of very deep, well drained soils formed in stratified alluvium.  Anthony soils are on alluvial fans and floodplains and have slopes of 0 to 15 percent.  The mean annual precipitation is about 8 inches and the mean annual air temperature is about 65 degrees F."
+      },
+      "esd": {
+        "ESD": {
+          "ecoclassid": [
+            "R042BB018NM"
+          ],
+          "ecoclassname": [
+            "Bottomland, Desert Shrub"
+          ],
+          "edit_url": [
+            "https://edit.sc.egov.usda.gov/catalogs/esd/042B/R042BB018NM"
+          ]
+        }
+      },
+      "top_depth": {
+        "0": 0,
+        "1": 20
+      },
+      "bottom_depth": {
+        "0": 20,
+        "1": 152
+      },
+      "sand": {
+        "0": 61.5,
+        "1": 61.5
+      },
+      "clay": {
+        "0": 10.0,
+        "1": 10.0
+      },
+      "texture": {
+        "0": "Sandy loam",
+        "1": "Sandy loam"
+      },
+      "rock_fragments": {
+        "0": 0,
+        "1": 0
+      },
+      "cec": {
+        "0": 17.5,
+        "1": 15.0
+      },
+      "ph": {
+        "0": 8.2,
+        "1": 8.2
+      },
+      "ec": {
+        "0": 3.0,
+        "1": 3.0
+      },
+      "lab": {
+        "0": [
+          59.2,
+          4.37,
+          19.06
+        ],
+        "1": [
+          55.91,
+          4.59,
+          19.02
+        ]
+      },
+      "munsell": {
+        "0": "10YR 6/3",
+        "1": "10YR 5/3"
+      }
+    },
+    {
+      "id": {
+        "name": "Anthony4",
+        "component": "Anthony",
+        "score_loc": 0.108,
+        "rank_loc": "Not Displayed"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": "634540",
+          "componentID": "27479553",
+          "componentKind": "Series",
+          "dataSource": "SSURGO",
+          "textureInfill": "Yes",
+          "rfvInfill": "No",
+          "componentPct": 45,
+          "distance": 362.0,
+          "minCompDistance": 0.0,
+          "slope": 0.5,
+          "nirrcapcl": "7",
+          "nirrcapscl": "s",
+          "nirrcapunit": "None",
+          "irrcapcl": "2",
+          "irrcapscl": "e",
+          "irrcapunit": "None",
+          "taxsubgrp": "Typic Torrifluvents",
+          "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=anthony",
+          "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#anthony"
+        },
+        "siteDescription": "The Anthony series consists of very deep, well drained soils formed in stratified alluvium.  Anthony soils are on alluvial fans and floodplains and have slopes of 0 to 15 percent.  The mean annual precipitation is about 8 inches and the mean annual air temperature is about 65 degrees F."
+      },
+      "esd": {
+        "ESD": {
+          "ecoclassid": [
+            "R042BB014NM"
+          ],
+          "ecoclassname": [
+            "Loamy, Desert Shrub"
+          ],
+          "edit_url": [
+            "https://edit.sc.egov.usda.gov/catalogs/esd/042B/R042BB014NM"
+          ]
+        }
+      },
+      "top_depth": {
+        "0": 0,
+        "1": 46,
+        "2": 97
+      },
+      "bottom_depth": {
+        "0": 46,
+        "1": 97,
+        "2": 152
+      },
+      "sand": {
+        "0": 36.9,
+        "1": 62.7,
+        "2": 7.0
+      },
+      "clay": {
+        "0": 21.0,
+        "1": 14.0,
+        "2": 23.0
+      },
+      "texture": {
+        "0": "Loam",
+        "1": "Sandy loam",
+        "2": "Silt loam"
+      },
+      "rock_fragments": {
+        "0": 0,
+        "1": 0,
+        "2": 0
+      },
+      "cec": {
+        "0": 13.5,
+        "1": 7.0,
+        "2": 15.0
+      },
+      "ph": {
+        "0": 7.9,
+        "1": 7.9,
+        "2": 7.9
+      },
+      "ec": {
+        "0": 2.0,
+        "1": 2.0,
+        "2": 2.0
+      },
+      "lab": {
+        "0": [
+          60.63,
+          4.27,
+          19.08
+        ],
+        "1": [
+          57.57,
+          4.48,
+          19.04
+        ],
+        "2": [
+          51.62,
+          4.87,
+          18.96
+        ]
+      },
+      "munsell": {
+        "0": "10YR 6/3",
+        "1": "10YR 6/3",
+        "2": "10YR 5/3"
+      }
+    },
+    {
+      "id": {
+        "name": "Anapra2",
+        "component": "Anapra",
+        "score_loc": 0.105,
+        "rank_loc": "Not Displayed"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": "634539",
+          "componentID": "27479552",
+          "componentKind": "Series",
+          "dataSource": "SSURGO",
+          "textureInfill": "Yes",
+          "rfvInfill": "No",
+          "componentPct": 3,
+          "distance": 99.0,
+          "minCompDistance": 99.0,
+          "slope": 0.5,
+          "nirrcapcl": "7",
+          "nirrcapscl": "s",
+          "nirrcapunit": "None",
+          "irrcapcl": "2",
+          "irrcapscl": "s",
+          "irrcapunit": "None",
+          "taxsubgrp": "Typic Torrifluvents",
+          "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=anthony",
+          "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#anthony"
+        },
+        "siteDescription": "The Anapra series consists of deep, well drained, moderately slowly permeable soils on bottomlands.  These nearly level soils formed in stratified loamy material underlain by sandy material.  Slopes range from 0 to 1 percent."
+      },
+      "esd": {
+        "ESD": {
+          "ecoclassid": [
+            "R042BB012NM"
+          ],
+          "ecoclassname": [
+            "Sandy, Desert Shrub"
+          ],
+          "edit_url": [
+            "https://edit.sc.egov.usda.gov/catalogs/esd/042B/R042BB012NM"
+          ]
+        }
+      },
+      "top_depth": {
+        "0": 0,
+        "1": 38
+      },
+      "bottom_depth": {
+        "0": 38,
+        "1": 152
+      },
+      "sand": {
+        "0": 61.5,
+        "1": 61.5
+      },
+      "clay": {
+        "0": 10.0,
+        "1": 10.0
+      },
+      "texture": {
+        "0": "Sandy loam",
+        "1": "Sandy loam"
+      },
+      "rock_fragments": {
+        "0": 5,
+        "1": 5
+      },
+      "cec": {
+        "0": 11.0,
+        "1": 1.0
+      },
+      "ph": {
+        "0": 7.9,
+        "1": 7.9
+      },
+      "ec": {
+        "0": 2.0,
+        "1": 2.0
+      },
+      "lab": {
+        "0": [
+          60.4,
+          4.29,
+          19.08
+        ],
+        "1": [
+          54.99,
+          4.65,
+          19.0
+        ]
+      },
+      "munsell": {
+        "0": "10YR 6/3",
+        "1": "10YR 5/3"
+      }
+    },
+    {
+      "id": {
+        "name": "Glendale2",
+        "component": "Glendale",
+        "score_loc": 0.08,
+        "rank_loc": "Not Displayed"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": "634564",
+          "componentID": "27479641",
+          "componentKind": "Series",
+          "dataSource": "SSURGO",
+          "textureInfill": "Yes",
+          "rfvInfill": "No",
+          "componentPct": 85,
+          "distance": 252.0,
+          "minCompDistance": 0.0,
+          "slope": 0.5,
+          "nirrcapcl": "7",
+          "nirrcapscl": "c",
+          "nirrcapunit": "None",
+          "irrcapcl": "1",
+          "irrcapscl": "None",
+          "irrcapunit": "None",
+          "taxsubgrp": "Typic Torrifluvents",
+          "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=anapra",
+          "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#anapra"
+        },
+        "siteDescription": "The Glendale series consists of very deep, well drained soils formed in stratified alluvium.  Glendale soils are on alluvial fans, flood plains, and stream terraces and have slopes of 0 to 5 percent.  The mean annual precipitation is about 8 inches and the mean annual air temperature is about 65 degrees F."
+      },
+      "esd": {
+        "ESD": {
+          "ecoclassid": [
+            "R042BB014NM"
+          ],
+          "ecoclassname": [
+            "Loamy, Desert Shrub"
+          ],
+          "edit_url": [
+            "https://edit.sc.egov.usda.gov/catalogs/esd/042B/R042BB014NM"
+          ]
+        }
+      },
+      "top_depth": {
+        "0": 0,
+        "1": 36
+      },
+      "bottom_depth": {
+        "0": 36,
+        "1": 152
+      },
+      "sand": {
+        "0": 10.0,
+        "1": 70.79
+      },
+      "clay": {
+        "0": 33.5,
+        "1": 12.37
+      },
+      "texture": {
+        "0": "Silty clay loam",
+        "1": "Sandy loam"
+      },
+      "rock_fragments": {
+        "0": 0,
+        "1": 5
+      },
+      "cec": {
+        "0": 13.5,
+        "1": 0.5
+      },
+      "ph": {
+        "0": 7.9,
+        "1": 7.9
+      },
+      "ec": {
+        "0": 1.0,
+        "1": 1.0
+      },
+      "lab": {
+        "0": [
+          51.62,
+          4.87,
+          18.96
+        ],
+        "1": [
+          66.45,
+          4.54,
+          13.45
+        ]
+      },
+      "munsell": {
+        "0": "10YR 5/3",
+        "1": "10YR 6/2"
+      }
+    },
+    {
+      "id": {
+        "name": "Glendale3",
+        "component": "Glendale",
+        "score_loc": 0.08,
+        "rank_loc": "Not Displayed"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": "634564",
+          "componentID": "27479643",
+          "componentKind": "Series",
+          "dataSource": "SSURGO",
+          "textureInfill": "No",
+          "rfvInfill": "No",
+          "componentPct": 3,
+          "distance": 252.0,
+          "minCompDistance": 0.0,
+          "slope": 0.5,
+          "nirrcapcl": "7",
+          "nirrcapscl": "s",
+          "nirrcapunit": "None",
+          "irrcapcl": "3",
+          "irrcapscl": "s",
+          "irrcapunit": "None",
+          "taxsubgrp": "Typic Torrifluvents",
+          "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=glendale",
+          "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#glendale"
+        },
+        "siteDescription": "The Glendale series consists of very deep, well drained soils formed in stratified alluvium.  Glendale soils are on alluvial fans, flood plains, and stream terraces and have slopes of 0 to 5 percent.  The mean annual precipitation is about 8 inches and the mean annual air temperature is about 65 degrees F."
+      },
+      "esd": {
+        "ESD": {
+          "ecoclassid": [
+            "R042BB014NM"
+          ],
+          "ecoclassname": [
+            "Loamy, Desert Shrub"
+          ],
+          "edit_url": [
+            "https://edit.sc.egov.usda.gov/catalogs/esd/042B/R042BB014NM"
+          ]
+        }
+      },
+      "top_depth": {
+        "0": 0,
+        "1": 46
+      },
+      "bottom_depth": {
+        "0": 46,
+        "1": 152
+      },
+      "sand": {
+        "0": 34.67,
+        "1": 10.0
+      },
+      "clay": {
+        "0": 26.33,
+        "1": 33.5
+      },
+      "texture": {
+        "0": "Loam",
+        "1": "Silty clay loam"
+      },
+      "rock_fragments": {
+        "0": 0,
+        "1": 5
+      },
+      "cec": {
+        "0": 13.5,
+        "1": 8.0
+      },
+      "ph": {
+        "0": 7.9,
+        "1": 7.9
+      },
+      "ec": {
+        "0": 2.0,
+        "1": 2.0
+      },
+      "lab": {
+        "0": [
+          56.0,
+          3.09,
+          12.87
+        ],
+        "1": [
+          51.61,
+          3.24,
+          12.7
+        ]
+      },
+      "munsell": {
+        "0": "10YR 5/2",
+        "1": "10YR 5/2"
+      }
+    },
+    {
+      "id": {
+        "name": "Glendale4",
+        "component": "Glendale",
+        "score_loc": 0.08,
+        "rank_loc": "Not Displayed"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": "634564",
+          "componentID": "27479645",
+          "componentKind": "Series",
+          "dataSource": "SSURGO",
+          "textureInfill": "Yes",
+          "rfvInfill": "No",
+          "componentPct": 4,
+          "distance": 252.0,
+          "minCompDistance": 0.0,
+          "slope": 0.5,
+          "nirrcapcl": "7",
+          "nirrcapscl": "c",
+          "nirrcapunit": "None",
+          "irrcapcl": "1",
+          "irrcapscl": "None",
+          "irrcapunit": "None",
+          "taxsubgrp": "Typic Torrifluvents",
+          "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=glendale",
+          "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#glendale"
+        },
+        "siteDescription": "The Glendale series consists of very deep, well drained soils formed in stratified alluvium.  Glendale soils are on alluvial fans, flood plains, and stream terraces and have slopes of 0 to 5 percent.  The mean annual precipitation is about 8 inches and the mean annual air temperature is about 65 degrees F."
+      },
+      "esd": {
+        "ESD": {
+          "ecoclassid": [
+            "R042BB018NM"
+          ],
+          "ecoclassname": [
+            "Bottomland, Desert Shrub"
+          ],
+          "edit_url": [
+            "https://edit.sc.egov.usda.gov/catalogs/esd/042B/R042BB018NM"
+          ]
+        }
+      },
+      "top_depth": {
+        "0": 0,
+        "1": 30
+      },
+      "bottom_depth": {
+        "0": 30,
+        "1": 152
+      },
+      "sand": {
+        "0": 35.83,
+        "1": 12.95
+      },
+      "clay": {
+        "0": 22.5,
+        "1": 33.5
+      },
+      "texture": {
+        "0": "Loam",
+        "1": "Silty clay loam"
+      },
+      "rock_fragments": {
+        "0": 4,
+        "1": 0
+      },
+      "cec": {
+        "0": 11.0,
+        "1": 15.0
+      },
+      "ph": {
+        "0": 8.2,
+        "1": 8.2
+      },
+      "ec": {
+        "0": 3.0,
+        "1": 3.0
+      },
+      "lab": {
+        "0": [
+          58.35,
+          3.01,
+          12.96
+        ],
+        "1": [
+          51.61,
+          3.24,
+          12.7
+        ]
+      },
+      "munsell": {
+        "0": "10YR 6/2",
+        "1": "10YR 5/2"
+      }
+    },
+    {
+      "id": {
+        "name": "Vinton2",
+        "component": "Vinton",
+        "score_loc": 0.071,
+        "rank_loc": "Not Displayed"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": "634539",
+          "componentID": "27479547",
+          "componentKind": "Variant",
+          "dataSource": "SSURGO",
+          "textureInfill": "No",
+          "rfvInfill": "No",
+          "componentPct": 3,
+          "distance": 99.0,
+          "minCompDistance": 0.0,
+          "slope": 0.5,
+          "nirrcapcl": "7",
+          "nirrcapscl": "s",
+          "nirrcapunit": "None",
+          "irrcapcl": "3",
+          "irrcapscl": "e",
+          "irrcapunit": "None",
+          "taxsubgrp": "Typic Torrifluvents",
+          "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=glendale",
+          "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#glendale"
+        },
+        "siteDescription": "The Vinton series consists of deep, somewhat excessively drained soils that formed in mixed alluvium.   Vinton soils are on flood plains and have slopes of 0 to 3 percent.  The mean annual precipitation is about 10 inches and the mean annual air temperature is about 62 degrees F."
+      },
+      "esd": {
+        "ESD": {
+          "ecoclassid": [
+            "R042BB014NM"
+          ],
+          "ecoclassname": [
+            "Loamy, Desert Shrub"
+          ],
+          "edit_url": [
+            "https://edit.sc.egov.usda.gov/catalogs/esd/042B/R042BB014NM"
+          ]
+        }
+      },
+      "top_depth": {
+        "0": 0,
+        "1": 46
+      },
+      "bottom_depth": {
+        "0": 46,
+        "1": 152
+      },
+      "sand": {
+        "0": 34.67,
+        "1": 10.0
+      },
+      "clay": {
+        "0": 26.33,
+        "1": 33.5
+      },
+      "texture": {
+        "0": "Loam",
+        "1": "Silty clay loam"
+      },
+      "rock_fragments": {
+        "0": 0,
+        "1": 0
+      },
+      "cec": {
+        "0": 13.5,
+        "1": 7.0
+      },
+      "ph": {
+        "0": 7.9,
+        "1": 7.9
+      },
+      "ec": {
+        "0": 2.0,
+        "1": 2.0
+      },
+      "lab": {
+        "0": [
+          56.0,
+          3.09,
+          12.87
+        ],
+        "1": [
+          51.61,
+          3.24,
+          12.7
+        ]
+      },
+      "munsell": {
+        "0": "10YR 5/2",
+        "1": "10YR 5/2"
+      }
+    },
+    {
+      "id": {
+        "name": "Vinton3",
+        "component": "Vinton",
+        "score_loc": 0.071,
+        "rank_loc": "Not Displayed"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": "634541",
+          "componentID": "27479860",
+          "componentKind": "Series",
+          "dataSource": "SSURGO",
+          "textureInfill": "Yes",
+          "rfvInfill": "No",
+          "componentPct": 30,
+          "distance": 117.0,
+          "minCompDistance": 0.0,
+          "slope": 1.0,
+          "nirrcapcl": "7",
+          "nirrcapscl": "s",
+          "nirrcapunit": "None",
+          "irrcapcl": "3",
+          "irrcapscl": "s",
+          "irrcapunit": "None",
+          "taxsubgrp": "Typic Torrifluvents",
+          "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=vinton",
+          "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#vinton"
+        },
+        "siteDescription": "The Vinton series consists of deep, somewhat excessively drained soils that formed in mixed alluvium.   Vinton soils are on flood plains and have slopes of 0 to 3 percent.  The mean annual precipitation is about 10 inches and the mean annual air temperature is about 62 degrees F."
+      },
+      "esd": {
+        "ESD": {
+          "ecoclassid": [
+            "R042BB018NM"
+          ],
+          "ecoclassname": [
+            "Bottomland, Desert Shrub"
+          ],
+          "edit_url": [
+            "https://edit.sc.egov.usda.gov/catalogs/esd/042B/R042BB018NM"
+          ]
+        }
+      },
+      "top_depth": {
+        "0": 0,
+        "1": 30,
+        "2": 58
+      },
+      "bottom_depth": {
+        "0": 30,
+        "1": 58,
+        "2": 152
+      },
+      "sand": {
+        "0": "",
+        "1": "",
+        "2": 94.6
+      },
+      "clay": {
+        "0": 20.0,
+        "1": 14.0,
+        "2": 4.0
+      },
+      "texture": {
+        "0": "",
+        "1": "",
+        "2": "Sand"
+      },
+      "rock_fragments": {
+        "0": 0,
+        "1": 3,
+        "2": 33
+      },
+      "cec": {
+        "0": 11.0,
+        "1": 7.0,
+        "2": ""
+      },
+      "ph": {
+        "0": 7.9,
+        "1": 8.2,
+        "2": 8.2
+      },
+      "ec": {
+        "0": 2.0,
+        "1": 2.0,
+        "2": 1.0
+      },
+      "lab": {
+        "0": [
+          51.62,
+          4.87,
+          18.96
+        ],
+        "1": [
+          51.63,
+          6.61,
+          25.48
+        ],
+        "2": [
+          51.63,
+          6.06,
+          23.4
+        ]
+      },
+      "munsell": {
+        "0": "10YR 5/3",
+        "1": "10YR 5/4",
+        "2": "10YR 5/4"
+      }
+    },
+    {
+      "id": {
+        "name": "Vinton5",
+        "component": "Vinton",
+        "score_loc": 0.071,
+        "rank_loc": "Not Displayed"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": "634540",
+          "componentID": "27479554",
+          "componentKind": "Series",
+          "dataSource": "SSURGO",
+          "textureInfill": "No",
+          "rfvInfill": "No",
+          "componentPct": 30,
+          "distance": 362.0,
+          "minCompDistance": 0.0,
+          "slope": 0.5,
+          "nirrcapcl": "7",
+          "nirrcapscl": "s",
+          "nirrcapunit": "None",
+          "irrcapcl": "2",
+          "irrcapscl": "e",
+          "irrcapunit": "None",
+          "taxsubgrp": "Typic Torrifluvents",
+          "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=vinton",
+          "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#vinton"
+        },
+        "siteDescription": "The Vinton series consists of deep, somewhat excessively drained soils that formed in mixed alluvium.   Vinton soils are on flood plains and have slopes of 0 to 3 percent.  The mean annual precipitation is about 10 inches and the mean annual air temperature is about 62 degrees F."
+      },
+      "esd": {
+        "ESD": {
+          "ecoclassid": [
+            "R042BB011NM"
+          ],
+          "ecoclassname": [
+            "Deep Sand, Desert Shrub"
+          ],
+          "edit_url": [
+            "https://edit.sc.egov.usda.gov/catalogs/esd/042B/R042BB011NM"
+          ]
+        }
+      },
+      "top_depth": {
+        "0": 0,
+        "1": 33
+      },
+      "bottom_depth": {
+        "0": 33,
+        "1": 152
+      },
+      "sand": {
+        "0": 82.0,
+        "1": 93.0
+      },
+      "clay": {
+        "0": 9.0,
+        "1": 6.0
+      },
+      "texture": {
+        "0": "Loamy sand",
+        "1": "Sand"
+      },
+      "rock_fragments": {
+        "0": 0,
+        "1": 0
+      },
+      "cec": {
+        "0": 6.7,
+        "1": 4.5
+      },
+      "ph": {
+        "0": 8.2,
+        "1": 8.0
+      },
+      "ec": {
+        "0": 3.0,
+        "1": 1.0
+      },
+      "lab": {
+        "0": [
+          51.62,
+          5.03,
+          19.55
+        ],
+        "1": [
+          51.63,
+          6.17,
+          23.84
+        ]
+      },
+      "munsell": {
+        "0": "10YR 5/3",
+        "1": "10YR 5/4"
+      }
+    },
+    {
+      "id": {
+        "name": "Agua2",
+        "component": "Agua",
+        "score_loc": 0.042,
+        "rank_loc": "Not Displayed"
+      },
+      "site": {
+        "siteData": {
+          "mapunitID": "634572",
+          "componentID": "27479679",
+          "componentKind": "Series",
+          "dataSource": "SSURGO",
+          "textureInfill": "Yes",
+          "rfvInfill": "No",
+          "componentPct": 4,
+          "distance": 2.0,
+          "minCompDistance": 0.0,
+          "slope": 0.5,
+          "nirrcapcl": "7",
+          "nirrcapscl": "s",
+          "nirrcapunit": "None",
+          "irrcapcl": "2",
+          "irrcapscl": "s",
+          "irrcapunit": "None",
+          "taxsubgrp": "Typic Torrifluvents",
+          "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=vinton",
+          "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#vinton"
+        },
+        "siteDescription": "The Agua series consists of very deep, well drained soils that formed in recent stream alluvium from mixed sources. Agua soils are on flood plains, and alluvial fans. They have slopes of 0 to 3 percent. The average annual precipitation is about 9 inches (229 mm) and the mean annual air temperature is about 63 degrees F (17 degrees C)."
+      },
+      "esd": {
+        "ESD": {
+          "ecoclassid": [
+            "R042BB018NM"
+          ],
+          "ecoclassname": [
+            "Bottomland, Desert Shrub"
+          ],
+          "edit_url": [
+            "https://edit.sc.egov.usda.gov/catalogs/esd/042B/R042BB018NM"
+          ]
+        }
+      },
+      "top_depth": {
+        "0": 0
+      },
+      "bottom_depth": {
+        "0": 0
+      },
+      "sand": {
+        "0": NaN
+      },
+      "clay": {
+        "0": NaN
+      },
+      "texture": {
+        "0": NaN
+      },
+      "rock_fragments": {
+        "0": 0
+      },
+      "cec": {
+        "0": ""
+      },
+      "ph": {
+        "0": ""
+      },
+      "ec": {
+        "0": ""
+      },
+      "lab": {
+        "0": [
+          "",
+          "",
+          ""
+        ]
+      },
+      "munsell": {
+        "0": ""
+      }
+    }
+  ]
+}
