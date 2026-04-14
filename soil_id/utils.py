@@ -1442,7 +1442,26 @@ def process_site_data(mucompdata_pd):
         "comppct_r",
         "distance",
         "slope_r",
+        "slope_l",
+        "slope_h",
         "elev_r",
+        "elev_l",
+        "elev_h",
+        "aspectrep",
+        "aspect_northerness",
+        "aspect_easterness",
+        "shapedown",
+        "shapeacross",
+        "shape_vert_class",
+        "shape_horiz_class",
+        "geomftname",
+        "geomfname",
+        "geomfmod",
+        "geomposmntn",
+        "geomposhill",
+        "geompostrce",
+        "geomposflats",
+        "landscape_class",
         "nirrcapcl",
         "nirrcapscl",
         "nirrcapunit",
@@ -1452,13 +1471,30 @@ def process_site_data(mucompdata_pd):
         "taxorder",
         "taxsubgrp",
     ]
+
+    for col in relevant_columns:
+        if col not in mucompdata_pd.columns:
+            mucompdata_pd[col] = np.nan
+
     mucompdata_pd = mucompdata_pd[relevant_columns].sort_values(["distance", "cokey"])
 
     # Replace 'NULL' with NaN and convert numeric columns to float
     mucompdata_pd.replace("NULL", np.nan, inplace=True)
-    mucompdata_pd[["slope_r", "elev_r", "distance"]] = mucompdata_pd[
-        ["slope_r", "elev_r", "distance"]
-    ].astype(float)
+    numeric_columns = [
+        "distance",
+        "slope_r",
+        "slope_l",
+        "slope_h",
+        "elev_r",
+        "elev_l",
+        "elev_h",
+        "aspectrep",
+        "aspect_northerness",
+        "aspect_easterness",
+    ]
+    mucompdata_pd[numeric_columns] = mucompdata_pd[numeric_columns].apply(
+        pd.to_numeric, errors="coerce"
+    )
 
     # Convert specified columns to string
     cols_to_str = [
@@ -1467,6 +1503,18 @@ def process_site_data(mucompdata_pd):
         "compname",
         "compkind",
         "majcompflag",
+        "shapedown",
+        "shapeacross",
+        "shape_vert_class",
+        "shape_horiz_class",
+        "geomftname",
+        "geomfname",
+        "geomfmod",
+        "geomposmntn",
+        "geomposhill",
+        "geompostrce",
+        "geomposflats",
+        "landscape_class",
         "nirrcapcl",
         "nirrcapscl",
         "nirrcapunit",
@@ -2574,7 +2622,7 @@ def update_esd_data(df):
         elif len(unique_ids) == 1 and len(unique_names) == 1:
             # Fill missing values with existing unique values if present
             group.loc[:, "ecoclassid"] = group["ecoclassid"].fillna(unique_ids[0])
-            group.loc[:, "ecoclassname"] = group["ecoclassname"].fillna(unique_ids[0])
+            group.loc[:, "ecoclassname"] = group["ecoclassname"].fillna(unique_names[0])
 
         # Handle URLs separately as they might not exist
         urls = group["edit_url"].dropna().unique()

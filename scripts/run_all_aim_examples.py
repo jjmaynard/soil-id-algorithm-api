@@ -13,7 +13,12 @@ from soil_id.tests.us.test_study_dataset_inputs import (
     TERRAIN_DATA_DIR,
     _to_float,
 )
-from soil_id.landscape_crosswalk import build_sda_landscape_label, crosswalk_landscape_class
+from soil_id.landscape_crosswalk import (
+    aim_to_standard_class,
+    build_sda_landscape_label,
+    crosswalk_landscape_class,
+    ssurgo_to_standard_class,
+)
 from soil_id.us_soil import list_soils, rank_soils
 
 
@@ -161,7 +166,21 @@ def _build_component_metadata(list_output_data):
         )
         metadata = {
             "landscape_type": landscape_type,
-            "landscape_class": _norm_text(row.get("landscape_class")),
+            "landscape_class": _norm_text(
+                row.get("landscape_class")
+                or ssurgo_to_standard_class(
+                    geomftname=row.get("geomftname"),
+                    geomfname=row.get("geomfname"),
+                    geomfmod=row.get("geomfmod"),
+                    geomposmntn=row.get("geomposmntn"),
+                    geomposhill=row.get("geomposhill"),
+                    geompostrce=row.get("geompostrce"),
+                    geomposflats=row.get("geomposflats"),
+                    shapeacross=row.get("shapeacross"),
+                    shapedown=row.get("shapedown"),
+                    mode="base",
+                )
+            ),
             "ecological_site": _norm_ecological_site(
                 row.get("ecoclassid_update") or row.get("ecoclassid")
             ).upper(),
@@ -260,6 +279,13 @@ def _extract_plot_metadata(row):
         "n_ecosites_dominant": _norm_text(row.get("n_ecosites_dominant")),
         "multiplicity_score": _norm_text(row.get("multiplicity_score")),
     }
+
+
+def _aim_landscape_class(value):
+    mapped = aim_to_standard_class(value)
+    if mapped in (None, "other"):
+        return _norm_text(crosswalk_landscape_class(value, mode="base"))
+    return _norm_text(mapped)
 
 
 def _rfv_bucket(value):
@@ -450,27 +476,20 @@ def main():
             expected_soil_series = _pick_expected_soil_series(row)
             expected_ecological_site = _norm_text(row.get("EcolSite"))
             expected_landscape_raw = _norm_text(row.get("LandscapeType"))
-            expected_landscape_class = _norm_text(
-                crosswalk_landscape_class(expected_landscape_raw, mode="base")
-            )
+            expected_landscape_class = _aim_landscape_class(expected_landscape_raw)
             plot_metadata = _extract_plot_metadata(row)
 
             # AIM reference values — prefer SDA-matched component name over raw recorded name
             aim_expected_soil_series = _norm_text(row.get("aim_series_component_name")) or expected_soil_series
             aim_expected_eco_site = _norm_text(row.get("EcolSite_AIM")) or expected_ecological_site
             _aim_lc_raw = _norm_text(row.get("LandscapeType_AIM")) or expected_landscape_raw
-            aim_expected_landscape_class = (
-                _norm_text(crosswalk_landscape_class(_aim_lc_raw, mode="base"))
-                or expected_landscape_class
-            )
+            aim_expected_landscape_class = _aim_landscape_class(_aim_lc_raw) or expected_landscape_class
 
             # QC reference values — prefer SDA-matched component name over raw recorded name
             qc_expected_soil_series = _norm_text(row.get("qc_series_component_name"))
             qc_expected_eco_site = _norm_text(row.get("EcolSite_QC")) or expected_ecological_site
             _qc_lc_raw = _norm_text(row.get("LandscapeType_QC")) or expected_landscape_raw
-            qc_expected_landscape_class = _norm_text(
-                crosswalk_landscape_class(_qc_lc_raw, mode="base")
-            )
+            qc_expected_landscape_class = _aim_landscape_class(_qc_lc_raw)
 
             # Change flags from QC review
             landscape_class_qc_changed = (
@@ -732,8 +751,8 @@ def main():
                     "expected_soil_series": _pick_expected_soil_series(row),
                     "expected_ecological_site": _norm_text(row.get("EcolSite")),
                     "expected_landscape_type": _norm_text(row.get("LandscapeType")),
-                    "expected_landscape_class": _norm_text(
-                        crosswalk_landscape_class(_norm_text(row.get("LandscapeType")), mode="base")
+                    "expected_landscape_class": _aim_landscape_class(
+                        _norm_text(row.get("LandscapeType"))
                     ),
                     "expected_rank_baseline": "",
                     "expected_rank_terrain": "",
@@ -759,19 +778,13 @@ def main():
                     "top_changed": False,
                     "aim_expected_soil_series": _norm_text(row.get("aim_series_component_name")) or _pick_expected_soil_series(row),
                     "aim_expected_ecological_site": _norm_text(row.get("EcolSite_AIM")) or _norm_text(row.get("EcolSite")),
-                    "aim_expected_landscape_class": _norm_text(
-                        crosswalk_landscape_class(
-                            _norm_text(row.get("LandscapeType_AIM")) or _norm_text(row.get("LandscapeType")),
-                            mode="base",
-                        )
+                    "aim_expected_landscape_class": _aim_landscape_class(
+                        _norm_text(row.get("LandscapeType_AIM")) or _norm_text(row.get("LandscapeType"))
                     ),
                     "qc_expected_soil_series": _norm_text(row.get("qc_series_component_name")),
                     "qc_expected_ecological_site": _norm_text(row.get("EcolSite_QC")) or _norm_text(row.get("EcolSite")),
-                    "qc_expected_landscape_class": _norm_text(
-                        crosswalk_landscape_class(
-                            _norm_text(row.get("LandscapeType_QC")) or _norm_text(row.get("LandscapeType")),
-                            mode="base",
-                        )
+                    "qc_expected_landscape_class": _aim_landscape_class(
+                        _norm_text(row.get("LandscapeType_QC")) or _norm_text(row.get("LandscapeType"))
                     ),
                     "landscape_class_qc_changed": str(row.get("LandscapeType_qc_changed", "")).strip().upper() == "TRUE",
                     "any_qc_changed": str(row.get("Any_qc_changed", "")).strip().upper() == "TRUE",

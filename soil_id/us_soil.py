@@ -17,6 +17,7 @@
 import collections
 import io
 import logging
+import math
 import re
 from dataclasses import dataclass
 
@@ -28,8 +29,15 @@ from pandas import json_normalize
 # local libraries
 import soil_id.config
 from .color import getProfileLAB, lab2munsell, munsell2rgb
+from .landscape_crosswalk import (
+    aim_to_standard_class,
+    build_sda_landscape_label,
+    crosswalk_landscape_class,
+    ssurgo_to_standard_class,
+)
 from .rank_utils import finalize_rank_output
 from .services import get_elev_data, get_soil_series_data, get_soilweb_data, sda_return
+from .terrain_crosswalk import crosswalk_slope_shape
 
 # Try to import soil_sim, but make it optional
 try:
@@ -83,6 +91,114 @@ class SoilListOutputData:
     soil_list_json: dict
     rank_data_csv: str
     map_unit_component_data_csv: str
+
+
+def _normalize_terrain_mode(mode):
+    if mode in ("base", "strict", "loose"):
+        return mode
+    return "base"
+
+
+def _to_optional_float(value):
+    if value is None:
+        return None
+    try:
+        out = float(value)
+    except (TypeError, ValueError):
+        return None
+    return None if np.isnan(out) else out
+
+
+def _fetch_ssurgo_terrain_data(comp_key):
+    terrain_columns = [
+        "cokey",
+        "slope_l",
+        "slope_h",
+        "elev_l",
+        "elev_h",
+        "aspectrep",
+        "shapedown",
+        "shapeacross",
+        "geomftname",
+        "geomfname",
+        "geomfmod",
+        "geomposmntn",
+        "geomposhill",
+        "geompostrce",
+        "geomposflats",
+    ]
+    empty = pd.DataFrame(columns=terrain_columns)
+
+    if not comp_key:
+        return empty
+
+    clean_keys = []
+    for cokey in comp_key:
+        key = re.sub(r"\.0+$", "", str(cokey).strip())
+        if key and key.lower() != "nan":
+            clean_keys.append(key)
+
+    if not clean_keys:
+        return empty
+
+    q_str = ", ".join([f"'{key}'" for key in clean_keys])
+    query = f"""
+        SELECT
+            c.cokey,
+            c.slope_l,
+            c.slope_h,
+            c.elev_l,
+            c.elev_h,
+            c.aspectrep,
+            ss.shapedown,
+            ss.shapeacross,
+            gm.geomftname,
+            gm.geomfname,
+            gm.geomfmod,
+            gc.geomposmntn,
+            gc.geomposhill,
+            gc.geompostrce,
+            gc.geomposflats
+        FROM component c
+        LEFT JOIN cogeomordesc gm
+            ON c.cokey = gm.cokey
+            AND gm.rvindicator = 'Yes'
+        LEFT JOIN cosurfmorphgc gc
+            ON gm.cogeomdkey = gc.cogeomdkey
+        LEFT JOIN cosurfmorphss ss
+            ON gm.cogeomdkey = ss.cogeomdkey
+        WHERE c.cokey IN ({q_str})
+        ORDER BY c.cokey
+    """
+
+    try:
+        terrain_pd = sda_return(query)
+    except Exception as exc:
+        logging.warning("Terrain SDA query failed: %s", exc)
+        return empty
+
+    if terrain_pd is None or terrain_pd.empty:
+        return empty
+
+    # sda_return returns a DataFrame with a "Table" cell that contains
+    # [header_row, data_row_1, data_row_2, ...]. Expand it to tabular form.
+    if "Table" in terrain_pd.columns:
+        table = terrain_pd["Table"].iloc[0]
+        if not table or len(table) < 2:
+            return empty
+        terrain_pd = pd.DataFrame(table[1:], columns=table[0])
+
+    if "cokey" in terrain_pd.columns:
+        terrain_pd["cokey"] = terrain_pd["cokey"].astype(str).str.strip().str.replace(
+            r"\.0+$", "", regex=True
+        )
+
+    for col in terrain_columns:
+        if col not in terrain_pd.columns:
+            terrain_pd[col] = np.nan
+
+    terrain_pd = terrain_pd[terrain_columns].drop_duplicates(subset=["cokey"], keep="first")
+    return terrain_pd
 
 
 ############################################################################################
@@ -238,9 +354,95 @@ def list_soils(lon, lat, sim=True):
 
     muhorzdata_pd.reset_index(drop=True, inplace=True)
 
-    # Extract unique cokeys and subset mucompdata_pd
+    # Extract unique cokeys and normalize types so SDA terrain joins are stable.
+    muhorzdata_pd["cokey"] = (
+        muhorzdata_pd["cokey"].astype(str).str.strip().str.replace(r"\.0+$", "", regex=True)
+    )
+    mucompdata_pd["cokey"] = (
+        mucompdata_pd["cokey"].astype(str).str.strip().str.replace(r"\.0+$", "", regex=True)
+    )
     comp_key = muhorzdata_pd["cokey"].unique().tolist()
     mucompdata_pd = mucompdata_pd[mucompdata_pd["cokey"].isin(comp_key)]
+
+    terrain_merge_columns = [
+        "slope_l",
+        "slope_h",
+        "elev_l",
+        "elev_h",
+        "aspectrep",
+        "shapedown",
+        "shapeacross",
+        "geomftname",
+        "geomfname",
+        "geomfmod",
+        "geomposmntn",
+        "geomposhill",
+        "geompostrce",
+        "geomposflats",
+    ]
+    if data_source == "SSURGO":
+        terrain_pd = _fetch_ssurgo_terrain_data(comp_key)
+        if not terrain_pd.empty:
+            terrain_pd["cokey"] = terrain_pd["cokey"].astype(str)
+        mucompdata_pd = mucompdata_pd.merge(
+            terrain_pd,
+            on="cokey",
+            how="left",
+            suffixes=("", "_terrain"),
+        )
+
+        # Coalesce any duplicate terrain columns created by the merge and
+        # guarantee the canonical column names exist.
+        for col in terrain_merge_columns:
+            if col == "cokey":
+                continue
+
+            terrain_col = f"{col}_terrain"
+            if col in mucompdata_pd.columns and terrain_col in mucompdata_pd.columns:
+                mucompdata_pd[col] = mucompdata_pd[col].replace(
+                    ["", "nan", "NaN", "None", "none", "NULL", "null"], np.nan
+                )
+                mucompdata_pd[terrain_col] = mucompdata_pd[terrain_col].replace(
+                    ["", "nan", "NaN", "None", "none", "NULL", "null"], np.nan
+                )
+                mucompdata_pd[col] = mucompdata_pd[col].fillna(mucompdata_pd[terrain_col])
+                mucompdata_pd.drop(columns=[terrain_col], inplace=True)
+            elif col not in mucompdata_pd.columns and terrain_col in mucompdata_pd.columns:
+                mucompdata_pd[terrain_col] = mucompdata_pd[terrain_col].replace(
+                    ["", "nan", "NaN", "None", "none", "NULL", "null"], np.nan
+                )
+                mucompdata_pd[col] = mucompdata_pd[terrain_col]
+                mucompdata_pd.drop(columns=[terrain_col], inplace=True)
+            elif col not in mucompdata_pd.columns:
+                mucompdata_pd[col] = np.nan
+    else:
+        for col in terrain_merge_columns:
+            mucompdata_pd[col] = np.nan
+
+    aspect_vals = pd.to_numeric(mucompdata_pd["aspectrep"], errors="coerce")
+    aspect_rad = np.deg2rad(aspect_vals)
+    mucompdata_pd["aspect_northerness"] = np.cos(aspect_rad)
+    mucompdata_pd["aspect_easterness"] = np.sin(aspect_rad)
+    mucompdata_pd.loc[aspect_vals.isna(), ["aspect_northerness", "aspect_easterness"]] = np.nan
+
+    mucompdata_pd["shape_vert_class"] = mucompdata_pd["shapedown"].apply(crosswalk_slope_shape)
+    mucompdata_pd["shape_horiz_class"] = mucompdata_pd["shapeacross"].apply(crosswalk_slope_shape)
+
+    def _map_landscape_class(row):
+        return ssurgo_to_standard_class(
+            geomftname=row.get("geomftname"),
+            geomfname=row.get("geomfname"),
+            geomfmod=row.get("geomfmod"),
+            geomposmntn=row.get("geomposmntn"),
+            geomposhill=row.get("geomposhill"),
+            geompostrce=row.get("geompostrce"),
+            geomposflats=row.get("geomposflats"),
+            shapeacross=row.get("shapeacross"),
+            shapedown=row.get("shapedown"),
+            mode="base",
+        )
+
+    mucompdata_pd["landscape_class"] = mucompdata_pd.apply(_map_landscape_class, axis=1)
 
     # Sort mucompdata_pd based on 'cond_prob' and 'distance'
     mucompdata_pd.sort_values(
@@ -1002,21 +1204,19 @@ def list_soils(lon, lat, sim=True):
                     munsell_lyrs.append(dict(zip(hzb_lyrs[index].keys(), munsell_dummy)))
 
             # Series URL Generation
-            # Initialize lists to store series URLs
-            SDE_URL = []
-            SEE_URL = []
+            # Build a cokey-keyed dict so URL lookup is robust to reordering
+            cokey_to_urls = {}
 
-            # Group data by 'cokey'
-            OSDhorzdata_group_cokey = [g for _, g in OSDhorzdata_pd.groupby("cokey", sort=False)]
-
-            for index, group in enumerate(OSDhorzdata_group_cokey):
-                # Check if compkind is not in OSD_compkind or if series contains any null values
+            # Group data by 'cokey' - sort=False preserves cokey_Index order
+            for _, group in OSDhorzdata_pd.groupby("cokey", sort=False):
+                cokey = group["cokey"].iloc[0]
+                comp_row = mucompdata_pd[mucompdata_pd["cokey"] == cokey]
                 if (
-                    mucompdata_pd.loc[index]["compkind"] not in OSD_compkind
+                    comp_row.empty
+                    or comp_row["compkind"].iloc[0] not in OSD_compkind
                     or group["series"].isnull().any()
                 ):
-                    SDE_URL.append("")
-                    SEE_URL.append("")
+                    cokey_to_urls[cokey] = {"sde": "", "see": ""}
                 else:
                     # Extract compname, convert to lowercase, remove trailing numbers, and replace
                     # spaces with underscores
@@ -1024,17 +1224,17 @@ def list_soils(lon, lat, sim=True):
                     comp = re.sub(r"\d+$", "", comp)
                     comp = comp.replace(" ", "_")
 
-                    # Create and append URLs
-                    SDE_URL.append(f"https://casoilresource.lawr.ucdavis.edu/sde/?series={comp}")
-                    SEE_URL.append(f"https://casoilresource.lawr.ucdavis.edu/see/#{comp}")
+                    cokey_to_urls[cokey] = {
+                        "sde": f"https://casoilresource.lawr.ucdavis.edu/sde/?series={comp}",
+                        "see": f"https://casoilresource.lawr.ucdavis.edu/see/#{comp}",
+                    }
 
         else:
             # Initialize lists to store data layers and URLs
             lab_lyrs = []
             lab_intpl_lyrs = []
             munsell_lyrs = []
-            SDE_URL = []
-            SEE_URL = []
+            cokey_to_urls = {}
 
             # Iterate over each entry in mucompdata_pd
             for i in range(len(mucompdata_pd)):
@@ -1055,17 +1255,15 @@ def list_soils(lon, lat, sim=True):
                 lab_lyrs.append(dict(zip(keys, lab_dummy)))
                 munsell_lyrs.append(dict(zip(keys, munsell_dummy)))
 
-                # Append empty URLs
-                SDE_URL.append("")
-                SEE_URL.append("")
+                # Create empty URLs keyed by cokey
+                cokey_to_urls[mucompdata_pd.iloc[i]["cokey"]] = {"sde": "", "see": ""}
 
     else:
         # Initialize lists to store data layers and URLs
         lab_lyrs = []
         lab_intpl_lyrs = []
         munsell_lyrs = []
-        SDE_URL = []
-        SEE_URL = []
+        cokey_to_urls = {}
 
         # Iterate over each entry in mucompdata_pd
         for i in range(len(mucompdata_pd)):
@@ -1086,9 +1284,8 @@ def list_soils(lon, lat, sim=True):
             lab_lyrs.append(dict(zip(keys, lab_dummy)))
             munsell_lyrs.append(dict(zip(keys, munsell_dummy)))
 
-            # Append empty URLs
-            SDE_URL.append("")
-            SEE_URL.append("")
+            # Create empty URLs keyed by cokey
+            cokey_to_urls[mucompdata_pd.iloc[i]["cokey"]] = {"sde": "", "see": ""}
 
     # Subset datasets to exclude pedons without any depth information
     cokeys_with_depth = mucompdata_pd[mucompdata_pd["comp_max_bottom"] > 0].cokey.unique()
@@ -1269,7 +1466,7 @@ def list_soils(lon, lat, sim=True):
         ESDcompdata_pd = update_esd_data(ESDcompdata_pd)
 
         # Aggregate the ESD components for output
-        for _, group in ESDcompdata_pd.groupby("cokey", sort=True):
+        for _, group in ESDcompdata_pd.groupby("cokey", sort=False):
             esd_data = {
                 "ESD": {
                     "ecoclassid": group["ecoclassid"].tolist(),
@@ -1491,8 +1688,8 @@ def list_soils(lon, lat, sim=True):
                 "irrcapscl": row["irrcapscl"],
                 "irrcapunit": row["irrcapunit"],
                 "taxsubgrp": row["taxsubgrp"],
-                "sdeURL": SDE_URL[idx],
-                "seeURL": SEE_URL[idx],
+                "sdeURL": cokey_to_urls.get(row["cokey"], {}).get("sde", ""),
+                "seeURL": cokey_to_urls.get(row["cokey"], {}).get("see", ""),
             },
             "siteDescription": row["brief_narrative"],
         }
@@ -1615,6 +1812,11 @@ def rank_soils(
     pElev,
     bedrock,
     cracks,
+    pAspect=None,
+    pSlopeShapeVert=None,
+    pSlopeShapeHoriz=None,
+    pLandscape=None,
+    pLandscapeMode="base",
 ):
     """
     TODO: Future testing to see if deltaE2000 values should be incorporated
@@ -1624,6 +1826,13 @@ def rank_soils(
     # Check if list_output_data is a string (error message) instead of expected object
     if isinstance(list_output_data, str):
         return {"error": f"Cannot rank soils: {list_output_data}"}
+
+    # Normalize bedrock depth to an integer index for range/slicing operations.
+    if bedrock is not None:
+        try:
+            bedrock = int(round(float(bedrock)))
+        except (TypeError, ValueError):
+            bedrock = None
 
     # ---------------------------------------------------------------------------------------
     # ------ Load in user data --------#
@@ -1895,11 +2104,12 @@ def rank_soils(
 
         # Calculate similarity for each depth slice
         dis_mat_list = []
-        for i in (
+        dis_slice_positions = []
+        for pos, i in enumerate(
             soil_matrix.index
         ):  # i should be an index of p_hz_data depth slices, e.g. if user only enters
             # 100-120cm data, then i = 100:120
-            slice_data = [horz.loc[i] for horz in horz_vars]
+            slice_data = [horz.reindex([i]).iloc[0] for horz in horz_vars]
             sliceT = pd.concat(slice_data, axis=1).T
             """
             Not all depth slices have the same user recorded data. Here we filter out data columns
@@ -1909,6 +2119,7 @@ def rank_soils(
             with missing data will later be assigned the max dissimilarity across all horizons
             """
             # Filter columns based on available data
+            sample_pedon_slice_vars = []
             if bedrock is None or (bedrock is not None and i < bedrock):
                 sample_pedon_slice_vars = (
                     sliceT.dropna(axis="columns").drop(["compname"], axis=1).columns.tolist()
@@ -1920,6 +2131,16 @@ def rank_soils(
                         .drop(["compname"], axis=1)
                         .columns.tolist()
                     )
+            else:
+                # Below user-entered bedrock, compare no-soil (pedon) to soil (components)
+                # using any component variables available at this depth.
+                sample_pedon_slice_vars = (
+                    sliceT.drop(["compname"], axis=1)
+                    .dropna(axis="columns", how="all")
+                    .columns.tolist()
+                )
+            if not sample_pedon_slice_vars:
+                continue
             sliceT = sliceT[sample_pedon_slice_vars]
 
             theoretical_prop_ranges = [global_prop_ranges[c] for c in sample_pedon_slice_vars]
@@ -1928,66 +2149,98 @@ def rank_soils(
             )  # Equal weighting given to all soil variables
 
             dis_mat_list.append(D)
+            dis_slice_positions.append(pos)
 
-        # Determine if any components have all NaNs at every slice
-        dis_mat_nan_check = np.ma.MaskedArray(dis_mat_list, mask=np.isnan(dis_mat_list))
-        D_check = np.ma.average(dis_mat_nan_check, axis=0)
-        Rank_Filter["rank_status"] = [
-            "Not Ranked" if np.ma.is_masked(x) else "Ranked" for x in D_check[0][1:]
-        ]
+        if not dis_mat_list:
+            D_horz = None
+        else:
+            # Determine if any components have all NaNs at every slice
+            dis_mat_nan_check = np.ma.MaskedArray(dis_mat_list, mask=np.isnan(dis_mat_list))
+            D_check = np.ma.average(dis_mat_nan_check, axis=0)
+            Rank_Filter["rank_status"] = [
+                "Not Ranked" if np.ma.is_masked(x) else "Ranked" for x in D_check[0][1:]
+            ]
 
-        # Maximum dissimilarity
-        dis_max = 1.0
+            # Maximum dissimilarity
+            dis_max = 1.0
 
-        # Apply depth weight
-        depth_weight = np.concatenate((np.repeat(0.2, 20), np.repeat(1.0, 180)), axis=0)
-        depth_weight = depth_weight[pedon_slice_index]
+            # Apply depth weight
+            depth_weight = np.concatenate((np.repeat(0.2, 20), np.repeat(1.0, 180)), axis=0)
+            depth_weight = depth_weight[pedon_slice_index]
+            depth_weight_used = [depth_weight[p] for p in dis_slice_positions]
 
-        # Infill Nan data: soil vs non‑soil logic
-        for i, dis_mat in enumerate(dis_mat_list):
-            soil_slice = soil_matrix.iloc[i, :].values.astype(bool)
-            pedon_idx = 0  # assuming sample_pedon is always row 0
+            # Infill Nan data: soil vs non-soil logic
+            for k, dis_mat in enumerate(dis_mat_list):
+                soil_slice = soil_matrix.iloc[dis_slice_positions[k], :].values.astype(bool)
+                pedon_idx = 0  # assuming sample_pedon is always row 0
 
-            # 1) If pedon has data here, any NaN in pedon↔component → max dissimilarity
-            if soil_slice[pedon_idx]:
-                # components are those indices where soil_slice[j] is False
-                nonsoil_j = np.where(~soil_slice)[0]
-                for j in nonsoil_j:
-                    if np.isnan(dis_mat[pedon_idx, j]):
-                        dis_mat[pedon_idx, j] = dis_max
-                        dis_mat[j, pedon_idx] = dis_max
+                # 1) If pedon has data here, any NaN in pedon<->component -> max dissimilarity
+                if soil_slice[pedon_idx]:
+                    # components are those indices where soil_slice[j] is False
+                    nonsoil_j = np.where(~soil_slice)[0]
+                    for j in nonsoil_j:
+                        if np.isnan(dis_mat[pedon_idx, j]):
+                            dis_mat[pedon_idx, j] = dis_max
+                            dis_mat[j, pedon_idx] = dis_max
 
-            # 2) Every other NaN (component–component or missing–missing) → zero
-            dis_mat[np.isnan(dis_mat)] = 0.0
+                # 2) Every other NaN (component-component or missing-missing) -> zero
+                dis_mat[np.isnan(dis_mat)] = 0.0
 
-            dis_mat_list[i] = dis_mat
+                dis_mat_list[k] = dis_mat
 
-        # Weighted average of depth-wise dissimilarity matrices
-        dis_mat_list = np.ma.MaskedArray(dis_mat_list, mask=np.isnan(dis_mat_list))
-        D_sum = (
-            np.ma.average(dis_mat_list, axis=0, weights=depth_weight)
-            if depth_weight is not None
-            else np.ma.average(dis_mat_list, axis=0)
-        )
-        D_sum = np.ma.filled(D_sum, fill_value=np.nan)
-        D_horz = 1 - D_sum
+            # Weighted average of depth-wise dissimilarity matrices
+            dis_mat_list = np.ma.MaskedArray(dis_mat_list, mask=np.isnan(dis_mat_list))
+            D_sum = (
+                np.ma.average(dis_mat_list, axis=0, weights=depth_weight_used)
+                if depth_weight_used
+                else np.ma.average(dis_mat_list, axis=0)
+            )
+            D_sum = np.ma.filled(D_sum, fill_value=np.nan)
+            D_horz = 1 - D_sum
 
     else:
         D_horz = None
 
     # ---Site Data Similarity---
-    if pElev is None:
+    pSlope_val = _to_optional_float(pSlope)
+    pElev_val = _to_optional_float(pElev)
+    bedrock_val = _to_optional_float(bedrock)
+    pAspect_val = _to_optional_float(pAspect)
+
+    if pAspect_val in (-1.0, 999.0):
+        pAspect_val = None
+
+    obs_northerness = None
+    obs_easterness = None
+    if pAspect_val is not None:
+        aspect_radians = math.radians(pAspect_val % 360.0)
+        obs_northerness = math.cos(aspect_radians)
+        obs_easterness = math.sin(aspect_radians)
+
+    landscape_mode = _normalize_terrain_mode(pLandscapeMode)
+    obs_shape_vert = crosswalk_slope_shape(pSlopeShapeVert)
+    obs_shape_horiz = crosswalk_slope_shape(pSlopeShapeHoriz)
+    obs_landscape = aim_to_standard_class(pLandscape)
+    if obs_landscape in (None, "other"):
+        obs_landscape = crosswalk_landscape_class(pLandscape, mode=landscape_mode)
+
+    if pElev_val is None:
         pElev_dict = get_elev_data(lon, lat)
         try:
-            pElev = float(pElev_dict["value"])
+            pElev_val = float(pElev_dict["value"])
         except (KeyError, TypeError, ValueError):
-            pElev = None  # or some default
+            pElev_val = None
 
-    # 1) “Raw” guard on the three possible site inputs:
+    # 1) Raw guard on all possible site inputs.
     provided = {
-        "slope_r": pSlope,
-        "elev_r": pElev,
-        "bottom_depth": bedrock,  # this determines if bottom_depth is set
+        "slope_r": pSlope_val,
+        "elev_r": pElev_val,
+        "bottom_depth": bedrock_val,
+        "aspect_northerness": obs_northerness,
+        "aspect_easterness": obs_easterness,
+        "shape_vert_class": obs_shape_vert,
+        "shape_horiz_class": obs_shape_horiz,
+        "landscape_class": obs_landscape,
     }
 
     # 2) Figure out which of those are actually non-null
@@ -2001,17 +2254,27 @@ def rank_soils(
     if len(features) < 2:
         D_site = None
     else:
-        # 4) Build your one‐row pedon DataFrame (only slope/elev, depth comes from merge)
+        # 4) Build one-row pedon DataFrame for selected site features.
         pedon_dict = {"compname": "sample_pedon"}
-        if "slope_r" in features:
-            pedon_dict["slope_r"] = pSlope
-        if "elev_r" in features:
-            pedon_dict["elev_r"] = pElev
+        for feature in features:
+            if feature != "bottom_depth":
+                pedon_dict[feature] = provided[feature]
         pedon_df = pd.DataFrame([pedon_dict])
 
-        # 5) Build your map‐unit library (only the columns you need)
-        lib_cols = ["compname"] + [f for f in features if f in ("slope_r", "elev_r")]
+        # 5) Build map-unit library and apply slope range-aware adjustment.
+        lib_cols = ["compname"] + [f for f in features if f != "bottom_depth"]
         lib_df = mucompdata_pd[lib_cols].copy()
+
+        if (
+            "slope_r" in features
+            and pSlope_val is not None
+            and "slope_l" in mucompdata_pd.columns
+            and "slope_h" in mucompdata_pd.columns
+        ):
+            slope_l = pd.to_numeric(mucompdata_pd["slope_l"], errors="coerce")
+            slope_h = pd.to_numeric(mucompdata_pd["slope_h"], errors="coerce")
+            in_range = slope_l.notna() & slope_h.notna() & (slope_l <= pSlope_val) & (pSlope_val <= slope_h)
+            lib_df.loc[in_range.values, "slope_r"] = pSlope_val
 
         # 6) Stack them together
         full_df = pd.concat([pedon_df, lib_df], ignore_index=True)
@@ -2022,13 +2285,33 @@ def rank_soils(
                 slices_of_soil[["compname", "bottom_depth"]], on="compname", how="left"
             )
 
+        categorical_set = {"shape_vert_class", "shape_horiz_class", "landscape_class"}
+        categorical_features = [feature for feature in features if feature in categorical_set]
+        for feature in categorical_features:
+            codes = pd.Categorical(full_df[feature]).codes
+            full_df[feature] = np.where(codes < 0, np.nan, codes.astype(float))
+
         # 8) Build your weight vector
-        DEFAULT_WEIGHTS = {"slope_r": 1.0, "elev_r": 0.5, "bottom_depth": 1.5}
+        DEFAULT_WEIGHTS = {
+            "slope_r": 1.0,
+            "elev_r": 0.5,
+            "bottom_depth": 1.5,
+            "aspect_northerness": 0.25,
+            "aspect_easterness": 0.25,
+            "shape_vert_class": 0.25,
+            "shape_horiz_class": 0.25,
+            "landscape_class": 0.5,
+        }
         weights = np.array([DEFAULT_WEIGHTS[f] for f in features])
 
-        # 9) Compute Gower distances on exactly those feature columns
+        # 9) Compute Gower distances with categorical support.
         site_mat = full_df.set_index("compname")[features]
-        D_raw = gower_distances(site_mat, feature_weight=weights)
+        categorical_indices = [i for i, feature in enumerate(features) if feature in categorical_set]
+        D_raw = gower_distances(
+            site_mat,
+            feature_weight=weights,
+            categorical_features=categorical_indices if categorical_indices else None,
+        )
 
         # 10 Replace any NaNs with the max distance, then (optionally) convert to similarity
         D_site = np.where(np.isnan(D_raw), np.nanmax(D_raw), D_raw)

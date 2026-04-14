@@ -16,11 +16,12 @@
 import logging
 import time
 
+import pandas as pd
 import pytest
 from syrupy.extensions.json import JSONSnapshotExtension
 
 from soil_id.tests.utils import clean_soil_list_json
-from soil_id.us_soil import list_soils, rank_soils
+from soil_id.us_soil import SoilListOutputData, list_soils, rank_soils
 
 test_locations = [
     {"lon": -121.5111084, "lat": 45.6508331},
@@ -100,3 +101,91 @@ def test_empty_rank():
         bedrock=None,
         cracks=None,
     )
+
+
+def test_rank_soils_terrain_inputs_change_scores():
+    rank_df = pd.DataFrame(
+        {
+            "compname": ["alpha", "beta"],
+            "sandpct_intpl": [40.0, 40.0],
+            "claypct_intpl": [20.0, 20.0],
+            "rfv_intpl": [5.0, 5.0],
+            "l": [50.0, 50.0],
+            "a": [5.0, 5.0],
+            "b": [20.0, 20.0],
+        }
+    )
+
+    comp_df = pd.DataFrame(
+        {
+            "compname": ["alpha", "beta"],
+            "compname_grp": ["alpha", "beta"],
+            "comp_max_bottom": [150, 150],
+            "slope_r": [35.0, 20.0],
+            "slope_l": [30.0, 15.0],
+            "slope_h": [40.0, 25.0],
+            "elev_r": [1200.0, 1000.0],
+            "elev_l": [1100.0, 900.0],
+            "elev_h": [1300.0, 1100.0],
+            "aspect_northerness": [1.0, 0.0],
+            "aspect_easterness": [0.0, -1.0],
+            "shape_vert_class": ["concave", "convex"],
+            "shape_horiz_class": ["concave", "convex"],
+            "landscape_class": ["fans", "hills_mountains"],
+            "cokey": ["100", "200"],
+            "cond_prob": [0.5, 0.5],
+            "clay": ["No", "No"],
+            "taxorder": ["Entisols", "Entisols"],
+            "taxsubgrp": ["Typic Torrifluvents", "Typic Torrifluvents"],
+            "OSD_text_int": ["No", "No"],
+            "OSD_rfv_int": ["No", "No"],
+            "data_source": ["SSURGO", "SSURGO"],
+            "Rank_Loc": ["1", "2"],
+        }
+    )
+
+    list_output_data = SoilListOutputData(
+        soil_list_json={"metadata": {"location": "us"}, "soilList": []},
+        rank_data_csv=rank_df.to_csv(index=False),
+        map_unit_component_data_csv=comp_df.to_csv(index=False),
+    )
+
+    baseline = rank_soils(
+        lon=-106.0,
+        lat=32.0,
+        list_output_data=list_output_data,
+        soilHorizon=[],
+        topDepth=[],
+        bottomDepth=[],
+        rfvDepth=[],
+        lab_Color=[],
+        pSlope=20.0,
+        pElev=1000.0,
+        bedrock=None,
+        cracks=False,
+    )
+
+    with_terrain = rank_soils(
+        lon=-106.0,
+        lat=32.0,
+        list_output_data=list_output_data,
+        soilHorizon=[],
+        topDepth=[],
+        bottomDepth=[],
+        rfvDepth=[],
+        lab_Color=[],
+        pSlope=20.0,
+        pElev=1000.0,
+        bedrock=None,
+        cracks=False,
+        pAspect=0.0,
+        pSlopeShapeVert="Concave",
+        pSlopeShapeHoriz="Concave",
+        pLandscape="alluvial fan",
+    )
+
+    baseline_top = baseline["soilRank"][0]["name"]
+    terrain_top = with_terrain["soilRank"][0]["name"]
+
+    assert baseline_top == "Beta"
+    assert terrain_top == "Alpha"
