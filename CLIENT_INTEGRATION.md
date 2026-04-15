@@ -193,6 +193,56 @@ The backend parses each notation, looks it up in the Munsell–LAB reference tab
 - Providing both `lab_Color` and `munsell_Color` in the same request returns HTTP **400**.
 - A notation that cannot be matched in the reference table returns HTTP **422** with a descriptive message.
 
+> **JSON quoting note:** All string values in a JSON body must use double quotes (`"`), not single quotes (`'`). `"10YR 3/2"` is valid JSON; `'10YR 3/2'` is not.
+
+#### curl Examples
+
+**Linux / macOS (bash/zsh)** — double quotes inside single-quoted `-d` string:
+```bash
+curl -X POST 'https://your-soil-api.vercel.app/api/rank-soils' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "lon": -101.9733687,
+    "lat": 33.81246789,
+    "soil_list_json": {"metadata": {}, "soilList": []},
+    "rank_data_csv": "",
+    "map_unit_component_data_csv": "",
+    "soilHorizon": ["Sandy loam", "Clay loam"],
+    "topDepth": [0, 20],
+    "bottomDepth": [20, 50],
+    "rfvDepth": ["0-1%", "1-15%"],
+    "munsell_Color": ["10YR 3/2", "7.5YR 4/4"],
+    "pSlope": 5.0,
+    "pElev": 800.0,
+    "pAspect": 225.0,
+    "pLandscape": "Alluvial Fan"
+  }'
+```
+
+**Windows PowerShell** — escape inner double quotes with a backtick or use a variable:
+```powershell
+$body = @'
+{
+  "lon": -101.9733687,
+  "lat": 33.81246789,
+  "soil_list_json": {"metadata": {}, "soilList": []},
+  "rank_data_csv": "",
+  "map_unit_component_data_csv": "",
+  "soilHorizon": ["Sandy loam", "Clay loam"],
+  "topDepth": [0, 20],
+  "bottomDepth": [20, 50],
+  "rfvDepth": ["0-1%", "1-15%"],
+  "munsell_Color": ["10YR 3/2", "7.5YR 4/4"],
+  "pSlope": 5.0,
+  "pElev": 800.0,
+  "pAspect": 225.0,
+  "pLandscape": "Alluvial Fan"
+}
+'@
+Invoke-RestMethod -Uri 'https://your-soil-api.vercel.app/api/rank-soils' `
+  -Method POST -ContentType 'application/json' -Body $body
+```
+
 ```typescript
 // TypeScript usage example
 const result = await soilApi.analyzeSoil(
