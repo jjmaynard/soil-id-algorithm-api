@@ -17,6 +17,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from soil_id.us_soil import list_soils, rank_soils, SoilListOutputData
+from soil_id.color import munsell_notation_to_lab
 
 app = FastAPI(
     title="Soil ID Algorithm API",
@@ -88,7 +89,9 @@ class RankSoilsRequest(BaseModel):
     topDepth: Optional[List[Optional[float]]] = Field(None, description="Top depth of each horizon (cm)")
     bottomDepth: Optional[List[Optional[float]]] = Field(None, description="Bottom depth of each horizon (cm)")
     rfvDepth: Optional[List[Optional[str]]] = Field(None, description="Rock fragment volume classes")
-    lab_Color: Optional[List[Optional[List[float]]]] = Field(None, description="LAB color values [L, A, B]")
+    claypct_est: Optional[List[Optional[float]]] = Field(None, description="Field-estimated clay % per horizon (AIM). QC-checked against soilHorizon texture class bounds; ignored if outside the USDA class range.")
+    lab_Color: Optional[List[Optional[List[float]]]] = Field(None, description="LAB color values [L, A, B] per horizon")
+    munsell_Color: Optional[List[Optional[str]]] = Field(None, description="Munsell color notation per horizon (e.g. '10YR 3/2'). Alternative to lab_Color; cannot specify both.")
     pSlope: Optional[float] = Field(None, description="Site slope percentage")
     pElev: Optional[float] = Field(None, description="Site elevation (m)")
     bedrock: Optional[float] = Field(None, description="Bedrock depth (cm)")
@@ -107,11 +110,13 @@ class RankSoilsRequest(BaseModel):
                 "soil_list_json": {"metadata": {}, "soilList": []},
                 "rank_data_csv": "compname,sandpct_intpl...",
                 "map_unit_component_data_csv": "mukey,cokey...",
+                "sim": True,
                 "soilHorizon": ["Sandy loam", "Clay loam"],
                 "topDepth": [0, 20],
                 "bottomDepth": [20, 50],
                 "rfvDepth": ["0-1%", "1-15%"],
-                "lab_Color": [[50.5, 5.2, 20.1], [45.3, 6.1, 18.5]],
+                "lab_Color": None,
+                "munsell_Color": ["10YR 3/2", "7.5YR 4/4"],
                 "pSlope": 5.0,
                 "pElev": 800.0,
                 "bedrock": None,
@@ -123,6 +128,44 @@ class RankSoilsRequest(BaseModel):
                 "pLandscapeMode": "base"
             }
         }
+
+
+# ============================================================================
+# Helpers
+# ============================================================================
+
+def _resolve_lab_color(request: "RankSoilsRequest"):
+    """
+    Return the effective lab_Color list for a rank request.
+
+    If munsell_Color is provided the entries are converted to [L, A, B] and
+    used as lab_Color.  Providing both lab_Color and munsell_Color raises a
+    400 HTTPException.
+    """
+    if request.munsell_Color is None:
+        return request.lab_Color
+
+    if request.lab_Color is not None:
+        raise HTTPException(
+            status_code=400,
+            detail="Provide either lab_Color or munsell_Color, not both.",
+        )
+
+    converted = []
+    for notation in request.munsell_Color:
+        if notation is None:
+            converted.append(None)
+        else:
+            lab = munsell_notation_to_lab(notation)
+            if lab is None:
+                raise HTTPException(
+                    status_code=422,
+                    detail=f"Could not convert Munsell notation '{notation}' to LAB. "
+                           "Check that the hue, value, and chroma are present in the "
+                           "reference table (e.g. '10YR 3/2').",
+                )
+            converted.append(lab)
+    return converted
 
 
 # ============================================================================
@@ -231,18 +274,64 @@ async def api_list_soils(request: ListSoilsRequest):
 async def api_rank_soils(request: RankSoilsRequest):
     """
     Rank soil components based on field measurements.
-    
+
     This endpoint requires the output from list-soils along with
     field measurement data to calculate similarity scores and rank
     the soil components.
-    
+
+    **Color input** — two mutually exclusive options:
+    - `lab_Color`: Pre-computed CIE LAB values per horizon as `[[L, A, B], ...]`.
+    - `munsell_Color`: Munsell notation strings per horizon (e.g. `["10YR 3/2", "7.5YR 4/4"]`).
+      The backend converts each notation to LAB before Gower's similarity evaluation.
+      Half-hue steps such as `2.5YR` are supported; the space between hue and value/chroma
+      is optional (`"10YR3/2"` and `"10YR 3/2"` are both accepted).
+      Returns HTTP 422 if a notation cannot be found in the reference table.
+
     Workflow:
-    1. Call list-soils to get soil component data
-    2. Store the response client-side
-    3. Collect field measurements
-    4. Send both to this endpoint for ranking
+    1. Call `/api/list-soils` to get soil component data — this returns
+       `soil_list_json`, `rank_data_csv`, and `map_unit_component_data_csv`.
+    2. Store the full response client-side.
+    3. Collect field measurements.
+    4. Pass the stored response fields together with field measurements to this endpoint.
+
+    > **Note:** `rank_data_csv` and `map_unit_component_data_csv` must be the
+    > verbatim strings returned by `list-soils`. Placeholder or empty values will
+    > be rejected with HTTP **422**. For a self-contained single request (no
+    > separate `list-soils` step), use `/api/analyze-soil` instead.
     """
     try:
+        # Validate that CSV fields look like real data from list-soils, not placeholders.
+        _REQUIRED_RANK_COLS = {"cokey", "compname", "comp_max_bottom"}
+        try:
+            import io
+            import pandas as _pd
+            _rank_cols = set(
+                _pd.read_csv(io.StringIO(request.rank_data_csv), nrows=0).columns.tolist()
+            )
+            if not _REQUIRED_RANK_COLS.issubset(_rank_cols):
+                raise HTTPException(
+                    status_code=422,
+                    detail=(
+                        "rank_data_csv does not contain the required columns "
+                        f"({sorted(_REQUIRED_RANK_COLS)}). "
+                        "This field must be the verbatim 'rank_data_csv' string "
+                        "returned by /api/list-soils. "
+                        "For a single self-contained request without a separate "
+                        "list-soils call, use /api/analyze-soil instead."
+                    ),
+                )
+        except HTTPException:
+            raise
+        except Exception:
+            raise HTTPException(
+                status_code=422,
+                detail=(
+                    "rank_data_csv could not be parsed as CSV. "
+                    "This field must be the verbatim 'rank_data_csv' string "
+                    "returned by /api/list-soils."
+                ),
+            )
+
         # Reconstruct SoilListOutputData from request
         list_output_data = SoilListOutputData(
             soil_list_json=request.soil_list_json,
@@ -259,11 +348,12 @@ async def api_rank_soils(request: RankSoilsRequest):
             topDepth=request.topDepth,
             bottomDepth=request.bottomDepth,
             rfvDepth=request.rfvDepth,
-            lab_Color=request.lab_Color,
+            lab_Color=_resolve_lab_color(request),
             pSlope=request.pSlope,
             pElev=request.pElev,
             bedrock=request.bedrock,
             cracks=request.cracks,
+            claypct_est=request.claypct_est,
             pAspect=request.pAspect,
             pSlopeShapeVert=request.pSlopeShapeVert,
             pSlopeShapeHoriz=request.pSlopeShapeHoriz,
@@ -284,14 +374,22 @@ async def api_rank_soils(request: RankSoilsRequest):
 async def api_analyze_soil_combined(request: RankSoilsRequest):
     """
     Combined endpoint that performs both list and rank operations.
-    
+
     This is a convenience endpoint that:
     1. Retrieves soil list for the location
     2. Immediately ranks them with provided field data
-    
+
     Use this when you want to perform both operations in a single request.
     This is more efficient for Vercel serverless functions as it avoids
     the need to store intermediate data.
+
+    **Color input** — two mutually exclusive options:
+    - `lab_Color`: Pre-computed CIE LAB values per horizon as `[[L, A, B], ...]`.
+    - `munsell_Color`: Munsell notation strings per horizon (e.g. `["10YR 3/2", "7.5YR 4/4"]`).
+      The backend converts each notation to LAB before Gower's similarity evaluation.
+      Half-hue steps such as `2.5YR` are supported; the space between hue and value/chroma
+      is optional (`"10YR3/2"` and `"10YR 3/2"` are both accepted).
+      Returns HTTP 422 if a notation cannot be found in the reference table.
     """
     try:
         # First, get the soil list
@@ -310,11 +408,12 @@ async def api_analyze_soil_combined(request: RankSoilsRequest):
             topDepth=request.topDepth,
             bottomDepth=request.bottomDepth,
             rfvDepth=request.rfvDepth,
-            lab_Color=request.lab_Color,
+            lab_Color=_resolve_lab_color(request),
             pSlope=request.pSlope,
             pElev=request.pElev,
             bedrock=request.bedrock,
             cracks=request.cracks,
+            claypct_est=request.claypct_est,
             pAspect=request.pAspect,
             pSlopeShapeVert=request.pSlopeShapeVert,
             pSlopeShapeHoriz=request.pSlopeShapeHoriz,

@@ -136,13 +136,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "F143XY704ME"
+              "F143XY501ME"
             ],
             "ecoclassname": [
-              "Shallow Organic Rock Pocket"
+              "Loamy Slope"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/143X/F143XY704ME"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/143X/F143XY501ME"
             ]
           }
         },
@@ -248,13 +248,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "F143XY501ME"
+              "F143XY704ME"
             ],
             "ecoclassname": [
-              "Loamy Slope"
+              "Shallow Organic Rock Pocket"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/143X/F143XY501ME"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/143X/F143XY704ME"
             ]
           }
         },
@@ -366,16 +366,16 @@
         "componentID": 26560912,
         "name": "Chesuncook",
         "not_displayed": false,
-        "rank_data": "2",
-        "rank_data_group": "2",
+        "rank_data": "1",
+        "rank_data_group": "1",
         "rank_data_loc": "1",
         "rank_data_loc_group": "1",
         "rank_loc": "2",
         "rank_loc_group": "2",
-        "score_data": 0.693,
-        "score_data_group": 0.693,
-        "score_data_loc": 0.5,
-        "score_data_loc_group": 0.5,
+        "score_data": 0.683,
+        "score_data_group": 0.683,
+        "score_data_loc": 0.495,
+        "score_data_loc_group": 0.495,
         "score_loc": 0.306,
         "score_loc_group": 0.306
       },
@@ -391,10 +391,10 @@
         "rank_data_loc_group": "2",
         "rank_loc": "Not Displayed",
         "rank_loc_group": "1",
-        "score_data": 0.611,
-        "score_data_group": 0.611,
-        "score_data_loc": 0.492,
-        "score_data_loc_group": 0.492,
+        "score_data": 0.606,
+        "score_data_group": 0.606,
+        "score_data_loc": 0.489,
+        "score_data_loc_group": 0.489,
         "score_loc": 0.372,
         "score_loc_group": 0.372
       },
@@ -410,10 +410,10 @@
         "rank_data_loc_group": "3",
         "rank_loc": "3",
         "rank_loc_group": "3",
-        "score_data": 0.683,
-        "score_data_group": 0.683,
-        "score_data_loc": 0.467,
-        "score_data_loc_group": 0.467,
+        "score_data": 0.66,
+        "score_data_group": 0.66,
+        "score_data_loc": 0.455,
+        "score_data_loc_group": 0.455,
         "score_loc": 0.25,
         "score_loc_group": 0.25
       },
@@ -423,16 +423,16 @@
         "componentID": 26560914,
         "name": "Monson",
         "not_displayed": false,
-        "rank_data": "1",
-        "rank_data_group": "1",
+        "rank_data": "2",
+        "rank_data_group": "2",
         "rank_data_loc": "4",
         "rank_data_loc_group": "4",
         "rank_loc": "4",
         "rank_loc_group": "4",
-        "score_data": 0.694,
-        "score_data_group": 0.694,
-        "score_data_loc": 0.383,
-        "score_data_loc_group": 0.383,
+        "score_data": 0.682,
+        "score_data_group": 0.682,
+        "score_data_loc": 0.377,
+        "score_data_loc_group": 0.377,
         "score_loc": 0.071,
         "score_loc_group": 0.071
       },
@@ -448,10 +448,10 @@
         "rank_data_loc_group": "3",
         "rank_loc": "Not Displayed",
         "rank_loc_group": "3",
-        "score_data": 0.602,
-        "score_data_group": 0.683,
-        "score_data_loc": 0.426,
-        "score_data_loc_group": 0.467,
+        "score_data": 0.598,
+        "score_data_group": 0.66,
+        "score_data_loc": 0.424,
+        "score_data_loc_group": 0.455,
         "score_loc": 0.25,
         "score_loc_group": 0.25
       },
@@ -467,10 +467,10 @@
         "rank_data_loc_group": "2",
         "rank_loc": "1",
         "rank_loc_group": "1",
-        "score_data": 0.442,
-        "score_data_group": 0.611,
-        "score_data_loc": 0.407,
-        "score_data_loc_group": 0.492,
+        "score_data": 0.386,
+        "score_data_group": 0.606,
+        "score_data_loc": 0.379,
+        "score_data_loc_group": 0.489,
         "score_loc": 0.372,
         "score_loc_group": 0.372
       }

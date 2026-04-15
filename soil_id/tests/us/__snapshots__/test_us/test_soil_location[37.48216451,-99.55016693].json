@@ -24,13 +24,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "R073XY101KS"
+              "R073XY100KS"
             ],
             "ecoclassname": [
-              "Limy Slopes"
+              "Loamy Plains"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/073X/R073XY101KS"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/073X/R073XY100KS"
             ]
           }
         },
@@ -192,13 +192,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "R073XY108KS"
+              "R073XY100KS"
             ],
             "ecoclassname": [
-              "Loamy Floodplain"
+              "Loamy Plains"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/073X/R073XY108KS"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/073X/R073XY100KS"
             ]
           }
         },
@@ -248,13 +248,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "R073XY112KS"
+              "R073XY108KS"
             ],
             "ecoclassname": [
-              "Shallow Limy"
+              "Loamy Floodplain"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/073X/R073XY112KS"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/073X/R073XY108KS"
             ]
           }
         },
@@ -304,13 +304,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "R073XY101KS"
+              "R079XY112KS"
             ],
             "ecoclassname": [
-              "Limy Slopes"
+              "Limy Plains"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/073X/R073XY101KS"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/079X/R079XY112KS"
             ]
           }
         },
@@ -360,13 +360,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "R073XY100KS"
+              "R073XY101KS"
             ],
             "ecoclassname": [
-              "Loamy Plains"
+              "Limy Slopes"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/073X/R073XY100KS"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/073X/R073XY101KS"
             ]
           }
         },
@@ -416,13 +416,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "R073XY100KS"
+              "R073XY108KS"
             ],
             "ecoclassname": [
-              "Loamy Plains"
+              "Loamy Floodplain"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/073X/R073XY100KS"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/073X/R073XY108KS"
             ]
           }
         },
@@ -528,13 +528,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "R073XY100KS"
+              "R073XY103KS"
             ],
             "ecoclassname": [
-              "Loamy Plains"
+              "Subirrigated"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/073X/R073XY100KS"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/073X/R073XY103KS"
             ]
           }
         },
@@ -584,13 +584,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "R073XY103KS"
+              "R073XY112KS"
             ],
             "ecoclassname": [
-              "Subirrigated"
+              "Shallow Limy"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/073X/R073XY103KS"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/073X/R073XY112KS"
             ]
           }
         },
@@ -752,13 +752,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "R073XY108KS"
+              "R073XY100KS"
             ],
             "ecoclassname": [
-              "Loamy Floodplain"
+              "Loamy Plains"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/073X/R073XY108KS"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/073X/R073XY100KS"
             ]
           }
         },
@@ -808,13 +808,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "R079XY112KS"
+              "R073XY101KS"
             ],
             "ecoclassname": [
-              "Limy Plains"
+              "Limy Slopes"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/079X/R079XY112KS"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/073X/R073XY101KS"
             ]
           }
         },
@@ -867,38 +867,38 @@
       {
         "component": "Uly",
         "componentData": "Data Complete",
-        "componentID": 26356233,
-        "name": "Uly",
+        "componentID": 26356407,
+        "name": "Uly2",
         "not_displayed": false,
-        "rank_data": "4",
-        "rank_data_group": "4",
+        "rank_data": "1",
+        "rank_data_group": "1",
         "rank_data_loc": "1",
         "rank_data_loc_group": "1",
-        "rank_loc": "1",
+        "rank_loc": "Not Displayed",
         "rank_loc_group": "1",
-        "score_data": 0.69,
-        "score_data_group": 0.69,
-        "score_data_loc": 0.492,
-        "score_data_loc_group": 0.492,
+        "score_data": 0.742,
+        "score_data_group": 0.742,
+        "score_data_loc": 0.518,
+        "score_data_loc_group": 0.518,
         "score_loc": 0.295,
         "score_loc_group": 0.295
       },
       {
         "component": "Harney",
         "componentData": "Data Complete",
-        "componentID": 26356234,
-        "name": "Harney",
+        "componentID": 26356408,
+        "name": "Harney3",
         "not_displayed": false,
-        "rank_data": "1",
-        "rank_data_group": "1",
+        "rank_data": "2",
+        "rank_data_group": "2",
         "rank_data_loc": "2",
         "rank_data_loc_group": "2",
-        "rank_loc": "2",
+        "rank_loc": "Not Displayed",
         "rank_loc_group": "2",
-        "score_data": 0.711,
-        "score_data_group": 0.711,
-        "score_data_loc": 0.487,
-        "score_data_loc_group": 0.487,
+        "score_data": 0.738,
+        "score_data_group": 0.738,
+        "score_data_loc": 0.501,
+        "score_data_loc_group": 0.501,
         "score_loc": 0.263,
         "score_loc_group": 0.263
       },
@@ -908,18 +908,37 @@
         "componentID": 26356379,
         "name": "Coly",
         "not_displayed": false,
-        "rank_data": "3",
-        "rank_data_group": "3",
+        "rank_data": "4",
+        "rank_data_group": "4",
         "rank_data_loc": "3",
         "rank_data_loc_group": "3",
         "rank_loc": "3",
         "rank_loc_group": "3",
-        "score_data": 0.699,
-        "score_data_group": 0.699,
-        "score_data_loc": 0.457,
-        "score_data_loc_group": 0.457,
+        "score_data": 0.62,
+        "score_data_group": 0.62,
+        "score_data_loc": 0.418,
+        "score_data_loc_group": 0.418,
         "score_loc": 0.215,
         "score_loc_group": 0.215
+      },
+      {
+        "component": "Canlon",
+        "componentData": "Data Complete",
+        "componentID": 26356405,
+        "name": "Canlon",
+        "not_displayed": false,
+        "rank_data": "3",
+        "rank_data_group": "3",
+        "rank_data_loc": "4",
+        "rank_data_loc_group": "4",
+        "rank_loc": "11",
+        "rank_loc_group": "11",
+        "score_data": 0.733,
+        "score_data_group": 0.733,
+        "score_data_loc": 0.367,
+        "score_data_loc_group": 0.367,
+        "score_loc": 0.002,
+        "score_loc_group": 0.002
       },
       {
         "component": "Tobin",
@@ -927,16 +946,16 @@
         "componentID": 26356404,
         "name": "Tobin",
         "not_displayed": false,
-        "rank_data": "2",
-        "rank_data_group": "2",
-        "rank_data_loc": "4",
-        "rank_data_loc_group": "4",
+        "rank_data": "5",
+        "rank_data_group": "5",
+        "rank_data_loc": "5",
+        "rank_data_loc_group": "5",
         "rank_loc": "5",
         "rank_loc_group": "5",
-        "score_data": 0.709,
-        "score_data_group": 0.709,
-        "score_data_loc": 0.383,
-        "score_data_loc_group": 0.383,
+        "score_data": 0.564,
+        "score_data_group": 0.564,
+        "score_data_loc": 0.31,
+        "score_data_loc_group": 0.31,
         "score_loc": 0.057,
         "score_loc_group": 0.057
       },
@@ -946,94 +965,18 @@
         "componentID": 26356380,
         "name": "Case",
         "not_displayed": false,
-        "rank_data": "7",
-        "rank_data_group": "7",
-        "rank_data_loc": "5",
-        "rank_data_loc_group": "5",
-        "rank_loc": "6",
-        "rank_loc_group": "6",
-        "score_data": 0.647,
-        "score_data_group": 0.647,
-        "score_data_loc": 0.335,
-        "score_data_loc_group": 0.335,
-        "score_loc": 0.023,
-        "score_loc_group": 0.023
-      },
-      {
-        "component": "Canlon",
-        "componentData": "Data Complete",
-        "componentID": 26356405,
-        "name": "Canlon",
-        "not_displayed": false,
-        "rank_data": "5",
-        "rank_data_group": "5",
-        "rank_data_loc": "6",
-        "rank_data_loc_group": "6",
-        "rank_loc": "11",
-        "rank_loc_group": "11",
-        "score_data": 0.658,
-        "score_data_group": 0.658,
-        "score_data_loc": 0.33,
-        "score_data_loc_group": 0.33,
-        "score_loc": 0.002,
-        "score_loc_group": 0.002
-      },
-      {
-        "component": "Aquolls",
-        "componentData": "Missing Data",
-        "componentID": 26356437,
-        "name": "Aquolls",
-        "not_displayed": false,
         "rank_data": "6",
         "rank_data_group": "6",
-        "rank_data_loc": "7",
-        "rank_data_loc_group": "7",
-        "rank_loc": "10",
-        "rank_loc_group": "10",
-        "score_data": 0.65,
-        "score_data_group": 0.65,
-        "score_data_loc": 0.326,
-        "score_data_loc_group": 0.326,
-        "score_loc": 0.003,
-        "score_loc_group": 0.003
-      },
-      {
-        "component": "Penden",
-        "componentData": "Data Complete",
-        "componentID": 26356232,
-        "name": "Penden",
-        "not_displayed": false,
-        "rank_data": "9",
-        "rank_data_group": "9",
-        "rank_data_loc": "8",
-        "rank_data_loc_group": "8",
-        "rank_loc": "7",
-        "rank_loc_group": "7",
-        "score_data": 0.583,
-        "score_data_group": 0.583,
-        "score_data_loc": 0.299,
-        "score_data_loc_group": 0.299,
-        "score_loc": 0.016,
-        "score_loc_group": 0.016
-      },
-      {
-        "component": "Bridgeport",
-        "componentData": "Data Complete",
-        "componentID": 26356378,
-        "name": "Bridgeport",
-        "not_displayed": false,
-        "rank_data": "8",
-        "rank_data_group": "8",
-        "rank_data_loc": "9",
-        "rank_data_loc_group": "9",
-        "rank_loc": "8",
-        "rank_loc_group": "8",
-        "score_data": 0.583,
-        "score_data_group": 0.583,
-        "score_data_loc": 0.297,
-        "score_data_loc_group": 0.297,
-        "score_loc": 0.012,
-        "score_loc_group": 0.012
+        "rank_data_loc": "6",
+        "rank_data_loc_group": "6",
+        "rank_loc": "6",
+        "rank_loc_group": "6",
+        "score_data": 0.561,
+        "score_data_group": 0.561,
+        "score_data_loc": 0.292,
+        "score_data_loc_group": 0.292,
+        "score_loc": 0.023,
+        "score_loc_group": 0.023
       },
       {
         "component": "Holdrege",
@@ -1041,18 +984,75 @@
         "componentID": 26356377,
         "name": "Holdrege",
         "not_displayed": false,
-        "rank_data": "11",
-        "rank_data_group": "11",
-        "rank_data_loc": "10",
-        "rank_data_loc_group": "10",
+        "rank_data": "9",
+        "rank_data_group": "9",
+        "rank_data_loc": "7",
+        "rank_data_loc_group": "7",
         "rank_loc": "4",
         "rank_loc_group": "4",
-        "score_data": 0.481,
-        "score_data_group": 0.481,
-        "score_data_loc": 0.292,
-        "score_data_loc_group": 0.292,
+        "score_data": 0.442,
+        "score_data_group": 0.442,
+        "score_data_loc": 0.273,
+        "score_data_loc_group": 0.273,
         "score_loc": 0.104,
         "score_loc_group": 0.104
+      },
+      {
+        "component": "Penden",
+        "componentData": "Data Complete",
+        "componentID": 26356232,
+        "name": "Penden",
+        "not_displayed": false,
+        "rank_data": "7",
+        "rank_data_group": "7",
+        "rank_data_loc": "8",
+        "rank_data_loc_group": "8",
+        "rank_loc": "7",
+        "rank_loc_group": "7",
+        "score_data": 0.507,
+        "score_data_group": 0.507,
+        "score_data_loc": 0.262,
+        "score_data_loc_group": 0.262,
+        "score_loc": 0.016,
+        "score_loc_group": 0.016
+      },
+      {
+        "component": "Aquolls",
+        "componentData": "Missing Data",
+        "componentID": 26356437,
+        "name": "Aquolls",
+        "not_displayed": false,
+        "rank_data": "8",
+        "rank_data_group": "8",
+        "rank_data_loc": "9",
+        "rank_data_loc_group": "9",
+        "rank_loc": "10",
+        "rank_loc_group": "10",
+        "score_data": 0.506,
+        "score_data_group": 0.506,
+        "score_data_loc": 0.254,
+        "score_data_loc_group": 0.254,
+        "score_loc": 0.003,
+        "score_loc_group": 0.003
+      },
+      {
+        "component": "Bridgeport",
+        "componentData": "Data Complete",
+        "componentID": 26356378,
+        "name": "Bridgeport",
+        "not_displayed": false,
+        "rank_data": "10",
+        "rank_data_group": "10",
+        "rank_data_loc": "10",
+        "rank_data_loc_group": "10",
+        "rank_loc": "8",
+        "rank_loc_group": "8",
+        "score_data": 0.439,
+        "score_data_group": 0.439,
+        "score_data_loc": 0.225,
+        "score_data_loc_group": 0.225,
+        "score_loc": 0.012,
+        "score_loc_group": 0.012
       },
       {
         "component": "Wakeen",
@@ -1060,75 +1060,56 @@
         "componentID": 26356435,
         "name": "Wakeen",
         "not_displayed": false,
-        "rank_data": "10",
-        "rank_data_group": "10",
+        "rank_data": "11",
+        "rank_data_group": "11",
         "rank_data_loc": "11",
         "rank_data_loc_group": "11",
         "rank_loc": "9",
         "rank_loc_group": "9",
-        "score_data": 0.497,
-        "score_data_group": 0.497,
-        "score_data_loc": 0.254,
-        "score_data_loc_group": 0.254,
+        "score_data": 0.379,
+        "score_data_group": 0.379,
+        "score_data_loc": 0.195,
+        "score_data_loc_group": 0.195,
         "score_loc": 0.01,
         "score_loc_group": 0.01
       },
       {
         "component": "Harney",
         "componentData": "Data Complete",
-        "componentID": 26356408,
-        "name": "Harney3",
+        "componentID": 26356234,
+        "name": "Harney",
         "not_displayed": true,
         "rank_data": "Not Displayed",
-        "rank_data_group": "1",
+        "rank_data_group": "2",
         "rank_data_loc": "Not Displayed",
         "rank_data_loc_group": "2",
-        "rank_loc": "Not Displayed",
+        "rank_loc": "2",
         "rank_loc_group": "2",
-        "score_data": 0.708,
-        "score_data_group": 0.711,
-        "score_data_loc": 0.486,
-        "score_data_loc_group": 0.487,
+        "score_data": 0.625,
+        "score_data_group": 0.738,
+        "score_data_loc": 0.444,
+        "score_data_loc_group": 0.501,
         "score_loc": 0.263,
         "score_loc_group": 0.263
       },
       {
         "component": "Uly",
         "componentData": "Data Complete",
-        "componentID": 26356407,
-        "name": "Uly2",
-        "not_displayed": true,
-        "rank_data": "Not Displayed",
-        "rank_data_group": "4",
-        "rank_data_loc": "Not Displayed",
-        "rank_data_loc_group": "1",
-        "rank_loc": "Not Displayed",
-        "rank_loc_group": "1",
-        "score_data": 0.664,
-        "score_data_group": 0.69,
-        "score_data_loc": 0.479,
-        "score_data_loc_group": 0.492,
-        "score_loc": 0.295,
-        "score_loc_group": 0.295
-      },
-      {
-        "component": "Harney",
-        "componentData": "Missing Data",
-        "componentID": 26356436,
-        "name": "Harney2",
+        "componentID": 26356233,
+        "name": "Uly",
         "not_displayed": true,
         "rank_data": "Not Displayed",
         "rank_data_group": "1",
         "rank_data_loc": "Not Displayed",
-        "rank_data_loc_group": "2",
-        "rank_loc": "Not Displayed",
-        "rank_loc_group": "2",
-        "score_data": 0.636,
-        "score_data_group": 0.711,
-        "score_data_loc": 0.45,
-        "score_data_loc_group": 0.487,
-        "score_loc": 0.263,
-        "score_loc_group": 0.263
+        "rank_data_loc_group": "1",
+        "rank_loc": "1",
+        "rank_loc_group": "1",
+        "score_data": 0.554,
+        "score_data_group": 0.742,
+        "score_data_loc": 0.424,
+        "score_data_loc_group": 0.518,
+        "score_loc": 0.295,
+        "score_loc_group": 0.295
       },
       {
         "component": "Coly",
@@ -1137,17 +1118,36 @@
         "name": "Coly2",
         "not_displayed": true,
         "rank_data": "Not Displayed",
-        "rank_data_group": "3",
+        "rank_data_group": "4",
         "rank_data_loc": "Not Displayed",
         "rank_data_loc_group": "3",
         "rank_loc": "Not Displayed",
         "rank_loc_group": "3",
-        "score_data": 0.505,
-        "score_data_group": 0.699,
-        "score_data_loc": 0.36,
-        "score_data_loc_group": 0.457,
+        "score_data": 0.553,
+        "score_data_group": 0.62,
+        "score_data_loc": 0.384,
+        "score_data_loc_group": 0.418,
         "score_loc": 0.215,
         "score_loc_group": 0.215
+      },
+      {
+        "component": "Harney",
+        "componentData": "Missing Data",
+        "componentID": 26356436,
+        "name": "Harney2",
+        "not_displayed": true,
+        "rank_data": "Not Displayed",
+        "rank_data_group": "2",
+        "rank_data_loc": "Not Displayed",
+        "rank_data_loc_group": "2",
+        "rank_loc": "Not Displayed",
+        "rank_loc_group": "2",
+        "score_data": 0.494,
+        "score_data_group": 0.738,
+        "score_data_loc": 0.379,
+        "score_data_loc_group": 0.501,
+        "score_loc": 0.263,
+        "score_loc_group": 0.263
       }
     ]
   }

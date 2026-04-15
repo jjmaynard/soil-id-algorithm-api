@@ -24,13 +24,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "F111XA008IN"
+              "F111XA009IN"
             ],
             "ecoclassname": [
-              "Wet Till Ridge"
+              "Till Ridge"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/111X/F111XA008IN"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/111X/F111XA009IN"
             ]
           }
         },
@@ -80,13 +80,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              ""
+              "F111XA008IN"
             ],
             "ecoclassname": [
-              ""
+              "Wet Till Ridge"
             ],
             "edit_url": [
-              ""
+              "https://edit.sc.egov.usda.gov/catalogs/esd/111X/F111XA008IN"
             ]
           }
         },
@@ -136,13 +136,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              ""
+              "F114XB503IN"
             ],
             "ecoclassname": [
-              ""
+              "Till Upland Forest"
             ],
             "edit_url": [
-              ""
+              "https://edit.sc.egov.usda.gov/catalogs/esd/114X/F114XB503IN"
             ]
           }
         },
@@ -192,13 +192,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "F114XB503IN"
+              "F111XA008IN"
             ],
             "ecoclassname": [
-              "Till Upland Forest"
+              "Wet Till Ridge"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/114X/F114XB503IN"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/111X/F111XA008IN"
             ]
           }
         },
@@ -248,13 +248,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              ""
+              "F111XA007IN"
             ],
             "ecoclassname": [
-              ""
+              "Till Depression Flatwood"
             ],
             "edit_url": [
-              ""
+              "https://edit.sc.egov.usda.gov/catalogs/esd/111X/F111XA007IN"
             ]
           }
         },
@@ -304,13 +304,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "F111XA008IN"
+              "F111XA007IN"
             ],
             "ecoclassname": [
-              "Wet Till Ridge"
+              "Till Depression Flatwood"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/111X/F111XA008IN"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/111X/F111XA007IN"
             ]
           }
         },
@@ -360,13 +360,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "F111XA007IN"
+              "F111XD010IN"
             ],
             "ecoclassname": [
-              "Till Depression Flatwood"
+              "Till Ridge"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/111X/F111XA007IN"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/111X/F111XD010IN"
             ]
           }
         },
@@ -416,13 +416,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "F111XA009IN"
+              ""
             ],
             "ecoclassname": [
-              "Till Ridge"
+              ""
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/111X/F111XA009IN"
+              ""
             ]
           }
         },
@@ -472,13 +472,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "F111XA008IN"
+              ""
             ],
             "ecoclassname": [
-              "Wet Till Ridge"
+              ""
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/111X/F111XA008IN"
+              ""
             ]
           }
         },
@@ -528,13 +528,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "F111XA008IN"
+              ""
             ],
             "ecoclassname": [
-              "Wet Till Ridge"
+              ""
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/111X/F111XA008IN"
+              ""
             ]
           }
         },
@@ -584,13 +584,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "F111XA009IN"
+              ""
             ],
             "ecoclassname": [
-              "Till Ridge"
+              ""
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/111X/F111XA009IN"
+              ""
             ]
           }
         },
@@ -640,13 +640,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "F111XD010IN"
+              ""
             ],
             "ecoclassname": [
-              "Till Ridge"
+              ""
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/111X/F111XD010IN"
+              ""
             ]
           }
         },
@@ -696,13 +696,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "F111XA006IN"
+              "F111XD010IN"
             ],
             "ecoclassname": [
-              "Till Depression"
+              "Till Ridge"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/111X/F111XA006IN"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/111X/F111XD010IN"
             ]
           }
         },
@@ -752,13 +752,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "F111XD010IN"
+              "F111XA009IN"
             ],
             "ecoclassname": [
               "Till Ridge"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/111X/F111XD010IN"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/111X/F111XA009IN"
             ]
           }
         },
@@ -808,13 +808,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              ""
+              "F111XA008IN"
             ],
             "ecoclassname": [
-              ""
+              "Wet Till Ridge"
             ],
             "edit_url": [
-              ""
+              "https://edit.sc.egov.usda.gov/catalogs/esd/111X/F111XA008IN"
             ]
           }
         },
@@ -864,13 +864,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              ""
+              "F111XA008IN"
             ],
             "ecoclassname": [
-              ""
+              "Wet Till Ridge"
             ],
             "edit_url": [
-              ""
+              "https://edit.sc.egov.usda.gov/catalogs/esd/111X/F111XA008IN"
             ]
           }
         },
@@ -920,13 +920,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "F111XA007IN"
+              "F111XA006IN"
             ],
             "ecoclassname": [
-              "Till Depression Flatwood"
+              "Till Depression"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/111X/F111XA007IN"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/111X/F111XA006IN"
             ]
           }
         },
@@ -979,21 +979,40 @@
       {
         "component": "Hennepin",
         "componentData": "Data Complete",
-        "componentID": 26772420,
-        "name": "Hennepin2",
+        "componentID": 26772448,
+        "name": "Hennepin3",
         "not_displayed": false,
-        "rank_data": "1",
-        "rank_data_group": "1",
+        "rank_data": "2",
+        "rank_data_group": "2",
         "rank_data_loc": "1",
         "rank_data_loc_group": "1",
         "rank_loc": "Not Displayed",
         "rank_loc_group": "1",
-        "score_data": 0.711,
-        "score_data_group": 0.711,
-        "score_data_loc": 0.386,
-        "score_data_loc_group": 0.386,
+        "score_data": 0.663,
+        "score_data_group": 0.663,
+        "score_data_loc": 0.362,
+        "score_data_loc_group": 0.362,
         "score_loc": 0.061,
         "score_loc_group": 0.061
+      },
+      {
+        "component": "Bonnell",
+        "componentData": "Data Complete",
+        "componentID": 26772426,
+        "name": "Bonnell",
+        "not_displayed": false,
+        "rank_data": "1",
+        "rank_data_group": "1",
+        "rank_data_loc": "2",
+        "rank_data_loc_group": "2",
+        "rank_loc": "9",
+        "rank_loc_group": "9",
+        "score_data": 0.689,
+        "score_data_group": 0.689,
+        "score_data_loc": 0.345,
+        "score_data_loc_group": 0.345,
+        "score_loc": 0.002,
+        "score_loc_group": 0.002
       },
       {
         "component": "Crosby",
@@ -1001,54 +1020,35 @@
         "componentID": 26772436,
         "name": "Crosby",
         "not_displayed": false,
-        "rank_data": "3",
-        "rank_data_group": "3",
-        "rank_data_loc": "2",
-        "rank_data_loc_group": "2",
+        "rank_data": "5",
+        "rank_data_group": "5",
+        "rank_data_loc": "3",
+        "rank_data_loc_group": "3",
         "rank_loc": "4",
         "rank_loc_group": "4",
-        "score_data": 0.673,
-        "score_data_group": 0.673,
-        "score_data_loc": 0.36,
-        "score_data_loc_group": 0.36,
+        "score_data": 0.598,
+        "score_data_group": 0.598,
+        "score_data_loc": 0.323,
+        "score_data_loc_group": 0.323,
         "score_loc": 0.048,
         "score_loc_group": 0.048
       },
       {
-        "component": "Hickory",
+        "component": "Cincinnati",
         "componentData": "Data Complete",
-        "componentID": 26772425,
-        "name": "Hickory",
+        "componentID": 26772423,
+        "name": "Cincinnati",
         "not_displayed": false,
-        "rank_data": "8",
-        "rank_data_group": "8",
-        "rank_data_loc": "3",
-        "rank_data_loc_group": "3",
-        "rank_loc": "3",
-        "rank_loc_group": "3",
-        "score_data": 0.639,
-        "score_data_group": 0.639,
-        "score_data_loc": 0.345,
-        "score_data_loc_group": 0.345,
-        "score_loc": 0.051,
-        "score_loc_group": 0.051
-      },
-      {
-        "component": "Jessietown",
-        "componentData": "Data Complete",
-        "componentID": 26772428,
-        "name": "Jessietown",
-        "not_displayed": false,
-        "rank_data": "2",
-        "rank_data_group": "2",
+        "rank_data": "3",
+        "rank_data_group": "3",
         "rank_data_loc": "4",
         "rank_data_loc_group": "4",
-        "rank_loc": "12",
-        "rank_loc_group": "12",
-        "score_data": 0.678,
-        "score_data_group": 0.678,
-        "score_data_loc": 0.34,
-        "score_data_loc_group": 0.34,
+        "rank_loc": "10",
+        "rank_loc_group": "10",
+        "score_data": 0.638,
+        "score_data_group": 0.638,
+        "score_data_loc": 0.32,
+        "score_data_loc_group": 0.32,
         "score_loc": 0.001,
         "score_loc_group": 0.001
       },
@@ -1058,56 +1058,18 @@
         "componentID": 26772402,
         "name": "Fincastle",
         "not_displayed": false,
-        "rank_data": "10",
-        "rank_data_group": "10",
+        "rank_data": "8",
+        "rank_data_group": "8",
         "rank_data_loc": "5",
         "rank_data_loc_group": "5",
         "rank_loc": "2",
         "rank_loc_group": "2",
-        "score_data": 0.611,
-        "score_data_group": 0.611,
-        "score_data_loc": 0.333,
-        "score_data_loc_group": 0.333,
+        "score_data": 0.566,
+        "score_data_group": 0.566,
+        "score_data_loc": 0.31,
+        "score_data_loc_group": 0.31,
         "score_loc": 0.054,
         "score_loc_group": 0.054
-      },
-      {
-        "component": "Bonnell",
-        "componentData": "Data Complete",
-        "componentID": 26772426,
-        "name": "Bonnell",
-        "not_displayed": false,
-        "rank_data": "4",
-        "rank_data_group": "4",
-        "rank_data_loc": "6",
-        "rank_data_loc_group": "6",
-        "rank_loc": "9",
-        "rank_loc_group": "9",
-        "score_data": 0.663,
-        "score_data_group": 0.663,
-        "score_data_loc": 0.332,
-        "score_data_loc_group": 0.332,
-        "score_loc": 0.002,
-        "score_loc_group": 0.002
-      },
-      {
-        "component": "Holton",
-        "componentData": "Data Complete",
-        "componentID": 26772424,
-        "name": "Holton",
-        "not_displayed": false,
-        "rank_data": "5",
-        "rank_data_group": "5",
-        "rank_data_loc": "7",
-        "rank_data_loc_group": "7",
-        "rank_loc": "8",
-        "rank_loc_group": "8",
-        "score_data": 0.647,
-        "score_data_group": 0.647,
-        "score_data_loc": 0.325,
-        "score_data_loc_group": 0.325,
-        "score_loc": 0.002,
-        "score_loc_group": 0.002
       },
       {
         "component": "Grayford",
@@ -1115,35 +1077,54 @@
         "componentID": 26772427,
         "name": "Grayford",
         "not_displayed": false,
-        "rank_data": "6",
-        "rank_data_group": "6",
-        "rank_data_loc": "8",
-        "rank_data_loc_group": "8",
+        "rank_data": "4",
+        "rank_data_group": "4",
+        "rank_data_loc": "6",
+        "rank_data_loc_group": "6",
         "rank_loc": "11",
         "rank_loc_group": "11",
-        "score_data": 0.643,
-        "score_data_group": 0.643,
-        "score_data_loc": 0.322,
-        "score_data_loc_group": 0.322,
+        "score_data": 0.619,
+        "score_data_group": 0.619,
+        "score_data_loc": 0.31,
+        "score_data_loc_group": 0.31,
         "score_loc": 0.001,
         "score_loc_group": 0.001
       },
       {
-        "component": "Cincinnati",
+        "component": "Brookston",
         "componentData": "Data Complete",
-        "componentID": 26772423,
-        "name": "Cincinnati",
+        "componentID": 26772434,
+        "name": "Brookston",
         "not_displayed": false,
         "rank_data": "7",
         "rank_data_group": "7",
-        "rank_data_loc": "9",
-        "rank_data_loc_group": "9",
-        "rank_loc": "10",
-        "rank_loc_group": "10",
-        "score_data": 0.641,
-        "score_data_group": 0.641,
-        "score_data_loc": 0.321,
-        "score_data_loc_group": 0.321,
+        "rank_data_loc": "7",
+        "rank_data_loc_group": "7",
+        "rank_loc": "6",
+        "rank_loc_group": "6",
+        "score_data": 0.575,
+        "score_data_group": 0.575,
+        "score_data_loc": 0.292,
+        "score_data_loc_group": 0.292,
+        "score_loc": 0.009,
+        "score_loc_group": 0.009
+      },
+      {
+        "component": "Jessietown",
+        "componentData": "Data Complete",
+        "componentID": 26772428,
+        "name": "Jessietown",
+        "not_displayed": false,
+        "rank_data": "6",
+        "rank_data_group": "6",
+        "rank_data_loc": "8",
+        "rank_data_loc_group": "8",
+        "rank_loc": "12",
+        "rank_loc_group": "12",
+        "score_data": 0.579,
+        "score_data_group": 0.579,
+        "score_data_loc": 0.29,
+        "score_data_loc_group": 0.29,
         "score_loc": 0.001,
         "score_loc_group": 0.001
       },
@@ -1155,35 +1136,35 @@
         "not_displayed": false,
         "rank_data": "9",
         "rank_data_group": "9",
-        "rank_data_loc": "10",
-        "rank_data_loc_group": "10",
+        "rank_data_loc": "9",
+        "rank_data_loc_group": "9",
         "rank_loc": "5",
         "rank_loc_group": "5",
-        "score_data": 0.62,
-        "score_data_group": 0.62,
-        "score_data_loc": 0.315,
-        "score_data_loc_group": 0.315,
+        "score_data": 0.562,
+        "score_data_group": 0.562,
+        "score_data_loc": 0.286,
+        "score_data_loc_group": 0.286,
         "score_loc": 0.011,
         "score_loc_group": 0.011
       },
       {
-        "component": "Brookston",
+        "component": "Hickory",
         "componentData": "Data Complete",
-        "componentID": 26772434,
-        "name": "Brookston",
+        "componentID": 26772425,
+        "name": "Hickory",
         "not_displayed": false,
-        "rank_data": "11",
-        "rank_data_group": "11",
-        "rank_data_loc": "11",
-        "rank_data_loc_group": "11",
-        "rank_loc": "6",
-        "rank_loc_group": "6",
-        "score_data": 0.61,
-        "score_data_group": 0.61,
-        "score_data_loc": 0.31,
-        "score_data_loc_group": 0.31,
-        "score_loc": 0.009,
-        "score_loc_group": 0.009
+        "rank_data": "12",
+        "rank_data_group": "12",
+        "rank_data_loc": "10",
+        "rank_data_loc_group": "10",
+        "rank_loc": "3",
+        "rank_loc_group": "3",
+        "score_data": 0.51,
+        "score_data_group": 0.51,
+        "score_data_loc": 0.28,
+        "score_data_loc_group": 0.28,
+        "score_loc": 0.051,
+        "score_loc_group": 0.051
       },
       {
         "component": "Celina",
@@ -1191,18 +1172,56 @@
         "componentID": 26772498,
         "name": "Celina",
         "not_displayed": false,
-        "rank_data": "12",
-        "rank_data_group": "12",
-        "rank_data_loc": "12",
-        "rank_data_loc_group": "12",
+        "rank_data": "10",
+        "rank_data_group": "10",
+        "rank_data_loc": "11",
+        "rank_data_loc_group": "11",
         "rank_loc": "7",
         "rank_loc_group": "7",
-        "score_data": 0.575,
-        "score_data_group": 0.575,
-        "score_data_loc": 0.289,
-        "score_data_loc_group": 0.289,
+        "score_data": 0.553,
+        "score_data_group": 0.553,
+        "score_data_loc": 0.278,
+        "score_data_loc_group": 0.278,
         "score_loc": 0.003,
         "score_loc_group": 0.003
+      },
+      {
+        "component": "Holton",
+        "componentData": "Data Complete",
+        "componentID": 26772424,
+        "name": "Holton",
+        "not_displayed": false,
+        "rank_data": "11",
+        "rank_data_group": "11",
+        "rank_data_loc": "12",
+        "rank_data_loc_group": "12",
+        "rank_loc": "8",
+        "rank_loc_group": "8",
+        "score_data": 0.546,
+        "score_data_group": 0.546,
+        "score_data_loc": 0.274,
+        "score_data_loc_group": 0.274,
+        "score_loc": 0.002,
+        "score_loc_group": 0.002
+      },
+      {
+        "component": "Hennepin",
+        "componentData": "Data Complete",
+        "componentID": 26772420,
+        "name": "Hennepin2",
+        "not_displayed": true,
+        "rank_data": "Not Displayed",
+        "rank_data_group": "2",
+        "rank_data_loc": "Not Displayed",
+        "rank_data_loc_group": "1",
+        "rank_loc": "Not Displayed",
+        "rank_loc_group": "1",
+        "score_data": 0.663,
+        "score_data_group": 0.663,
+        "score_data_loc": 0.362,
+        "score_data_loc_group": 0.362,
+        "score_loc": 0.061,
+        "score_loc_group": 0.061
       },
       {
         "component": "Crosby",
@@ -1211,15 +1230,15 @@
         "name": "Crosby3",
         "not_displayed": true,
         "rank_data": "Not Displayed",
-        "rank_data_group": "3",
+        "rank_data_group": "5",
         "rank_data_loc": "Not Displayed",
-        "rank_data_loc_group": "2",
+        "rank_data_loc_group": "3",
         "rank_loc": "Not Displayed",
         "rank_loc_group": "4",
-        "score_data": 0.665,
-        "score_data_group": 0.673,
-        "score_data_loc": 0.356,
-        "score_data_loc_group": 0.36,
+        "score_data": 0.588,
+        "score_data_group": 0.598,
+        "score_data_loc": 0.318,
+        "score_data_loc_group": 0.323,
         "score_loc": 0.048,
         "score_loc_group": 0.048
       },
@@ -1230,55 +1249,17 @@
         "name": "Crosby2",
         "not_displayed": true,
         "rank_data": "Not Displayed",
-        "rank_data_group": "3",
+        "rank_data_group": "5",
         "rank_data_loc": "Not Displayed",
-        "rank_data_loc_group": "2",
+        "rank_data_loc_group": "3",
         "rank_loc": "Not Displayed",
         "rank_loc_group": "4",
-        "score_data": 0.662,
-        "score_data_group": 0.673,
-        "score_data_loc": 0.355,
-        "score_data_loc_group": 0.36,
+        "score_data": 0.575,
+        "score_data_group": 0.598,
+        "score_data_loc": 0.311,
+        "score_data_loc_group": 0.323,
         "score_loc": 0.048,
         "score_loc_group": 0.048
-      },
-      {
-        "component": "Hennepin",
-        "componentData": "Data Complete",
-        "componentID": 26772442,
-        "name": "Hennepin",
-        "not_displayed": true,
-        "rank_data": "Not Displayed",
-        "rank_data_group": "1",
-        "rank_data_loc": "Not Displayed",
-        "rank_data_loc_group": "1",
-        "rank_loc": "1",
-        "rank_loc_group": "1",
-        "score_data": 0.525,
-        "score_data_group": 0.711,
-        "score_data_loc": 0.293,
-        "score_data_loc_group": 0.386,
-        "score_loc": 0.061,
-        "score_loc_group": 0.061
-      },
-      {
-        "component": "Hennepin",
-        "componentData": "Data Complete",
-        "componentID": 26772448,
-        "name": "Hennepin3",
-        "not_displayed": true,
-        "rank_data": "Not Displayed",
-        "rank_data_group": "1",
-        "rank_data_loc": "Not Displayed",
-        "rank_data_loc_group": "1",
-        "rank_loc": "Not Displayed",
-        "rank_loc_group": "1",
-        "score_data": 0.524,
-        "score_data_group": 0.711,
-        "score_data_loc": 0.293,
-        "score_data_loc_group": 0.386,
-        "score_loc": 0.061,
-        "score_loc_group": 0.061
       },
       {
         "component": "Cyclone",
@@ -1289,15 +1270,34 @@
         "rank_data": "Not Displayed",
         "rank_data_group": "9",
         "rank_data_loc": "Not Displayed",
-        "rank_data_loc_group": "10",
+        "rank_data_loc_group": "9",
         "rank_loc": "Not Displayed",
         "rank_loc_group": "5",
-        "score_data": 0.513,
-        "score_data_group": 0.62,
-        "score_data_loc": 0.262,
-        "score_data_loc_group": 0.315,
+        "score_data": 0.456,
+        "score_data_group": 0.562,
+        "score_data_loc": 0.233,
+        "score_data_loc_group": 0.286,
         "score_loc": 0.011,
         "score_loc_group": 0.011
+      },
+      {
+        "component": "Hennepin",
+        "componentData": "Data Complete",
+        "componentID": 26772442,
+        "name": "Hennepin",
+        "not_displayed": true,
+        "rank_data": "Not Displayed",
+        "rank_data_group": "2",
+        "rank_data_loc": "Not Displayed",
+        "rank_data_loc_group": "1",
+        "rank_loc": "1",
+        "rank_loc_group": "1",
+        "score_data": 0.319,
+        "score_data_group": 0.663,
+        "score_data_loc": 0.19,
+        "score_data_loc_group": 0.362,
+        "score_loc": 0.061,
+        "score_loc_group": 0.061
       }
     ]
   }

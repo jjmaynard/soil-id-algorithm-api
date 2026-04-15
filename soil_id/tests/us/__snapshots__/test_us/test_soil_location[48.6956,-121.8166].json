@@ -80,13 +80,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "R003XN613WA"
+              "F003XA305WA"
             ],
             "ecoclassname": [
-              "Low Mountain Unforested Wetlands"
+              "Low Glacial Trough Valleys Moist Forest Western Hemlock"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/003X/R003XN613WA"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/003X/F003XA305WA"
             ]
           }
         },
@@ -136,13 +136,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "F003XA305WA"
+              "R003XN613WA"
             ],
             "ecoclassname": [
-              "Low Glacial Trough Valleys Moist Forest Western Hemlock"
+              "Low Mountain Unforested Wetlands"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/003X/F003XA305WA"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/003X/R003XN613WA"
             ]
           }
         },
@@ -204,31 +204,12 @@
         "rank_data_loc_group": "1",
         "rank_loc": 1,
         "rank_loc_group": 1,
-        "score_data": 0.669,
-        "score_data_group": 0.669,
-        "score_data_loc": 0.577,
-        "score_data_loc_group": 0.577,
+        "score_data": 0.785,
+        "score_data_group": 0.785,
+        "score_data_loc": 0.635,
+        "score_data_loc_group": 0.635,
         "score_loc": 0.486,
         "score_loc_group": 0.486
-      },
-      {
-        "component": "Histic cryaquepts",
-        "componentData": "Missing Data",
-        "componentID": 26612823,
-        "name": "Histic cryaquepts",
-        "not_displayed": false,
-        "rank_data": "2",
-        "rank_data_group": "2",
-        "rank_data_loc": "2",
-        "rank_data_loc_group": "2",
-        "rank_loc": 3,
-        "rank_loc_group": 3,
-        "score_data": 0.328,
-        "score_data_group": 0.328,
-        "score_data_loc": 0.241,
-        "score_data_loc_group": 0.241,
-        "score_loc": 0.154,
-        "score_loc_group": 0.154
       },
       {
         "component": "Vitrandic dystrocryepts",
@@ -236,18 +217,37 @@
         "componentID": 26612824,
         "name": "Vitrandic dystrocryepts",
         "not_displayed": false,
+        "rank_data": "2",
+        "rank_data_group": "2",
+        "rank_data_loc": "2",
+        "rank_data_loc_group": "2",
+        "rank_loc": 2,
+        "rank_loc_group": 2,
+        "score_data": 0.393,
+        "score_data_group": 0.393,
+        "score_data_loc": 0.376,
+        "score_data_loc_group": 0.376,
+        "score_loc": 0.36,
+        "score_loc_group": 0.36
+      },
+      {
+        "component": "Histic cryaquepts",
+        "componentData": "Missing Data",
+        "componentID": 26612823,
+        "name": "Histic cryaquepts",
+        "not_displayed": false,
         "rank_data": "3",
         "rank_data_group": "3",
         "rank_data_loc": "3",
         "rank_data_loc_group": "3",
-        "rank_loc": 2,
-        "rank_loc_group": 2,
-        "score_data": 0.107,
-        "score_data_group": 0.107,
-        "score_data_loc": 0.233,
-        "score_data_loc_group": 0.233,
-        "score_loc": 0.36,
-        "score_loc_group": 0.36
+        "rank_loc": 3,
+        "rank_loc_group": 3,
+        "score_data": 0.34,
+        "score_data_group": 0.34,
+        "score_data_loc": 0.247,
+        "score_data_loc_group": 0.247,
+        "score_loc": 0.154,
+        "score_loc_group": 0.154
       }
     ]
   }

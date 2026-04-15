@@ -156,6 +156,82 @@ def getClay(field):
     return clay_percentages.get(field.lower() if field else None, np.nan)
 
 
+# USDA texture triangle clay % bounds (lo, hi) for each class.
+# Used to QC field-estimated clay values against the reported texture class.
+TEXTURE_CLAY_RANGES = {
+    "sand":              (0.0,  10.0),
+    "loamy sand":        (0.0,  15.0),
+    "sandy loam":        (0.0,  20.0),
+    "loam":              (7.0,  27.0),
+    "silt":              (0.0,  12.0),
+    "silt loam":         (0.0,  27.0),
+    "sandy clay loam":   (20.0, 35.0),
+    "clay loam":         (27.0, 40.0),
+    "silty clay loam":   (27.0, 40.0),
+    "sandy clay":        (35.0, 55.0),
+    "silty clay":        (40.0, 60.0),
+    "clay":              (40.0, 100.0),
+}
+
+
+# Maximum Euclidean distance in (sand%, clay%) centroid space across all 12
+# USDA texture classes: sand centroid (92, 5) to clay centroid (22.5, 70).
+# Used to normalize pre-computed texture distances to [0, 1].
+TEXTURE_MAX_EUCLIDEAN_DIST = 95.2
+
+# Normalization ceiling for ΔE2000 color distances.
+# The maximum perceptually-weighted distance between any two soil Munsell colors
+# within typical USDA soil color space is empirically ~50 ΔE units.
+# The 10% Gower floor (5 ΔE) aligns with the just-noticeable difference threshold
+# for a trained observer comparing two distinct color chips.
+DELTA_E_MAX = 50.0
+
+
+def validate_clay_estimate(texture_class: str, clay_est) -> float:
+    """
+    QC-validate a field-estimated clay percentage against the USDA bounds for
+    the reported texture class.
+
+    If clay_est is within [lo, hi] for the given texture class, it is used as-is
+    (more precise than the class centroid). Otherwise, or if clay_est is missing/
+    unrecognized, the standard getClay() centroid is returned.
+
+    Parameters
+    ----------
+    texture_class : str
+        USDA texture class name (e.g. "Sandy loam"). Case-insensitive.
+    clay_est : float or None
+        Field-estimated clay percentage.
+
+    Returns
+    -------
+    float : validated clay %, or the class centroid if the estimate fails QC.
+    """
+    centroid = getClay(texture_class)
+
+    if clay_est is None:
+        return centroid
+    try:
+        clay_val = float(clay_est)
+    except (TypeError, ValueError):
+        return centroid
+    if np.isnan(clay_val):
+        return centroid
+
+    if texture_class is None:
+        return centroid
+
+    lo, hi = TEXTURE_CLAY_RANGES.get(texture_class.lower(), (None, None))
+    if lo is None:
+        # Unrecognized texture class — centroid lookup will also be NaN
+        return centroid
+
+    if lo <= clay_val <= hi:
+        return clay_val
+    # Out of range for the reported class — discard and fall back to centroid
+    return centroid
+
+
 def silt_calc(row):
     sand = row["sand"]
     clay = row["clay"]

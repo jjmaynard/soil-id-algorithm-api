@@ -80,13 +80,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              ""
+              "R014XG903CA"
             ],
             "ecoclassname": [
-              ""
+              "Salt Marsh"
             ],
             "edit_url": [
-              ""
+              "https://edit.sc.egov.usda.gov/catalogs/esd/014X/R014XG903CA"
             ]
           }
         },
@@ -136,13 +136,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              ""
+              "R014XG903CA"
             ],
             "ecoclassname": [
-              ""
+              "Salt Marsh"
             ],
             "edit_url": [
-              ""
+              "https://edit.sc.egov.usda.gov/catalogs/esd/014X/R014XG903CA"
             ]
           }
         },
@@ -192,13 +192,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "R014XG903CA"
+              ""
             ],
             "ecoclassname": [
-              "Salt Marsh"
+              ""
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/014X/R014XG903CA"
+              ""
             ]
           }
         },
@@ -248,13 +248,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "R014XG903CA"
+              ""
             ],
             "ecoclassname": [
-              "Salt Marsh"
+              ""
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/014X/R014XG903CA"
+              ""
             ]
           }
         },
@@ -304,13 +304,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "R014XG903CA"
+              ""
             ],
             "ecoclassname": [
-              "Salt Marsh"
+              ""
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/014X/R014XG903CA"
+              ""
             ]
           }
         },
@@ -360,13 +360,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              ""
+              "R014XG903CA"
             ],
             "ecoclassname": [
-              ""
+              "Salt Marsh"
             ],
             "edit_url": [
-              ""
+              "https://edit.sc.egov.usda.gov/catalogs/esd/014X/R014XG903CA"
             ]
           }
         },
@@ -419,19 +419,19 @@
       {
         "component": "Xerorthents",
         "componentData": "Data Complete",
-        "componentID": 26701976,
-        "name": "Xerorthents2",
+        "componentID": 26701975,
+        "name": "Xerorthents",
         "not_displayed": false,
-        "rank_data": "2",
-        "rank_data_group": "2",
+        "rank_data": "1",
+        "rank_data_group": "1",
         "rank_data_loc": "1",
         "rank_data_loc_group": "1",
-        "rank_loc": "Not Displayed",
+        "rank_loc": "2",
         "rank_loc_group": "2",
-        "score_data": 0.838,
-        "score_data_group": 0.838,
-        "score_data_loc": 0.612,
-        "score_data_loc_group": 0.612,
+        "score_data": 0.832,
+        "score_data_group": 0.832,
+        "score_data_loc": 0.609,
+        "score_data_loc_group": 0.609,
         "score_loc": 0.386,
         "score_loc_group": 0.386
       },
@@ -447,10 +447,10 @@
         "rank_data_loc_group": "2",
         "rank_loc": "1",
         "rank_loc_group": "1",
-        "score_data": 0.472,
-        "score_data_group": 0.472,
-        "score_data_loc": 0.431,
-        "score_data_loc_group": 0.431,
+        "score_data": 0.484,
+        "score_data_group": 0.484,
+        "score_data_loc": 0.437,
+        "score_data_loc_group": 0.437,
         "score_loc": 0.39,
         "score_loc_group": 0.39
       },
@@ -460,16 +460,16 @@
         "componentID": 26701952,
         "name": "Embarcadero",
         "not_displayed": false,
-        "rank_data": "1",
-        "rank_data_group": "1",
+        "rank_data": "2",
+        "rank_data_group": "2",
         "rank_data_loc": "3",
         "rank_data_loc_group": "3",
         "rank_loc": "6",
         "rank_loc_group": "6",
-        "score_data": 0.838,
-        "score_data_group": 0.838,
-        "score_data_loc": 0.425,
-        "score_data_loc_group": 0.425,
+        "score_data": 0.745,
+        "score_data_group": 0.745,
+        "score_data_loc": 0.379,
+        "score_data_loc_group": 0.379,
         "score_loc": 0.012,
         "score_loc_group": 0.012
       },
@@ -479,16 +479,16 @@
         "componentID": 26701978,
         "name": "Aquic xerorthents",
         "not_displayed": false,
-        "rank_data": "5",
-        "rank_data_group": "5",
+        "rank_data": "3",
+        "rank_data_group": "3",
         "rank_data_loc": "4",
         "rank_data_loc_group": "4",
         "rank_loc": "3",
         "rank_loc_group": "3",
-        "score_data": 0.59,
-        "score_data_group": 0.59,
-        "score_data_loc": 0.378,
-        "score_data_loc_group": 0.378,
+        "score_data": 0.559,
+        "score_data_group": 0.559,
+        "score_data_loc": 0.362,
+        "score_data_loc_group": 0.362,
         "score_loc": 0.165,
         "score_loc_group": 0.165
       },
@@ -498,16 +498,16 @@
         "componentID": 26701953,
         "name": "Bayshore",
         "not_displayed": false,
-        "rank_data": "3",
-        "rank_data_group": "3",
+        "rank_data": "4",
+        "rank_data_group": "4",
         "rank_data_loc": "5",
         "rank_data_loc_group": "5",
         "rank_loc": "5",
         "rank_loc_group": "5",
-        "score_data": 0.647,
-        "score_data_group": 0.647,
-        "score_data_loc": 0.333,
-        "score_data_loc_group": 0.333,
+        "score_data": 0.548,
+        "score_data_group": 0.548,
+        "score_data_loc": 0.283,
+        "score_data_loc_group": 0.283,
         "score_loc": 0.019,
         "score_loc_group": 0.019
       },
@@ -517,35 +517,35 @@
         "componentID": 26701951,
         "name": "Clear lake",
         "not_displayed": false,
-        "rank_data": "4",
-        "rank_data_group": "4",
+        "rank_data": "5",
+        "rank_data_group": "5",
         "rank_data_loc": "6",
         "rank_data_loc_group": "6",
         "rank_loc": "4",
         "rank_loc_group": "4",
-        "score_data": 0.593,
-        "score_data_group": 0.593,
-        "score_data_loc": 0.311,
-        "score_data_loc_group": 0.311,
+        "score_data": 0.53,
+        "score_data_group": 0.53,
+        "score_data_loc": 0.279,
+        "score_data_loc_group": 0.279,
         "score_loc": 0.029,
         "score_loc_group": 0.029
       },
       {
         "component": "Xerorthents",
         "componentData": "Data Complete",
-        "componentID": 26701975,
-        "name": "Xerorthents",
+        "componentID": 26701976,
+        "name": "Xerorthents2",
         "not_displayed": true,
         "rank_data": "Not Displayed",
-        "rank_data_group": "2",
+        "rank_data_group": "1",
         "rank_data_loc": "Not Displayed",
         "rank_data_loc_group": "1",
-        "rank_loc": "2",
+        "rank_loc": "Not Displayed",
         "rank_loc_group": "2",
-        "score_data": 0.82,
-        "score_data_group": 0.838,
-        "score_data_loc": 0.603,
-        "score_data_loc_group": 0.612,
+        "score_data": 0.683,
+        "score_data_group": 0.832,
+        "score_data_loc": 0.534,
+        "score_data_loc_group": 0.609,
         "score_loc": 0.386,
         "score_loc_group": 0.386
       }
