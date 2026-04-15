@@ -17,6 +17,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from soil_id.us_soil import list_soils, rank_soils, SoilListOutputData
+from soil_id.color import munsell_notation_to_lab
 
 app = FastAPI(
     title="Soil ID Algorithm API",
@@ -88,7 +89,8 @@ class RankSoilsRequest(BaseModel):
     topDepth: Optional[List[Optional[float]]] = Field(None, description="Top depth of each horizon (cm)")
     bottomDepth: Optional[List[Optional[float]]] = Field(None, description="Bottom depth of each horizon (cm)")
     rfvDepth: Optional[List[Optional[str]]] = Field(None, description="Rock fragment volume classes")
-    lab_Color: Optional[List[Optional[List[float]]]] = Field(None, description="LAB color values [L, A, B]")
+    lab_Color: Optional[List[Optional[List[float]]]] = Field(None, description="LAB color values [L, A, B] per horizon")
+    munsell_Color: Optional[List[Optional[str]]] = Field(None, description="Munsell color notation per horizon (e.g. '10YR 3/2'). Alternative to lab_Color; cannot specify both.")
     pSlope: Optional[float] = Field(None, description="Site slope percentage")
     pElev: Optional[float] = Field(None, description="Site elevation (m)")
     bedrock: Optional[float] = Field(None, description="Bedrock depth (cm)")
@@ -112,6 +114,7 @@ class RankSoilsRequest(BaseModel):
                 "bottomDepth": [20, 50],
                 "rfvDepth": ["0-1%", "1-15%"],
                 "lab_Color": [[50.5, 5.2, 20.1], [45.3, 6.1, 18.5]],
+                "munsell_Color": None,
                 "pSlope": 5.0,
                 "pElev": 800.0,
                 "bedrock": None,
@@ -123,6 +126,44 @@ class RankSoilsRequest(BaseModel):
                 "pLandscapeMode": "base"
             }
         }
+
+
+# ============================================================================
+# Helpers
+# ============================================================================
+
+def _resolve_lab_color(request: "RankSoilsRequest"):
+    """
+    Return the effective lab_Color list for a rank request.
+
+    If munsell_Color is provided the entries are converted to [L, A, B] and
+    used as lab_Color.  Providing both lab_Color and munsell_Color raises a
+    400 HTTPException.
+    """
+    if request.munsell_Color is None:
+        return request.lab_Color
+
+    if request.lab_Color is not None:
+        raise HTTPException(
+            status_code=400,
+            detail="Provide either lab_Color or munsell_Color, not both.",
+        )
+
+    converted = []
+    for notation in request.munsell_Color:
+        if notation is None:
+            converted.append(None)
+        else:
+            lab = munsell_notation_to_lab(notation)
+            if lab is None:
+                raise HTTPException(
+                    status_code=422,
+                    detail=f"Could not convert Munsell notation '{notation}' to LAB. "
+                           "Check that the hue, value, and chroma are present in the "
+                           "reference table (e.g. '10YR 3/2').",
+                )
+            converted.append(lab)
+    return converted
 
 
 # ============================================================================
@@ -259,7 +300,7 @@ async def api_rank_soils(request: RankSoilsRequest):
             topDepth=request.topDepth,
             bottomDepth=request.bottomDepth,
             rfvDepth=request.rfvDepth,
-            lab_Color=request.lab_Color,
+            lab_Color=_resolve_lab_color(request),
             pSlope=request.pSlope,
             pElev=request.pElev,
             bedrock=request.bedrock,
@@ -310,7 +351,7 @@ async def api_analyze_soil_combined(request: RankSoilsRequest):
             topDepth=request.topDepth,
             bottomDepth=request.bottomDepth,
             rfvDepth=request.rfvDepth,
-            lab_Color=request.lab_Color,
+            lab_Color=_resolve_lab_color(request),
             pSlope=request.pSlope,
             pElev=request.pElev,
             bedrock=request.bedrock,
