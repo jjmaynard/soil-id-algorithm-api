@@ -2304,13 +2304,28 @@ def rank_soils(
         }
         weights = np.array([DEFAULT_WEIGHTS[f] for f in features])
 
+        # Theoretical ranges for numeric site features used as a floor (10%) in
+        # hybrid Gower normalization. Prevents range collapse when all candidates
+        # cluster in a narrow part of the feature space (e.g. all gentle slopes),
+        # while still reflecting local spread when it is wider than the floor.
+        SITE_THEORETICAL_RANGES = {
+            "slope_r": 100.0,         # 0–100% covers all SSURGO slope classes
+            "elev_r": 4400.0,         # Death Valley (~-86 m) to high Rockies (~4400 m)
+            "bottom_depth": 200.0,    # hard-capped at 200 cm elsewhere in this function
+            "aspect_northerness": 2.0,  # cos(aspect) ∈ [-1, 1]
+            "aspect_easterness": 2.0,   # sin(aspect) ∈ [-1, 1]
+        }
+
         # 9) Compute Gower distances with categorical support.
         site_mat = full_df.set_index("compname")[features]
         categorical_indices = [i for i, feature in enumerate(features) if feature in categorical_set]
+        numeric_features = [f for f in features if f not in categorical_set]
+        site_theoretical_ranges = [SITE_THEORETICAL_RANGES[f] for f in numeric_features]
         D_raw = gower_distances(
             site_mat,
             feature_weight=weights,
             categorical_features=categorical_indices if categorical_indices else None,
+            theoretical_ranges=site_theoretical_ranges if site_theoretical_ranges else None,
         )
 
         # 10 Replace any NaNs with the max distance, then (optionally) convert to similarity
