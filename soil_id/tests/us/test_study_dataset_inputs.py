@@ -59,6 +59,8 @@ def _build_rank_inputs(plot_row, horizons_df):
         pd.to_numeric(hz["HorizonDepthLower"], errors="coerce").fillna(0).astype(int).tolist()
     )
     rfv_depth = hz["RockFragments"].apply(_rfv_bucket).tolist()
+    claypct_est = pd.to_numeric(hz["ClayPct"], errors="coerce").tolist()
+    claypct_est = [None if pd.isna(v) else float(v) for v in claypct_est]
 
     # Keep a constant LAB color vector so the test is deterministic.
     lab_color = [[41.24, 2.54, 21.17] for _ in soil_horizon]
@@ -68,6 +70,7 @@ def _build_rank_inputs(plot_row, horizons_df):
         "topDepth": top_depth,
         "bottomDepth": bottom_depth,
         "rfvDepth": rfv_depth,
+        "claypct_est": claypct_est,
         "lab_Color": lab_color,
     }
 
@@ -206,6 +209,7 @@ def test_rank_soils_with_study_plot_datasets(plot_csv):
         topDepth=rank_inputs["topDepth"],
         bottomDepth=rank_inputs["bottomDepth"],
         rfvDepth=rank_inputs["rfvDepth"],
+        claypct_est=rank_inputs["claypct_est"],
         lab_Color=rank_inputs["lab_Color"],
         pSlope=p_slope,
         pElev=p_elev,
@@ -221,6 +225,7 @@ def test_rank_soils_with_study_plot_datasets(plot_csv):
         topDepth=rank_inputs["topDepth"],
         bottomDepth=rank_inputs["bottomDepth"],
         rfvDepth=rank_inputs["rfvDepth"],
+        claypct_est=rank_inputs["claypct_est"],
         lab_Color=rank_inputs["lab_Color"],
         pSlope=p_slope,
         pElev=p_elev,

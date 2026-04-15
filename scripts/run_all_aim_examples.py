@@ -316,6 +316,16 @@ def _normalize_texture_value(texture_value):
     return TEXTURE_ABBREV_MAP.get(raw, raw)
 
 
+def _to_optional_float(value):
+    txt = _norm_text(value)
+    if not txt:
+        return None
+    try:
+        return float(txt)
+    except (TypeError, ValueError):
+        return None
+
+
 def _build_rank_inputs_all_horizons(plot_key, horizons_df):
     hz = horizons_df[horizons_df["PrimaryKey"] == plot_key].copy()
     hz = hz.sort_values("HorizonDepthUpper", kind="stable")
@@ -337,6 +347,7 @@ def _build_rank_inputs_all_horizons(plot_key, horizons_df):
         "topDepth": hz["HorizonDepthUpper"].astype(int).tolist(),
         "bottomDepth": hz["HorizonDepthLower"].astype(int).tolist(),
         "rfvDepth": hz["RockFragments"].apply(_rfv_bucket).tolist(),
+        "claypct_est": hz["ClayPct"].apply(_to_optional_float).tolist(),
         "lab_Color": [],
     }
 
@@ -401,6 +412,11 @@ def main():
         help="Plot characteristics CSV path (absolute, workspace-relative, or under Data/aim_data)",
     )
     parser.add_argument(
+        "--horizons-csv",
+        default=str(HORIZONS_CSV),
+        help="Soil horizons CSV path containing Texture/RockFragments/ClayPct",
+    )
+    parser.add_argument(
         "--output-dir",
         default=str(TERRAIN_DATA_DIR),
         help="Directory to write result artifacts",
@@ -454,7 +470,7 @@ def main():
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     plot_df = pd.read_csv(plot_csv)
-    horizons_df = pd.read_csv(HORIZONS_CSV)
+    horizons_df = pd.read_csv(Path(args.horizons_csv))
 
     matched = plot_df.merge(
         horizons_df[["PrimaryKey"]].drop_duplicates(), on="PrimaryKey", how="inner"
@@ -609,6 +625,7 @@ def main():
                 topDepth=rank_inputs["topDepth"],
                 bottomDepth=rank_inputs["bottomDepth"],
                 rfvDepth=rank_inputs["rfvDepth"],
+                claypct_est=rank_inputs["claypct_est"],
                 lab_Color=rank_inputs["lab_Color"],
                 pSlope=p_slope,
                 pElev=p_elev,
@@ -624,6 +641,7 @@ def main():
                 topDepth=rank_inputs["topDepth"],
                 bottomDepth=rank_inputs["bottomDepth"],
                 rfvDepth=rank_inputs["rfvDepth"],
+                claypct_est=rank_inputs["claypct_est"],
                 lab_Color=rank_inputs["lab_Color"],
                 pSlope=p_slope,
                 pElev=p_elev,
@@ -660,6 +678,7 @@ def main():
                     topDepth=rank_inputs["topDepth"],
                     bottomDepth=rank_inputs["bottomDepth"],
                     rfvDepth=rank_inputs["rfvDepth"],
+                    claypct_est=rank_inputs["claypct_est"],
                     lab_Color=rank_inputs["lab_Color"],
                     pSlope=p_slope,
                     pElev=p_elev,

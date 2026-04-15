@@ -58,6 +58,16 @@ def _normalize_texture_value(texture_value):
     return TEXTURE_ABBREV_MAP.get(raw, raw)
 
 
+def _to_optional_float(value):
+    txt = _norm_text(value)
+    if not txt:
+        return None
+    try:
+        return float(txt)
+    except (TypeError, ValueError):
+        return None
+
+
 def _build_rank_inputs_with_munsell(plot_key, horizons_df):
     hz = horizons_df[horizons_df["PrimaryKey"] == plot_key].copy()
     hz = hz.sort_values("HorizonDepthUpper", kind="stable")
@@ -87,6 +97,7 @@ def _build_rank_inputs_with_munsell(plot_key, horizons_df):
         "topDepth": hz["HorizonDepthUpper"].astype(int).tolist(),
         "bottomDepth": hz["HorizonDepthLower"].astype(int).tolist(),
         "rfvDepth": hz["RockFragments"].apply(_rfv_bucket).tolist(),
+        "claypct_est": hz["ClayPct"].apply(_to_optional_float).tolist(),
         "munsell_Color": munsell_colors,
     }
 
@@ -118,6 +129,7 @@ def _build_analyze_payload(row, rank_inputs):
         "pSlopeShapeVert": _norm_text(row.get("SlopeShapeVertical")),
         "rank_data_csv": "compname,sandpct_intpl...",
         "rfvDepth": rank_inputs.get("rfvDepth"),
+        "claypct_est": rank_inputs.get("claypct_est"),
         "soilHorizon": rank_inputs.get("soilHorizon"),
         "soil_list_json": {"metadata": {}, "soilList": []},
         "topDepth": rank_inputs.get("topDepth"),
