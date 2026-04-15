@@ -28,7 +28,7 @@ from pandas import json_normalize
 
 # local libraries
 import soil_id.config
-from .color import getProfileLAB, lab2munsell, munsell2rgb
+from .color import calculate_deltaE2000, getProfileLAB, lab2munsell, munsell2rgb
 from .landscape_crosswalk import (
     aim_to_standard_class,
     build_sda_landscape_label,
@@ -59,6 +59,9 @@ from .utils import (
     getCF_fromClass,
     getClay,
     getOSDCF,
+    validate_clay_estimate,
+    TEXTURE_MAX_EUCLIDEAN_DIST,
+    DELTA_E_MAX,
     getProfile,
     getSand,
     getTexture,
@@ -1812,6 +1815,7 @@ def rank_soils(
     pElev,
     bedrock,
     cracks,
+    claypct_est=None,
     pAspect=None,
     pSlopeShapeVert=None,
     pSlopeShapeHoriz=None,
@@ -1899,7 +1903,15 @@ def rank_soils(
 
         # Generate user specified percent clay, sand, and rfv distributions
         spt = [getSand(sh) for sh in soilHorizon]
-        cpt = [getClay(sh) for sh in soilHorizon]
+        # Use field-estimated clay % when provided and it passes QC against the
+        # reported texture class bounds; otherwise fall back to the class centroid.
+        if claypct_est is not None and len(claypct_est) == len(soilHorizon):
+            cpt = [
+                validate_clay_estimate(sh, ce)
+                for sh, ce in zip(soilHorizon, claypct_est)
+            ]
+        else:
+            cpt = [getClay(sh) for sh in soilHorizon]
         p_cfg = [getCF_fromClass(rf) for rf in rfvDepth]
 
         # Initialize full-length property arrays with NaNs
@@ -2088,10 +2100,22 @@ def rank_soils(
         horz_vars = [p_hz_data]
         horz_vars.extend([group.reset_index(drop=True).loc[pedon_slice_index] for group in groups])
 
+        # texture_dist is a pre-computed Euclidean distance in (sand%, clay%) space
+        # from the sample_pedon to each component, normalized by TEXTURE_MAX_EUCLIDEAN_DIST
+        # (~95.2). This replaces separate sandpct_intpl and claypct_intpl columns so that
+        # one field observation (texture class) counts as exactly one feature in Gower.
+        # color_delta_e: ΔE2000 between the pedon chip and each component's OSD color,
+        # normalized by DELTA_E_MAX (50). Replaces separate l/a/b columns so that
+        # one Munsell chip observation counts as exactly one feature in Gower.
+        # Falls back to separate l/a/b columns if the pedon has missing color data.
         global_prop_bounds = {
+            "texture_dist":  (0.0, 1.0),    # normalized Euclidean texture distance [0, 1]
+            "rfv_intpl":     (0.0, 80.0),
+            "color_delta_e": (0.0, 1.0),    # ΔE2000 / DELTA_E_MAX, clipped to [0, 1]
+            # fallback columns used when texture_dist cannot be computed
             "sandpct_intpl": (10.0, 92.0),
             "claypct_intpl": (5.0, 70.0),
-            "rfv_intpl": (0.0, 80.0),
+            # fallback columns used when color_delta_e cannot be computed
             "l": (10.0, 95.0),
             "a": (-10.0, 35.0),
             "b": (-10.0, 60.0),
@@ -2100,6 +2124,28 @@ def rank_soils(
         # numeric range (upper – lower):
         global_prop_ranges = {
             prop: upper - lower for prop, (lower, upper) in global_prop_bounds.items()
+        }
+
+        # Per-feature Gower weights reflecting measurement precision and diagnostic value.
+        #   texture_dist   1.5 — single L2 texture feature (one observation → one feature)
+        #   rfv_intpl      0.75 — coarsest ordinal measurement (5 classes)
+        #   color_delta_e  1.0 — single perceptually-calibrated color feature (ΔE2000);
+        #                        lower than texture to reflect higher field variability
+        #                        of color vs. OSD modal dry color descriptions
+        #   sandpct_intpl  0.5  — fallback; correlated with clay, reduce double-counting
+        #   claypct_intpl  1.5  — fallback; primary textural diagnostic
+        #   l              1.5  — fallback; most diagnostic color channel
+        #   a              1.25 — fallback; B-horizon rubification
+        #   b              0.75 — fallback; weakest standalone color signal
+        HORIZON_FEATURE_WEIGHTS = {
+            "texture_dist":   1.5,
+            "rfv_intpl":      0.75,
+            "color_delta_e":  1.0,
+            "sandpct_intpl":  0.5,
+            "claypct_intpl":  1.5,
+            "l":              1.5,
+            "a":              1.25,
+            "b":              0.75,
         }
 
         # Calculate similarity for each depth slice
@@ -2143,10 +2189,59 @@ def rank_soils(
                 continue
             sliceT = sliceT[sample_pedon_slice_vars]
 
+            # Replace sandpct_intpl + claypct_intpl with a single texture_dist column.
+            # texture_dist is the Euclidean distance in (sand%, clay%) space between
+            # each row and the sample_pedon, normalized to [0, 1] by
+            # TEXTURE_MAX_EUCLIDEAN_DIST. This treats texture as one feature (not two)
+            # because both sand% and clay% derive from the same single field observation.
+            # Falls back to separate columns if the pedon has missing sand or clay.
+            if "sandpct_intpl" in sliceT.columns and "claypct_intpl" in sliceT.columns:
+                pedon_sand = float(sliceT["sandpct_intpl"].iloc[0])
+                pedon_clay = float(sliceT["claypct_intpl"].iloc[0])
+                if not (np.isnan(pedon_sand) or np.isnan(pedon_clay)):
+                    texture_dist_vals = (
+                        np.sqrt(
+                            (sliceT["sandpct_intpl"].astype(float) - pedon_sand) ** 2
+                            + (sliceT["claypct_intpl"].astype(float) - pedon_clay) ** 2
+                        )
+                        / TEXTURE_MAX_EUCLIDEAN_DIST
+                    ).clip(0.0, 1.0)
+                    sliceT = sliceT.drop(columns=["sandpct_intpl", "claypct_intpl"])
+                    sliceT.insert(0, "texture_dist", texture_dist_vals)
+
+            # Replace l + a + b with a single color_delta_e column.
+            # ΔE2000 is computed between the sample_pedon's LAB and each component's
+            # LAB at this depth slice, then normalized by DELTA_E_MAX (50 ΔE units).
+            # Falls back to separate l/a/b if the pedon has missing LAB data.
+            if "l" in sliceT.columns and "a" in sliceT.columns and "b" in sliceT.columns:
+                pedon_lab = [
+                    float(sliceT["l"].iloc[0]),
+                    float(sliceT["a"].iloc[0]),
+                    float(sliceT["b"].iloc[0]),
+                ]
+                if not any(np.isnan(v) for v in pedon_lab):
+                    delta_e_vals = sliceT.apply(
+                        lambda row: (
+                            calculate_deltaE2000(
+                                pedon_lab,
+                                [float(row["l"]), float(row["a"]), float(row["b"])],
+                            ) / DELTA_E_MAX
+                            if not any(np.isnan([float(row["l"]), float(row["a"]), float(row["b"])]))
+                            else np.nan
+                        ),
+                        axis=1,
+                    ).clip(0.0, 1.0)
+                    sliceT = sliceT.drop(columns=["l", "a", "b"])
+                    sliceT["color_delta_e"] = delta_e_vals
+
+            sample_pedon_slice_vars = sliceT.columns.tolist()
             theoretical_prop_ranges = [global_prop_ranges[c] for c in sample_pedon_slice_vars]
+            feature_weights = np.array([HORIZON_FEATURE_WEIGHTS[c] for c in sample_pedon_slice_vars])
             D = gower_distances(
-                sliceT, theoretical_ranges=theoretical_prop_ranges
-            )  # Equal weighting given to all soil variables
+                sliceT,
+                feature_weight=feature_weights,
+                theoretical_ranges=theoretical_prop_ranges,
+            )
 
             dis_mat_list.append(D)
             dis_slice_positions.append(pos)
@@ -2304,29 +2399,44 @@ def rank_soils(
         }
         weights = np.array([DEFAULT_WEIGHTS[f] for f in features])
 
-        # Theoretical ranges for numeric site features used as a floor (10%) in
-        # hybrid Gower normalization. Prevents range collapse when all candidates
-        # cluster in a narrow part of the feature space (e.g. all gentle slopes),
-        # while still reflecting local spread when it is wider than the floor.
-        SITE_THEORETICAL_RANGES = {
-            "slope_r": 100.0,         # 0–100% covers all SSURGO slope classes
-            "elev_r": 4400.0,         # Death Valley (~-86 m) to high Rockies (~4400 m)
-            "bottom_depth": 200.0,    # hard-capped at 200 cm elsewhere in this function
-            "aspect_northerness": 2.0,  # cos(aspect) ∈ [-1, 1]
-            "aspect_easterness": 2.0,   # sin(aspect) ∈ [-1, 1]
-        }
-
         # 9) Compute Gower distances with categorical support.
-        site_mat = full_df.set_index("compname")[features]
-        categorical_indices = [i for i, feature in enumerate(features) if feature in categorical_set]
+        # Theoretical ranges provide a stable denominator floor (10%) for numeric site
+        # features so that distances stay comparable across locations. Without this,
+        # a very narrow local slope/elevation range collapses the denominator and
+        # inflates those features' contribution relative to categorical terrain signals.
+        SITE_THEORETICAL_RANGES = {
+            "slope_r": 100.0,         # 0–100 % is the USDA slope gradient range
+            "elev_r": 4400.0,         # sea level to ~Mt. Whitney (highest CONUS peak)
+            "bottom_depth": 200.0,    # interpolation ceiling in the horizon pipeline
+            "aspect_northerness": 2.0,  # cos(θ) ∈ [-1, 1], range = 2
+            "aspect_easterness": 2.0,   # sin(θ) ∈ [-1, 1], range = 2
+        }
         numeric_features = [f for f in features if f not in categorical_set]
-        site_theoretical_ranges = [SITE_THEORETICAL_RANGES[f] for f in numeric_features]
-        D_raw = gower_distances(
-            site_mat,
-            feature_weight=weights,
-            categorical_features=categorical_indices if categorical_indices else None,
-            theoretical_ranges=site_theoretical_ranges if site_theoretical_ranges else None,
-        )
+        site_theoretical_ranges = [
+            SITE_THEORETICAL_RANGES.get(f) for f in numeric_features
+        ]
+        # Only pass theoretical_ranges when every numeric feature has a defined ceiling.
+        if all(v is not None for v in site_theoretical_ranges):
+            site_mat = full_df.set_index("compname")[features]
+            categorical_indices = [
+                i for i, f in enumerate(features) if f in categorical_set
+            ]
+            D_raw = gower_distances(
+                site_mat,
+                feature_weight=weights,
+                categorical_features=categorical_indices if categorical_indices else None,
+                theoretical_ranges=site_theoretical_ranges,
+            )
+        else:
+            site_mat = full_df.set_index("compname")[features]
+            categorical_indices = [
+                i for i, f in enumerate(features) if f in categorical_set
+            ]
+            D_raw = gower_distances(
+                site_mat,
+                feature_weight=weights,
+                categorical_features=categorical_indices if categorical_indices else None,
+            )
 
         # 10 Replace any NaNs with the max distance, then (optionally) convert to similarity
         D_site = np.where(np.isnan(D_raw), np.nanmax(D_raw), D_raw)

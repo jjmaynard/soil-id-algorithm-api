@@ -89,6 +89,7 @@ class RankSoilsRequest(BaseModel):
     topDepth: Optional[List[Optional[float]]] = Field(None, description="Top depth of each horizon (cm)")
     bottomDepth: Optional[List[Optional[float]]] = Field(None, description="Bottom depth of each horizon (cm)")
     rfvDepth: Optional[List[Optional[str]]] = Field(None, description="Rock fragment volume classes")
+    claypct_est: Optional[List[Optional[float]]] = Field(None, description="Field-estimated clay % per horizon (AIM). QC-checked against soilHorizon texture class bounds; ignored if outside the USDA class range.")
     lab_Color: Optional[List[Optional[List[float]]]] = Field(None, description="LAB color values [L, A, B] per horizon")
     munsell_Color: Optional[List[Optional[str]]] = Field(None, description="Munsell color notation per horizon (e.g. '10YR 3/2'). Alternative to lab_Color; cannot specify both.")
     pSlope: Optional[float] = Field(None, description="Site slope percentage")
@@ -352,6 +353,7 @@ async def api_rank_soils(request: RankSoilsRequest):
             pElev=request.pElev,
             bedrock=request.bedrock,
             cracks=request.cracks,
+            claypct_est=request.claypct_est,
             pAspect=request.pAspect,
             pSlopeShapeVert=request.pSlopeShapeVert,
             pSlopeShapeHoriz=request.pSlopeShapeHoriz,
@@ -411,6 +413,7 @@ async def api_analyze_soil_combined(request: RankSoilsRequest):
             pElev=request.pElev,
             bedrock=request.bedrock,
             cracks=request.cracks,
+            claypct_est=request.claypct_est,
             pAspect=request.pAspect,
             pSlopeShapeVert=request.pSlopeShapeVert,
             pSlopeShapeHoriz=request.pSlopeShapeHoriz,

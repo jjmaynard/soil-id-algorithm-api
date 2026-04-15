@@ -131,7 +131,7 @@ def test_rank_soils_terrain_inputs_change_scores():
             "aspect_easterness": [0.0, -1.0],
             "shape_vert_class": ["concave", "convex"],
             "shape_horiz_class": ["concave", "convex"],
-            "landscape_class": ["fans", "hills_mountains"],
+            "landscape_class": ["alluvial_fan", "hill_mountain"],
             "cokey": ["100", "200"],
             "cond_prob": [0.5, 0.5],
             "clay": ["No", "No"],

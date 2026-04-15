@@ -1,24 +1,7 @@
 {
   "list": {
-    "AWS_PIW90": 5.95,
-    "Soil Data Value": [
-      [
-        "rfv_class_0",
-        1.2450871546455828
-      ],
-      [
-        "rfv_class_30",
-        0.7766173768825435
-      ],
-      [
-        "texture_0",
-        0.0
-      ],
-      [
-        "texture_30",
-        0.0
-      ]
-    ],
+    "AWS_PIW90": null,
+    "Soil Data Value": null,
     "metadata": {
       "location": "us",
       "model": "v3",
@@ -41,13 +24,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "R014XG903CA"
+              "R014XG904CA"
             ],
             "ecoclassname": [
-              "Salt Marsh"
+              "Dry Clayey Bottom"
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/014X/R014XG903CA"
+              "https://edit.sc.egov.usda.gov/catalogs/esd/014X/R014XG904CA"
             ]
           }
         },
@@ -64,23 +47,23 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "26038467",
+            "componentID": "26701950",
             "componentKind": "Series",
             "componentPct": 25,
             "dataSource": "SSURGO",
-            "distance": 0.0,
+            "distance": 0,
             "irrcapcl": "2",
             "irrcapscl": "s",
             "irrcapunit": "5.0",
             "mapunitID": "1543362",
-            "minCompDistance": 0.0,
+            "minCompDistance": 0,
             "nirrcapcl": "3",
             "nirrcapscl": "s",
             "nirrcapunit": "5.0",
             "rfvInfill": "No",
             "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=hangerone",
             "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#hangerone",
-            "slope": 1.0,
+            "slope": 1,
             "taxsubgrp": "Cumulic Vertic Endoaquolls",
             "textureInfill": "No"
           },
@@ -120,23 +103,23 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "26038503",
+            "componentID": "26701975",
             "componentKind": "Taxon above family",
             "componentPct": 100,
             "dataSource": "SSURGO",
-            "distance": 149.0,
+            "distance": 149,
             "irrcapcl": "4",
             "irrcapscl": "e",
             "irrcapunit": "9.0",
             "mapunitID": "1602803",
-            "minCompDistance": 149.0,
+            "minCompDistance": 149,
             "nirrcapcl": "4",
             "nirrcapscl": "e",
             "nirrcapunit": "9.0",
             "rfvInfill": "No",
             "sdeURL": "",
             "seeURL": "",
-            "slope": 22.0,
+            "slope": 22,
             "taxsubgrp": "None",
             "textureInfill": "No"
           },
@@ -153,13 +136,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              ""
+              "R014XG903CA"
             ],
             "ecoclassname": [
-              ""
+              "Salt Marsh"
             ],
             "edit_url": [
-              ""
+              "https://edit.sc.egov.usda.gov/catalogs/esd/014X/R014XG903CA"
             ]
           }
         },
@@ -176,23 +159,23 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "26038456",
+            "componentID": "26701978",
             "componentKind": "Family",
             "componentPct": 95,
             "dataSource": "SSURGO",
-            "distance": 717.0,
+            "distance": 717,
             "irrcapcl": "3",
             "irrcapscl": "w",
             "irrcapunit": "2.0",
             "mapunitID": "1602806",
-            "minCompDistance": 717.0,
+            "minCompDistance": 717,
             "nirrcapcl": "3",
             "nirrcapscl": "w",
             "nirrcapunit": "2.0",
             "rfvInfill": "No",
             "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=aquic_xerorthents",
             "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#aquic_xerorthents",
-            "slope": 4.0,
+            "slope": 4,
             "taxsubgrp": "Aquic Xerorthents",
             "textureInfill": "No"
           },
@@ -209,13 +192,13 @@
         "esd": {
           "ESD": {
             "ecoclassid": [
-              "R014XG904CA"
+              ""
             ],
             "ecoclassname": [
-              "Dry Clayey Bottom"
+              ""
             ],
             "edit_url": [
-              "https://edit.sc.egov.usda.gov/catalogs/esd/014X/R014XG904CA"
+              ""
             ]
           }
         },
@@ -232,23 +215,23 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "26038466",
+            "componentID": "26701951",
             "componentKind": "Series",
             "componentPct": 2,
             "dataSource": "SSURGO",
-            "distance": 0.0,
+            "distance": 0,
             "irrcapcl": "2",
             "irrcapscl": "s",
             "irrcapunit": "5.0",
             "mapunitID": "1543362",
-            "minCompDistance": 0.0,
+            "minCompDistance": 0,
             "nirrcapcl": "3",
             "nirrcapscl": "s",
             "nirrcapunit": "5.0",
             "rfvInfill": "No",
             "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=clear_lake",
             "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#clear_lake",
-            "slope": 1.0,
+            "slope": 1,
             "taxsubgrp": "Xeric Endoaquerts",
             "textureInfill": "No"
           },
@@ -288,27 +271,83 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "26038468",
+            "componentID": "26701953",
             "componentKind": "Taxadjunct",
             "componentPct": 2,
             "dataSource": "SSURGO",
-            "distance": 0.0,
+            "distance": 0,
             "irrcapcl": "1",
             "irrcapscl": "None",
             "irrcapunit": "nan",
             "mapunitID": "1543362",
-            "minCompDistance": 0.0,
+            "minCompDistance": 0,
             "nirrcapcl": "3",
             "nirrcapscl": "s",
             "nirrcapunit": "nan",
             "rfvInfill": "No",
             "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=bayshore",
             "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#bayshore",
-            "slope": 1.0,
+            "slope": 1,
             "taxsubgrp": "Typic Argiaquolls",
             "textureInfill": "No"
           },
           "siteDescription": "The Bayshore series consists of very deep, somewhat poorly and poorly drained soils formed in nearly level basins from alluvium. Slopes are 0 to 1 percent. The mean annual precipitation is about 13 to 15 inches and the mean annual temperature is about 59 degrees F."
+        },
+        "texture": {},
+        "top_depth": {}
+      },
+      {
+        "bottom_depth": {},
+        "cec": {},
+        "clay": {},
+        "ec": {},
+        "esd": {
+          "ESD": {
+            "ecoclassid": [
+              ""
+            ],
+            "ecoclassname": [
+              ""
+            ],
+            "edit_url": [
+              ""
+            ]
+          }
+        },
+        "id": {
+          "component": "Embarcadero",
+          "name": "Embarcadero",
+          "rank_loc": "6",
+          "score_loc": 0.012
+        },
+        "lab": {},
+        "munsell": {},
+        "ph": {},
+        "rock_fragments": {},
+        "sand": {},
+        "site": {
+          "siteData": {
+            "componentID": "26701952",
+            "componentKind": "Series",
+            "componentPct": 1,
+            "dataSource": "SSURGO",
+            "distance": 0,
+            "irrcapcl": "4",
+            "irrcapscl": "s",
+            "irrcapunit": "6.0",
+            "mapunitID": "1543362",
+            "minCompDistance": 0,
+            "nirrcapcl": "4",
+            "nirrcapscl": "s",
+            "nirrcapunit": "6.0",
+            "rfvInfill": "No",
+            "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=embarcadero",
+            "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#embarcadero",
+            "slope": 1,
+            "taxsubgrp": "Fluvaquentic Endoaquolls",
+            "textureInfill": "No"
+          },
+          "siteDescription": "The Embarcadero series consists of very deep, naturally poorly drained soils, now artificially drained that formed in alluvium from mixed rock sources. Embarcadero soils are in basins near the edge of marshes. Slopes range from 0 to 2 percent. The mean annual precipitation is about 13 inches and the mean annual temperature is about 60 degrees F."
         },
         "texture": {},
         "top_depth": {}
@@ -332,62 +371,6 @@
           }
         },
         "id": {
-          "component": "Embarcadero",
-          "name": "Embarcadero",
-          "rank_loc": "6",
-          "score_loc": 0.012
-        },
-        "lab": {},
-        "munsell": {},
-        "ph": {},
-        "rock_fragments": {},
-        "sand": {},
-        "site": {
-          "siteData": {
-            "componentID": "26038464",
-            "componentKind": "Series",
-            "componentPct": 1,
-            "dataSource": "SSURGO",
-            "distance": 0.0,
-            "irrcapcl": "4",
-            "irrcapscl": "s",
-            "irrcapunit": "6.0",
-            "mapunitID": "1543362",
-            "minCompDistance": 0.0,
-            "nirrcapcl": "4",
-            "nirrcapscl": "s",
-            "nirrcapunit": "6.0",
-            "rfvInfill": "No",
-            "sdeURL": "https://casoilresource.lawr.ucdavis.edu/sde/?series=embarcadero",
-            "seeURL": "https://casoilresource.lawr.ucdavis.edu/see/#embarcadero",
-            "slope": 1.0,
-            "taxsubgrp": "Fluvaquentic Endoaquolls",
-            "textureInfill": "No"
-          },
-          "siteDescription": "The Embarcadero series consists of very deep, naturally poorly drained soils, now artificially drained that formed in alluvium from mixed rock sources. Embarcadero soils are in basins near the edge of marshes. Slopes range from 0 to 2 percent. The mean annual precipitation is about 13 inches and the mean annual temperature is about 60 degrees F."
-        },
-        "texture": {},
-        "top_depth": {}
-      },
-      {
-        "bottom_depth": {},
-        "cec": {},
-        "clay": {},
-        "ec": {},
-        "esd": {
-          "ESD": {
-            "ecoclassid": [
-              ""
-            ],
-            "ecoclassname": [
-              ""
-            ],
-            "edit_url": [
-              ""
-            ]
-          }
-        },
-        "id": {
           "component": "Xerorthents",
           "name": "Xerorthents2",
           "rank_loc": "Not Displayed",
@@ -400,23 +383,23 @@
         "sand": {},
         "site": {
           "siteData": {
-            "componentID": "26038454",
+            "componentID": "26701976",
             "componentKind": "Taxon above family",
             "componentPct": 100,
             "dataSource": "SSURGO",
-            "distance": 776.0,
+            "distance": 776,
             "irrcapcl": "6",
             "irrcapscl": "e",
             "irrcapunit": "9.0",
             "mapunitID": "1602804",
-            "minCompDistance": 149.0,
+            "minCompDistance": 149,
             "nirrcapcl": "6",
             "nirrcapscl": "e",
             "nirrcapunit": "9.0",
             "rfvInfill": "No",
             "sdeURL": "",
             "seeURL": "",
-            "slope": 40.0,
+            "slope": 40,
             "taxsubgrp": "None",
             "textureInfill": "No"
           },
@@ -436,7 +419,7 @@
       {
         "component": "Xerorthents",
         "componentData": "Data Complete",
-        "componentID": 26038503,
+        "componentID": 26701975,
         "name": "Xerorthents",
         "not_displayed": false,
         "rank_data": "1",
@@ -445,17 +428,17 @@
         "rank_data_loc_group": "1",
         "rank_loc": "2",
         "rank_loc_group": "2",
-        "score_data": 0.76,
-        "score_data_group": 0.76,
-        "score_data_loc": 0.573,
-        "score_data_loc_group": 0.573,
+        "score_data": 0.832,
+        "score_data_group": 0.832,
+        "score_data_loc": 0.609,
+        "score_data_loc_group": 0.609,
         "score_loc": 0.386,
         "score_loc_group": 0.386
       },
       {
         "component": "Hangerone",
         "componentData": "Data Complete",
-        "componentID": 26038467,
+        "componentID": 26701950,
         "name": "Hangerone",
         "not_displayed": false,
         "rank_data": "6",
@@ -464,93 +447,93 @@
         "rank_data_loc_group": "2",
         "rank_loc": "1",
         "rank_loc_group": "1",
-        "score_data": 0.554,
-        "score_data_group": 0.554,
-        "score_data_loc": 0.472,
-        "score_data_loc_group": 0.472,
+        "score_data": 0.484,
+        "score_data_group": 0.484,
+        "score_data_loc": 0.437,
+        "score_data_loc_group": 0.437,
         "score_loc": 0.39,
         "score_loc_group": 0.39
       },
       {
-        "component": "Aquic xerorthents",
-        "componentData": "Missing Data",
-        "componentID": 26038456,
-        "name": "Aquic xerorthents",
-        "not_displayed": false,
-        "rank_data": "3",
-        "rank_data_group": "3",
-        "rank_data_loc": "3",
-        "rank_data_loc_group": "3",
-        "rank_loc": "3",
-        "rank_loc_group": "3",
-        "score_data": 0.626,
-        "score_data_group": 0.626,
-        "score_data_loc": 0.395,
-        "score_data_loc_group": 0.395,
-        "score_loc": 0.165,
-        "score_loc_group": 0.165
-      },
-      {
         "component": "Embarcadero",
         "componentData": "Missing Data",
-        "componentID": 26038464,
+        "componentID": 26701952,
         "name": "Embarcadero",
         "not_displayed": false,
         "rank_data": "2",
         "rank_data_group": "2",
-        "rank_data_loc": "4",
-        "rank_data_loc_group": "4",
+        "rank_data_loc": "3",
+        "rank_data_loc_group": "3",
         "rank_loc": "6",
         "rank_loc_group": "6",
-        "score_data": 0.712,
-        "score_data_group": 0.712,
-        "score_data_loc": 0.362,
-        "score_data_loc_group": 0.362,
+        "score_data": 0.745,
+        "score_data_group": 0.745,
+        "score_data_loc": 0.379,
+        "score_data_loc_group": 0.379,
         "score_loc": 0.012,
         "score_loc_group": 0.012
       },
       {
-        "component": "Clear lake",
+        "component": "Aquic xerorthents",
+        "componentData": "Data Complete",
+        "componentID": 26701978,
+        "name": "Aquic xerorthents",
+        "not_displayed": false,
+        "rank_data": "3",
+        "rank_data_group": "3",
+        "rank_data_loc": "4",
+        "rank_data_loc_group": "4",
+        "rank_loc": "3",
+        "rank_loc_group": "3",
+        "score_data": 0.559,
+        "score_data_group": 0.559,
+        "score_data_loc": 0.362,
+        "score_data_loc_group": 0.362,
+        "score_loc": 0.165,
+        "score_loc_group": 0.165
+      },
+      {
+        "component": "Bayshore",
         "componentData": "Missing Data",
-        "componentID": 26038466,
-        "name": "Clear lake",
+        "componentID": 26701953,
+        "name": "Bayshore",
         "not_displayed": false,
         "rank_data": "4",
         "rank_data_group": "4",
         "rank_data_loc": "5",
         "rank_data_loc_group": "5",
-        "rank_loc": "4",
-        "rank_loc_group": "4",
-        "score_data": 0.617,
-        "score_data_group": 0.617,
-        "score_data_loc": 0.323,
-        "score_data_loc_group": 0.323,
-        "score_loc": 0.029,
-        "score_loc_group": 0.029
+        "rank_loc": "5",
+        "rank_loc_group": "5",
+        "score_data": 0.548,
+        "score_data_group": 0.548,
+        "score_data_loc": 0.283,
+        "score_data_loc_group": 0.283,
+        "score_loc": 0.019,
+        "score_loc_group": 0.019
       },
       {
-        "component": "Bayshore",
-        "componentData": "Data Complete",
-        "componentID": 26038468,
-        "name": "Bayshore",
+        "component": "Clear lake",
+        "componentData": "Missing Data",
+        "componentID": 26701951,
+        "name": "Clear lake",
         "not_displayed": false,
         "rank_data": "5",
         "rank_data_group": "5",
         "rank_data_loc": "6",
         "rank_data_loc_group": "6",
-        "rank_loc": "5",
-        "rank_loc_group": "5",
-        "score_data": 0.607,
-        "score_data_group": 0.607,
-        "score_data_loc": 0.313,
-        "score_data_loc_group": 0.313,
-        "score_loc": 0.019,
-        "score_loc_group": 0.019
+        "rank_loc": "4",
+        "rank_loc_group": "4",
+        "score_data": 0.53,
+        "score_data_group": 0.53,
+        "score_data_loc": 0.279,
+        "score_data_loc_group": 0.279,
+        "score_loc": 0.029,
+        "score_loc_group": 0.029
       },
       {
         "component": "Xerorthents",
         "componentData": "Data Complete",
-        "componentID": 26038454,
+        "componentID": 26701976,
         "name": "Xerorthents2",
         "not_displayed": true,
         "rank_data": "Not Displayed",
@@ -559,10 +542,10 @@
         "rank_data_loc_group": "1",
         "rank_loc": "Not Displayed",
         "rank_loc_group": "2",
-        "score_data": 0.652,
-        "score_data_group": 0.76,
-        "score_data_loc": 0.519,
-        "score_data_loc_group": 0.573,
+        "score_data": 0.683,
+        "score_data_group": 0.832,
+        "score_data_loc": 0.534,
+        "score_data_loc_group": 0.609,
         "score_loc": 0.386,
         "score_loc_group": 0.386
       }
