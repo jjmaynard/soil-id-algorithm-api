@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import json
+import re
 import shlex
 from datetime import UTC, datetime
 from pathlib import Path
@@ -135,6 +136,23 @@ def _build_curl_command(api_url, payload):
     )
 
 
+def _build_curl_command_from_file(api_url, payload_file):
+    return (
+        "curl -sS -X POST "
+        + shlex.quote(api_url)
+        + " -H 'accept: application/json' -H 'Content-Type: application/json' --data "
+        + "@"
+        + shlex.quote(str(payload_file))
+    )
+
+
+def _safe_name(value):
+    txt = _norm_text(value)
+    if not txt:
+        return "unknown"
+    return re.sub(r"[^A-Za-z0-9._-]+", "_", txt).strip("_") or "unknown"
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Generate one SoilID analyze-soil API call per plot and export to CSV."
@@ -196,27 +214,6 @@ def main():
     if args.max_rows is not None:
         valid = valid.iloc[: args.max_rows]
 
-    rows = []
-    failures = []
-    for _, row in valid.iterrows():
-        key = row.get("PrimaryKey")
-        try:
-            rank_inputs = _build_rank_inputs_with_munsell(key, horizons_df)
-            payload = _build_analyze_payload(row, rank_inputs)
-            payload_json = json.dumps(payload, separators=(",", ":"), ensure_ascii=True)
-            payload_pretty_json = json.dumps(payload, indent=2, ensure_ascii=True)
-            api_call = _build_curl_command(args.api_url, payload)
-            rows.append(
-                {
-                    "PrimaryKey": key,
-                    "api_payload_json": payload_json,
-                    "api_payload_pretty_json": payload_pretty_json,
-                    "api_call": api_call,
-                }
-            )
-        except Exception as exc:
-            failures.append({"PrimaryKey": key, "error": str(exc)})
-
     if args.output_csv:
         output_csv = Path(args.output_csv)
     else:
@@ -230,6 +227,40 @@ def main():
             / f"{plot_csv.stem}_api_calls_{timestamp}.csv"
         )
 
+    payload_dir = output_csv.with_suffix("")
+    payload_dir = payload_dir.parent / f"{payload_dir.name}_payloads"
+
+    rows = []
+    failures = []
+    for idx, row in enumerate(valid.itertuples(index=False), start=1):
+        key = getattr(row, "PrimaryKey", "")
+        try:
+            rank_inputs = _build_rank_inputs_with_munsell(key, horizons_df)
+            payload = _build_analyze_payload(pd.Series(row._asdict()), rank_inputs)
+            payload_json = json.dumps(payload, separators=(",", ":"), ensure_ascii=True)
+            payload_pretty_json = json.dumps(payload, indent=2, ensure_ascii=True)
+
+            payload_filename = f"{idx:04d}_{_safe_name(key)}.json"
+            payload_path = payload_dir / payload_filename
+            payload_path.parent.mkdir(parents=True, exist_ok=True)
+            payload_path.write_text(payload_pretty_json + "\n", encoding="utf-8")
+
+            api_call = _build_curl_command(args.api_url, payload)
+            api_call_from_file = _build_curl_command_from_file(args.api_url, payload_path)
+
+            rows.append(
+                {
+                    "PrimaryKey": key,
+                    "api_payload_file": str(payload_path),
+                    "api_payload_json": payload_json,
+                    "api_payload_pretty_json": payload_pretty_json,
+                    "api_call": api_call,
+                    "api_call_from_file": api_call_from_file,
+                }
+            )
+        except Exception as exc:
+            failures.append({"PrimaryKey": key, "error": str(exc)})
+
     output_csv.parent.mkdir(parents=True, exist_ok=True)
     pd.DataFrame(rows).to_csv(output_csv, index=False)
 
@@ -237,6 +268,7 @@ def main():
     print(f"generated_calls={len(rows)}")
     print(f"failed_rows={len(failures)}")
     print(f"output_csv={output_csv}")
+    print(f"payload_dir={payload_dir}")
     if failures:
         print("first_failures:")
         for item in failures[:10]:

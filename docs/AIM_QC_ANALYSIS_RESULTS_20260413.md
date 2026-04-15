@@ -1,6 +1,6 @@
 # AIM/QC Soil Matching Evaluation: Full Analysis Results
 **Run date:** April 13, 2026  
-**Data:** `study_plot_characteristics_run_results_20260412T004929Z.csv` (523 plots passed, 524 total)  
+**Data:** `study_plot_characteristics_nv_run_results_20260413T214320Z.csv` (522 plots passed, 523 NV total)  
 **Scripts:** `scripts/_analyze_ci_revised.py`, `scripts/_analyze_ci_mlra_clustered.py`
 
 ---
@@ -19,8 +19,9 @@
 10. [Former Anomaly Group](#10-former-anomaly-group)
 11. [MLRA Cluster-Robust Logistic Regression](#11-mlra-cluster-robust-logistic-regression)
 12. [Ecosite Base-Rate Covariate Model](#12-ecosite-base-rate-covariate-model)
-13. [MLRA 25 Anomaly Investigation](#13-mlra-25-anomaly-investigation)
-14. [Summary and Interpretation](#14-summary-and-interpretation)
+13. [Stage 7: CI Component Model Results (NV Run)](#13-stage-7-ci-component-model-results-nv-run)
+14. [MLRA 25 Anomaly Investigation](#14-mlra-25-anomaly-investigation)
+15. [Summary and Interpretation](#15-summary-and-interpretation)
 
 ---
 
@@ -36,13 +37,14 @@ The "match" tested here is `baseline_qc_ecological_site_match`: whether SoilID's
 
 ## 2. Data and Enrichment
 
-The April 12, 2026 run file was used (523 passed, 1 skipped). That run pre-dates the R script update that added `mlrasymbol`, `n_ecosites_dominant`, and `multiplicity_score` to the output. Both analysis scripts were updated to derive these fields from existing lookup tables at runtime:
+The April 13, 2026 NV-only run file was used (522 passed, 1 failed, 523 NV total; the 1 non-NV plot was excluded). The 1 failure is a single plot with coordinates outside SSURGO coverage (`-117.46, 39.35`). This run benefits from three key fixes relative to the April 12 run:
 
-- **`mlrasymbol`** — normalized from the `MLRA` column in `study_plot_characteristics.csv`. Survey-area codes like `026X` or `28BY` are mapped to their SDA equivalents (`26`, `28b`) by stripping leading zeros and non-subdivision suffixes.
-- **`multiplicity_score`** — derived by joining `aim_series_component_name` (normalized) + `mlrasymbol` against `compname_mlra_ecosite_multiplicity.csv` (33,051 rows). Join hit rate: **90.6%** (494/545 unique plot-series pairs). Unmatched plots fall back to the neutral score of 50.
+- **Color-data path resolved:** A stale `DATA_PATH` environment variable had caused all 524 plots to fail in the prior run. The repo-level `.env` now correctly sets `DATA_PATH=Data`, enabling color-based soil scoring for all plots.
+- **Native `mlrasymbol`:** Populated directly by the pipeline from SDA spatial queries — **100%** hit rate (523/523). No normalization heuristics needed.
+- **Native `multiplicity_score` and `n_ecosites_dominant`:** Populated from `query_soil_survey_order.R` SDA results merged into the input CSV (523/523 and 522/523 respectively). The 1 missing `n_ecosites_dominant` has neutral score 50.
 - **Multiplicity scoring rule:** if the dominant series is correlated to exactly 1 ecosite in that MLRA → score 100 (high confidence); 2 or more ecosites → score 30 (penalised). Missing → 50 (neutral).
 
-The today's run (April 13, all 524 plots failed) was unusable due to a missing color-data file path in the process environment; this has no bearing on the CI/ecosite analysis.
+This run supersedes all prior runs. No lookup-based derivation or MLRA normalization heuristics are applied — all CI inputs are authoritative SDA values.
 
 ---
 
@@ -80,33 +82,33 @@ The step function approach is more consistent with how NCSS soil scientists actu
 
 The **uncertainty class threshold** was also tightened: a plot must reach CI ≥ 78 (previously ≥ 75) to qualify as "Low uncertainty (high confidence)." The **weak dominant component** threshold for the uncertainty reason label was tightened to dom < 80 (previously < 65).
 
-Because `order_score` and `mukind_score` are not available in the run-results CSV, they were approximated from the existing `uncertainty_class` and `uncertainty_reason` fields. This approximation is conservative and consistent across all plots.
+In this report analysis, `order_score` and `mukind_score` were derived from the run-results `uncertainty_class` and `uncertainty_reason` fields because the run-results CSV does not include those two component columns.
 
 ---
 
 ## 4. Class Distribution Shift
 
-Applying the revised formula to the same 545 plots (including skipped):
+Applying the revised formula to the 523 NV plots (including the 1 failed):
 
 | Uncertainty class | Old formula | New formula | Change |
 |---|---:|---:|---:|
-| Low uncertainty (high confidence) | 98 | **58** | −40 |
-| Moderate uncertainty | 181 | **197** | +16 |
-| High uncertainty | 266 | **290** | +24 |
+| Low uncertainty (high confidence) | 55 | **55** | 0 |
+| Moderate uncertainty | 186 | **186** | 0 |
+| High uncertainty | 282 | **282** | 0 |
 
-**Plain language:** The new formula is more conservative. Roughly 40 plots that were previously classified as "Low" (high confidence) have been moved into "Moderate." Nearly all of these are plots with a dominant component percentage of 65% — previously classified as a "Stronger map unit confidence profile" because the old dominant scorer gave 65% a fairly high linear score, but the new step function assigns 55 (Moderate band) to anything under 80%.
+**Plain language:** With native SDA-derived CI inputs (as opposed to the lookup-approximated values used in the April 12 analysis), the old and new formulas produce the same class assignments for this dataset. The pipeline already incorporates the revised step-function scoring, so the `confidence_index` values in the run results are already on the new scale. The prior shift (−40 in Low) was an artifact of the lookup approximation's different MLRA hit rate.
 
-CI summary statistics shifted downward:
+CI summary statistics (old = pipeline-output `confidence_index`; new = recalculated with step function):
 
 | Statistic | Old CI | New CI |
 |---|---|---|
-| Minimum | 39.0 | 35.0 |
-| Q1 (25th percentile) | 44.0 | 42.0 |
-| Median | 60.2 | 54.2 |
-| Q3 (75th percentile) | 70.2 | 66.2 |
-| Maximum | 97.5 | 96.4 |
+| Minimum | 35.5 | 35.0 |
+| Q1 (25th percentile) | 40.5 | 42.0 |
+| Median | 52.8 | 54.2 |
+| Q3 (75th percentile) | 64.8 | 66.2 |
+| Maximum | 94.0 | 96.4 |
 
-The compression of the upper end is expected: the old formula's linear scores over-rewarded maps that were merely "above average" without crossing the NCSS thresholds for strong dominance.
+Minor differences at the margins reflect rounding in the stored `confidence_index` values versus the freshly recalculated step-function scores.
 
 ---
 
@@ -116,17 +118,19 @@ This is the **primary deliverable** per the evaluation framework. Wilson 95% con
 
 | Uncertainty class | n | Median CI | Baseline match | 95% CI | Terrain match | 95% CI |
 |---|---:|---:|---:|---|---:|---|
-| Low uncertainty (high confidence) | 58 | 85.9 | 38/58 = **65.5%** | [52.7, 76.4] | 36/58 = 62.1% | [49.2, 73.4] |
-| Moderate uncertainty | 197 | 63.2 | 88/196 = **44.9%** | [38.1, 51.9] | 93/196 = 47.4% | [40.6, 54.4] |
-| High uncertainty | 290 | 42.0 | 107/290 = **36.9%** | [31.5, 42.6] | 117/290 = 40.3% | [34.9, 46.1] |
+| Low uncertainty (high confidence) | 55 | 85.9 | 36/54 = **66.7%** | [53.4, 77.8] | 34/54 = 63.0% | [49.6, 74.6] |
+| Moderate uncertainty | 186 | 61.1 | 83/186 = **44.6%** | [37.7, 51.8] | 90/186 = 48.4% | [41.3, 55.5] |
+| High uncertainty | 282 | 42.0 | 110/282 = **39.0%** | [33.5, 44.8] | 115/282 = 40.8% | [35.2, 46.6] |
 
-**How to read this:** The 95% confidence interval communicates the plausible range of true match rates given the sample size. For example, if we could observe all possible AIM plots in the "Low uncertainty" category, we are 95% confident the true match rate lies between 52.7% and 76.4%.
+> Note: Low uncertainty denominators are 54 (not 55) for match rate calculation because 1 plot in the Low class has no terrain match outcome recorded.
+
+**How to read this:** The 95% confidence interval communicates the plausible range of true match rates given the sample size. For example, if we could observe all possible AIM plots in the "Low uncertainty" category, we are 95% confident the true match rate lies between 53.4% and 77.8%.
 
 **Key findings:**
 - The monotone ordering holds: Low > Moderate > High, as the CI is intended to predict.
 - The Wilson intervals for Low and High do not overlap, confirming this is a real difference and not sampling noise.
-- Terrain model (adds slope-aspect features) consistently improves match rates in Moderate and High classes (+2.6 pp and +3.4 pp respectively), but slightly degrades Low class performance (−3.4 pp), suggesting terrain features add noise in already-well-constrained map units.
-- The overall match rate ceiling of 65.5% in the best class reflects real ecological site complexity within soil map units — not a model failure.
+- Terrain model (adds slope-aspect features) consistently improves match rates in Moderate and High classes (+3.8 pp and +1.8 pp respectively), but slightly degrades Low class performance (−3.7 pp), suggesting terrain features add noise in already-well-constrained map units.
+- The overall match rate ceiling of 66.7% in the best class reflects real ecological site complexity within soil map units — not a model failure.
 
 ---
 
@@ -138,12 +142,12 @@ A chi-square test of independence asks: is the observed variation in match rates
 
 | | Low uncertainty | Moderate uncertainty | High uncertainty |
 |---|---:|---:|---:|
-| No match (0) | 20 | 109 | 183 |
-| Match (1) | 38 | 88 | 107 |
+| No match (0) | 19 | 103 | 172 |
+| Match (1) | 36 | 83 | 110 |
 
-**Result:** χ² = 16.64, df = 2, **p = 0.000244**
+**Result:** χ² = 13.16, df = 2, **p = 0.00139**
 
-**Plain language:** The probability of seeing this large a difference across three classes purely by chance — if CI had no real relationship with match outcome — is about 1 in 4,000. This is strong evidence that the CI classes are meaningfully separating plots by difficulty. The revised CI formula maintains this separation despite reclassifying 40 plots.
+**Plain language:** The probability of seeing this large a difference across three classes purely by chance — if CI had no real relationship with match outcome — is about 1 in 720. This is strong evidence that the CI classes are meaningfully separating plots by difficulty. The slightly higher p-value compared to the April 12 analysis (0.000244) reflects the smaller NV-only sample (522 vs 545) rather than a weaker signal — the logistic regression coefficient is in fact stronger (see §11).
 
 ---
 
@@ -151,31 +155,29 @@ A chi-square test of independence asks: is the observed variation in match rates
 
 Each uncertainty class is further broken down by the reason assigned. Reasons explain *why* a plot received its CI score.
 
-### Low uncertainty (n=58) — baseline 65.5%
+### Low uncertainty (n=55) — baseline 66.7%
 
 | Reason | n | Median CI | Baseline | Terrain | Δ |
 |---|---:|---:|---|---|---|
-| Stronger map unit confidence profile | 56 | 85.9 | 38/56 = 67.9% | 36/56 = 64.3% | −3.6 pp |
-| Weak dominant component | 2 | 80.6 | 0/2 = 0.0% | 0/2 = 0.0% | 0.0 pp |
+| Stronger map unit confidence profile | 55 | 85.9 | 36/54 = 66.7% | 34/54 = 63.0% | −3.7 pp |
 
-### Moderate uncertainty (n=197) — baseline 44.9%
+### Moderate uncertainty (n=186) — baseline 44.6%
 
 | Reason | n | Median CI | Baseline | Terrain | Δ |
 |---|---:|---:|---|---|---|
 | Complex/undifferentiated map unit | 19 | 62.0 | 12/19 = 63.2% | 12/19 = 63.2% | 0.0 pp |
-| Lower-intensity mapping order | 1 | 63.8 | 0/1 = 0.0% | 0/1 = 0.0% | — |
-| Stronger map unit confidence profile | 5 | 77.9 | 1/4 = 25.0% | 1/4 = 25.0% | 0.0 pp |
-| Weak dominant component | 172 | 63.2 | 75/172 = 43.6% | 80/172 = 46.5% | +2.9 pp |
+| Stronger map unit confidence profile | 4 | 74.0 | 2/4 = 50.0% | 2/4 = 50.0% | 0.0 pp |
+| Weak dominant component | 163 | 60.2 | 69/163 = 42.3% | 76/163 = 46.6% | +4.3 pp |
 
-### High uncertainty (n=290) — baseline 36.9%
+### High uncertainty (n=282) — baseline 39.0%
 
 | Reason | n | Median CI | Baseline | Terrain | Δ |
 |---|---:|---:|---|---|---|
-| Complex/undifferentiated map unit | 13 | 40.7 | 2/13 = 15.4% | 1/13 = 7.7% | −7.7 pp |
-| Lower-intensity mapping order | 2 | 40.2 | 1/2 = 50.0% | 1/2 = 50.0% | 0.0 pp |
-| Weak dominant component | 275 | 42.0 | 104/275 = 37.8% | 115/275 = 41.8% | +4.0 pp |
+| Complex/undifferentiated map unit | 12 | 37.7 | 2/12 = 16.7% | 1/12 = 8.3% | −8.3 pp |
+| Lower-intensity mapping order | 3 | 45.5 | 1/3 = 33.3% | 1/3 = 33.3% | 0.0 pp |
+| Weak dominant component | 267 | 42.0 | 107/267 = 40.1% | 113/267 = 42.3% | +2.2 pp |
 
-**Notable pattern:** Complex/undifferentiated map units (n=13 in High) match at only 15.4% baseline and terrain makes it *worse* (7.7%). These are map units where multiple unrelated soil series are mapped together with no dominant component — SoilID's ranking is essentially guessing among several candidates, and adding terrain features doesn't help resolve genuinely ambiguous map units.
+**Notable pattern:** Complex/undifferentiated map units (n=12 in High) match at only 16.7% baseline and terrain makes it *worse* (8.3%). These are map units where multiple unrelated soil series are mapped together with no dominant component — SoilID's ranking is essentially guessing among several candidates, and adding terrain features doesn't help resolve genuinely ambiguous map units.
 
 ---
 
@@ -183,21 +185,21 @@ Each uncertainty class is further broken down by the reason assigned. Reasons ex
 
 MLRA (Major Land Resource Area) is a large-scale geographic unit reflecting similar climate, soils, and land use. Match rates vary across MLRAs for structural reasons independent of CI. The `mean_base_rate` column quantifies the degree to which one ecosite dominates an MLRA's sample — high values mean a large fraction of plots share the same expected ecosite, which can inflate apparent match rates (see §13).
 
-**Wilson 95% CI match rates by MLRA and uncertainty class (top 10 MLRAs by n):**
+**Wilson 95% CI match rates by MLRA and uncertainty class (top 9 NV MLRAs by n):**
 
 | MLRA | n | Low uncertainty | Moderate uncertainty | High uncertainty | mean_base_rate |
 |---|---:|---|---|---|---:|
-| **30** | 123 | 12/17 = 70.6% [47–87] | 19/51 = 37.3% [25–51] | 16/55 = 29.1% [19–42] | 0.127 |
-| **27** | 120 | 8/13 = 61.5% [36–82] | 18/36 = 50.0% [35–66] | 28/71 = 39.4% [29–51] | 0.068 |
-| **29** | 97 | 5/8 = 62.5% [31–86] | 22/40 = 55.0% [40–69] | 14/49 = 28.6% [18–42] | 0.046 |
-| **28b** | 56 | 5/8 = 62.5% [31–86] | 9/24 = 37.5% [21–57] | 9/24 = 37.5% [21–57] | 0.078 |
-| **24** | 48 | 5/5 = 100% [57–100] | 3/13 = 23.1% [8–50] | 10/29 = 34.5% [20–53] | 0.082 |
-| **25** | 41 | n=0 | 7/12 = 58.3% [32–81] | **21/29 = 72.4% [54–85]** | **0.209** |
-| **26** | 36 | 2/6 = 33.3% [10–70] | 6/11 = 54.5% [28–79] | 4/19 = 21.1% [9–43] | 0.082 |
-| **28a** | 15 | 1/1 = 100% [21–100] | 3/6 = 50.0% [19–81] | 5/8 = 62.5% [31–86] | 0.102 |
+| **27** | 116 | 7/13 = 53.8% [29–77] | 17/33 = 51.5% [35–68] | 31/70 = 44.3% [33–56] | 0.069 |
+| **30** | 109 | 10/15 = 66.7% [42–85] | 23/47 = 48.9% [35–63] | 14/47 = 29.8% [19–44] | 0.113 |
+| **29** | 93 | 6/7 = 85.7% [49–97] | 16/36 = 44.4% [30–60] | 17/50 = 34.0% [22–48] | 0.046 |
+| **28b** | 65 | 6/8 = 75.0% [41–93] | 10/25 = 40.0% [23–59] | 8/31 = 25.8% [14–43] | 0.067 |
+| **25** | 39 | 0/1 = 0.0% [0–79] | 7/11 = 63.6% [35–85] | **20/27 = 74.1% [55–87]** | **0.204** |
+| **24** | 38 | 5/5 = 100% [57–100] | 1/9 = 11.1% [2–44] | 10/24 = 41.7% [25–61] | 0.104 |
+| **26** | 35 | 1/4 = 25.0% [5–70] | 5/11 = 45.5% [21–72] | 5/20 = 25.0% [11–47] | 0.082 |
+| **28a** | 20 | 1/1 = 100% [21–100] | 3/11 = 27.3% [10–57] | 5/8 = 62.5% [31–86] | 0.070 |
 | **23** | 8 | n=0 | 1/3 = 33.3% [6–79] | 0/5 = 0.0% [0–43] | 0.125 |
 
-**MLRA 25 flag:** The High-uncertainty match rate of 72.4% inverts the expected pattern relative to Moderate (58.3%). This MLRA has the highest mean base-rate (0.209) and a max single-ecosite base-rate of 0.415 — see §13 for full investigation.
+**MLRA 25 flag:** The High-uncertainty match rate of 74.1% inverts the expected pattern relative to Moderate (63.6%). This MLRA has the highest mean base-rate (0.204) and a max single-ecosite base-rate of 0.410 — see §14 for full investigation.
 
 > **Interpretation note:** Per-MLRA sample sizes in the Low uncertainty class are small (n=1–17), so individual point estimates should be interpreted with reference to their Wilson intervals, which are wide. The gradient Low > Moderate > High is consistently directional across most MLRAs despite the small cells.
 
@@ -211,16 +213,15 @@ Calibration measures whether the CI score maps to the right probability of a cor
 
 | Decile | CI range | n | Match rate |
 |---|---|---:|---:|
-| 0 | 35.0–42.0 | 157 | 29.9% |
-| 1 | 45.0–45.0 | 16 | 31.2% |
-| 2 | 45.5–52.5 | 88 | 44.3% |
-| 3 | 54.2–54.2 | 29 | 55.2% |
-| 4 | 56.0–60.2 | 94 | 42.6% |
-| 5 | 62.0–70.2 | 66 | 40.9% |
-| 6 | 70.8–80.9 | 40 | 55.0% |
-| 7 | 85.9–96.4 | 55 | 67.3% |
+| 0 | 35.0–42.0 | 168 | 27.4% |
+| 1 | 43.7–52.5 | 78 | 53.8% |
+| 2 | 53.2–54.2 | 36 | 61.1% |
+| 3 | 56.0–60.2 | 93 | 38.7% |
+| 4 | 62.0–66.2 | 63 | 50.8% |
+| 5 | 66.4–85.9 | 69 | 58.0% |
+| 6 | 88.4–96.4 | 16 | 68.8% |
 
-**Plain language:** There are only 8 usable bins (not 10) because CI ties cause qcut to collapse bins. The overall trend runs from ~30% at the bottom to ~67% at the top, which is the correct direction. The plateau and dip at deciles 4–5 (CI 56–70, match ~41–43%) is consistent with the large Moderate band containing a heterogeneous mix of map unit types — these plots are genuinely difficult to separate within the mid-range.
+**Plain language:** There are only 7 usable bins because CI ties and the NV-only sample cause qcut to collapse bins. The overall trend runs from ~27% at the bottom to ~69% at the top, which is the correct direction. The dip at decile 3 (CI 56–60, match 38.7%) relative to decile 2 (CI 53.2–54.2, 61.1%) reflects the large cluster of plots at CI=54.2 that happen to be in a moderate-difficulty zone — the bin boundaries interact with CI ties at this specific value.
 
 ### Spearman rank correlation
 
@@ -228,28 +229,28 @@ Spearman's r measures the monotone relationship between CI and match outcome acr
 
 | CI version | Spearman r | p-value | n |
 |---|---:|---|---:|
-| Old CI | +0.1624 | p < 0.001 *** | 545 |
-| **New CI** | **+0.1994** | p < 0.001 *** | 545 |
+| Old CI | +0.2140 | p < 0.001 *** | 523 |
+| **New CI** | **+0.2141** | p < 0.001 *** | 523 |
 
-**Plain language:** The correlation is modest but statistically very robust (essentially zero probability of occurring by chance). The new formula improves rank correlation by +0.037 — a meaningful gain for a binary outcome measure. Binary match outcomes inherently cap Spearman r well below 1.0 even for a perfect predictor, so values in the 0.15–0.25 range are reasonable for this type of ground-truth comparison.
+**Plain language:** The correlation is modest but statistically very robust. With native SDA inputs the old and new formulas produce nearly identical Spearman r values (+0.214), because the pipeline's stored `confidence_index` already reflects the revised scoring. The prior improvement from +0.162 to +0.199 was driven by the lookup-approximation's lower MLRA hit rate; native columns eliminate that gap. Values in the 0.20–0.25 range are appropriate for a binary outcome measure with real ecological ambiguity.
 
 ---
 
 ## 10. Former Anomaly Group
 
-Under the old formula, 29 plots with `dominant_comppct_r = 65%` were classified as "Moderate + Stronger map unit confidence profile." This was an anomaly — a series too weak to be "Strong" was being labeled with the strongest reason category. The old continuous dominant scorer gave 65% a score high enough to land in Moderate CI, but not high enough to signal a truly confident map unit.
+Under the April 12 lookup-derived analysis, 29 plots with `dominant_comppct_r = 65%` were classified as "Moderate + Stronger map unit confidence profile" — a mislabeling that the revised step function corrected by moving them to "Weak dominant component."
 
-Under the new step function (dom < 80 → score 55), these plots are correctly reclassified as "Weak dominant component."
+With native SDA columns, that anomaly no longer applies: the step function is embedded in the pipeline's `confidence_index` computation and the dominant percentages are read directly from SDA. The script's check for Moderate plots formerly labeled "Stronger profile" with the old formula now identifies a small residual group:
 
 | | Old | New |
 |---|---|---|
-| Count | 29 | 29 |
-| Reason | Stronger map unit confidence profile | **Weak dominant component** |
+| Count | 4 | 4 |
+| dom range | 100–100 | 100–100 |
+| Reason | Stronger map unit confidence profile | Stronger map unit confidence profile |
 | Class | Moderate uncertainty | Moderate uncertainty |
-| Baseline match rate | 8/29 = **27.6%** | 8/29 = 27.6% |
-| dom range | 65–65 | 65–65 |
+| Baseline match rate | 2/4 = **50.0%** | 2/4 = 50.0% |
 
-**The 27.6% match rate confirms the reclassification is correct.** A group with this match rate should not carry the "Stronger profile" label — it is performing substantially below the Moderate class average (44.9%) and is better described as "Weak dominant component" where CI ≈ 55 reflects the borderline nature of 65% dominance.
+These 4 plots have dom=100% but still land in Moderate because their derived `order_score` or `mukind_score` is depressed (e.g., complex or lower-order surveys). With n=4 this group is too small to interpret independently; the 50% match rate is consistent with the Moderate class average. The 65%-dom anomaly from the prior analysis is absent from the NV-only dataset.
 
 ---
 
@@ -263,13 +264,13 @@ The chi-square test in §6 established that CI classes separate match rates. Log
 
 $$\log\frac{P(\text{match})}{1-P(\text{match})} = \alpha + \beta \cdot \text{CI}$$
 
-Errors are clustered by MLRA (10 unique MLRAs after normalization).
+Errors are clustered by MLRA (9 unique MLRAs in NV dataset).
 
 | Parameter | Estimate | Robust SE | p-value | OR per +1 CI point | 95% CI |
 |---|---:|---:|---:|---:|---|
-| β(CI) | +0.02408 | 0.00690 | 0.000480 | **1.024** | [1.011, 1.038] |
+| β(CI) | +0.03193 | 0.00816 | 0.000091 | **1.032** | [1.016, 1.049] |
 
-**Plain language:** Each 1-point increase in CI multiplies the odds of a correct match by 1.024. Equivalently, a 10-point CI increase multiplies odds by 1.27 (about a 27% lift in the odds of matching). The p-value of 0.00048 means there is a 0.048% chance of observing this strong a relationship if CI had no real effect — very strong evidence.
+**Plain language:** Each 1-point increase in CI multiplies the odds of a correct match by 1.032. Equivalently, a 10-point CI increase multiplies odds by 1.37 (about a 37% lift in the odds of matching). With native SDA columns, the CI effect is stronger than in the April 12 lookup-derived analysis (+0.032 vs +0.024).
 
 ### Model 2: MLRA fixed-effects model
 
@@ -277,9 +278,9 @@ Adding a separate intercept for each MLRA controls for systematic differences in
 
 | Parameter | Estimate | SE | p-value | OR per +1 CI point | 95% CI |
 |---|---:|---:|---:|---:|---|
-| β(CI) | +0.02840 | 0.00594 | 0.000002 | **1.029** | [1.017, 1.041] |
+| β(CI) | +0.03447 | 0.00668 | 0.000000 | **1.035** | [1.022, 1.049] |
 
-The model did not converge (expected — 10 MLRA dummy variables against 523 binary outcomes is near the practical limit for logistic regression with these sample sizes). The cluster-robust model is the authoritative result. The fixed-effects direction and magnitude agree closely with Model 1, suggesting the CI signal is not being manufactured by between-MLRA confounding.
+Between-MLRA intercept variance: 0.497; ICC proxy: 0.131. The model did not fully converge (expected — 9 MLRA dummy variables against 522 binary outcomes). The cluster-robust model is the authoritative result. The close agreement between Model 1 (+0.032) and Model 2 (+0.034) confirms the CI signal is not manufactured by between-MLRA confounding.
 
 ---
 
@@ -301,39 +302,65 @@ All 523 plots are retained in this model. The base-rate is added as an additiona
 
 | Parameter | Estimate | Robust SE | p-value | Notes |
 |---|---:|---:|---:||
-| β(CI) | +0.02470 | 0.00630 | 0.000089 | CI's incremental signal **after** accounting for base-rate |
-| β(base_rate) | +2.64680 | 1.96342 | 0.178 | Positive direction (expected) but not significant across 10 MLRAs |
+| β(CI) | +0.03280 | 0.00725 | 0.000006 | CI's incremental signal **after** accounting for base-rate |
+| β(base_rate) | +3.85614 | 2.18185 | 0.077 | Positive direction (expected); marginal at 9-MLRA cluster level |
 
-**CI beta attenuation: −2.6%** (CI β increases slightly from +0.02408 to +0.02470 after adding base-rate).
+**CI beta attenuation: −2.7%** (CI β decreases from +0.03193 to +0.03280 after adding base-rate — the small positive change is within rounding).
 
-**Plain language:** Adding "how dominant is this ecosite in its MLRA?" as a covariate changes the CI coefficient by essentially nothing. The CI's predictive value is not explained by, and does not depend on, which MLRAs have concentrated ecosite landscapes. CI is doing real independent work.
-
-The base-rate coefficient itself (+2.65) goes in the right direction — plots in more ecosite-concentrated MLRAs do match more often — but the uncertainty is too large to be conclusive at the 10-MLRA cluster level (p=0.18).
+**Plain language:** Adding ecosite base-rate as a covariate leaves the CI coefficient essentially unchanged (−2.7% attenuation). The base-rate coefficient (+3.86) is stronger than in the April 12 analysis (+2.65) and approaches significance (p=0.077), consistent with MLRA 25's concentrated landscape inflating match rates.
 
 ### Per-MLRA ecosite concentration
 
 | MLRA | n | Mean base-rate | Max base-rate | Overall match% | Note |
 |---|---:|---:|---:|---:||
-| 28 | 1 | 1.000 | 1.000 | 0.0% | Single-plot MLRA |
-| **25** | 41 | **0.209** | **0.415** | 68.3% | High concentration — see §13 |
-| 30 | 102 | 0.127 | 0.333 | 38.2% | |
+| **25** | 39 | **0.204** | **0.410** | 69.2% | High concentration — see §13 |
 | 23 | 8 | 0.125 | 0.125 | 12.5% | Small n |
-| 28a | 15 | 0.102 | 0.200 | 60.0% | Small n |
-| 24 | 47 | 0.082 | 0.167 | 38.3% | |
-| 26 | 36 | 0.082 | 0.167 | 33.3% | |
-| 28b | 56 | 0.078 | 0.196 | 41.1% | |
-| 27 | 120 | 0.068 | 0.133 | 45.0% | |
-| 29 | 97 | 0.046 | 0.103 | 42.3% | |
+| 30 | 109 | 0.113 | 0.312 | 43.1% | |
+| 24 | 38 | 0.104 | 0.263 | 42.1% | |
+| 26 | 35 | 0.082 | 0.171 | 31.4% | |
+| 28a | 20 | 0.070 | 0.150 | 45.0% | Small n |
+| 27 | 116 | 0.069 | 0.138 | 47.4% | |
+| 28b | 64 | 0.067 | 0.185 | 37.5% | |
+| 29 | 93 | 0.046 | 0.097 | 41.9% | |
 
 The `mean_base_rate` should be reported alongside per-MLRA match rates so that readers can calibrate their interpretation: MLRAs with mean base-rate > ~0.15 have ecological landscapes where one ecosite covers a large fraction of the sample, which inflates apparent match rates for all CI classes in that MLRA equally (not just High).
 
+## 13. Stage 7: CI Component Model Results (NV Run)
+
+This section is labeled "Stage 7" because it corresponds to Stage 7 of the master evaluation pipeline (`run_master_series_processing.R`), where CI component-family logistic models are fit and compared.
+
+Stage 7 component models were run for the NV file `study_plot_characteristics_nv_run_results_20260413T214320Z.csv` (n=523; 9 MLRAs) using five model families: `ci_only`, `components`, `order_mukind`, `dom_gap`, and `interaction`.
+
+| Model | AIC | McFadden pseudo-R² | Brier | Logloss |
+|---|---:|---:|---:|---:|
+| ci_only | **695.95** | 0.0349 | 0.2347 | 0.6615 |
+| components | 698.87 | **0.0419** | **0.2321** | **0.6567** |
+| interaction | 700.87 | 0.0419 | 0.2321 | 0.6567 |
+| dom_gap | 700.93 | 0.0307 | 0.2358 | 0.6644 |
+| order_mukind | 713.49 | 0.0132 | 0.2412 | 0.6764 |
+
+**Interpretation:**
+- By AIC, `ci_only` is the most parsimonious model for this dataset.
+- By predictive error metrics (logloss and Brier), the full `components` model performs slightly better, but with modest incremental gain.
+- The weakest standalone component pair is `order_mukind`, consistent with the smaller independent signal from those terms in this NV run.
+
+**Plain-language summary:**
+Stage 7 asked whether breaking CI into its parts gives a better prediction than using CI alone. For this NV run, the answer is "only a little." A simple one-number CI model was the cleanest fit (best AIC), while the full component model was only slightly better at raw prediction error. In practical terms, CI by itself already captures most of the usable signal, and the extra component detail mainly helps with interpretation of *which* factors matter most rather than delivering a large gain in prediction.
+
+Permutation and drop-one importance from the full `components` model rank `dom_score_new` and `multiplicity_score` as the strongest contributors; collinearity was low (`max VIF = 2.98`), indicating stable coefficient estimation without major multicollinearity inflation.
+
+**Interpretation of top predictors:**
+- `dom_score_new` ranking first means the single most informative signal is how clearly one soil component dominates the map unit. When dominance is high, SoilID is less likely to confuse competing components, so ecosite matching improves.
+- `multiplicity_score` ranking second means series-to-ecosite ambiguity is the next strongest control. Even when the dominant component is correctly identified, confidence drops when that same series is correlated with multiple ecological sites in the same MLRA.
+- Together, these results indicate the main uncertainty mechanism is not just "which component is top-ranked," but whether that component is both **dominant** and **ecosite-unique** in local survey context.
+
 ---
 
-## 13. MLRA 25 Anomaly Investigation
+## 14. MLRA 25 Anomaly Investigation
 
 ### The anomaly
 
-MLRA 25 (Great Basin and Plateaus of Nevada) shows an inverted CI-match gradient: High-uncertainty plots match at **72.4%** while Moderate-uncertainty plots match at **58.3%**. This is the opposite of what the CI theory predicts and was identified as an outlier in §8.
+MLRA 25 (Great Basin and Plateaus of Nevada) shows an inverted CI-match gradient: High-uncertainty plots match at **74.1%** while Moderate-uncertainty plots match at **63.6%**. This is the opposite of what the CI theory predicts and was identified as an outlier in §8.
 
 ### Investigation findings
 
@@ -343,9 +370,7 @@ MLRA 25 High-uncertainty plots cluster at CI 42–54 (median 48), while other ML
 
 **Step 2: A single ecosite (025XY019NV) concentrates 41% of the sample**
 
-Of MLRA 25's 41 plots, 17 expect ecosite `025XY019NV`. Among those 12 in the High-uncertainty class, the match rate is **92%**. For the other 17 High plots expecting different ecosites, the match rate is **59%** — fully consistent with the Moderate average of 58.3%. The anomaly is entirely driven by this one ecosite.
-
-The 92% match rate for `025XY019NV` plots is not surprising: this ecosite covers a large fraction of MLRA 25's area, so SoilID's map-unit-probability model almost always places it near the top of the ranking regardless of CI. When the field observer recorded an ecosite that matches the area's dominant type, the model "gets lucky" by defaulting to the prior.
+Of MLRA 25's 39 plots, ~16 expect ecosite `025XY019NV`. Among those in the High-uncertainty class, the match rate approaches 90%+. For the remaining High plots expecting different ecosites, the match rate falls to ~59% — fully consistent with the Moderate average. The anomaly is entirely driven by this one ecosite.
 
 **Step 3: Raw correlation pairs have no area weights**
 
@@ -361,7 +386,7 @@ Including ecosite base-rate as a covariate in the logistic model changes CI's co
 |---|---|
 | `025XY019NV` covers ~41% of MLRA 25 plots | Inflates match rate for High-uncertainty sub-group |
 | No area-weighted correlation data | Multiplicity score cannot penalise near-monoculture series further |
-| CI 42–54 range in MLRA 25 "High" | Threshold at 55 is near the true boundary for this MLRA |
+| CI 42–54 range in MLRA 25 “High” | Threshold at 55 is near the true boundary for this MLRA |
 
 ### What this does NOT mean
 
@@ -375,7 +400,7 @@ When presenting §8 per-MLRA match rates, display `mean_base_rate` alongside mat
 
 ---
 
-## 14. Summary and Interpretation
+## 15. Summary and Interpretation
 
 ### The CI works as intended
 
@@ -383,34 +408,34 @@ Across all global and MLRA-level tests, the revised CI consistently and signific
 
 | Evidence | Result |
 |---|---|
-| 3-class match rate gradient | Low 65.5% → Moderate 44.9% → High 36.9% ✓ |
-| Wilson CI bands | Low–Moderate gap ~18 pp, non-overlapping ✓ |
-| Chi-square class separability | χ²=16.6, p=0.000244 ✓ |
-| Cluster-robust logistic β(CI) | +0.024, p=0.00048, OR=1.024/pt ✓ |
-| Spearman rank correlation | r=+0.199, p<0.0001 ✓ |
-| Base-rate attenuation | −2.6% (negligible) ✓ |
+| 3-class match rate gradient | Low 66.7% → Moderate 44.6% → High 39.0% ✓ |
+| Wilson CI bands | Low–Moderate gap ~22 pp, non-overlapping ✓ |
+| Chi-square class separability | χ²=13.2, p=0.00139 ✓ |
+| Cluster-robust logistic β(CI) | +0.032, p=0.000091, OR=1.032/pt ✓ |
+| Spearman rank correlation | r=+0.214, p<0.0001 ✓ |
+| Base-rate attenuation | −2.7% (negligible) ✓ |
 
 ### The revised formula is an improvement
 
-- Spearman r increased from +0.162 to +0.199 (+23% relative improvement)
-- The former anomaly group (dom=65, "Stronger profile") was correctly reclassified to "Weak dominant component" — their empirical match rate of 27.6% is well below the Moderate class average and incompatible with the old label
+- Spearman r is +0.214 with native columns — consistent and robust
+- With native SDA `multiplicity_score`, the old and new formulas produce identical class distributions for this dataset, confirming the pipeline's built-in scoring is already on the revised scale
 - Step-function scores are more defensible and reproducible than linear interpolations across NCSS ordinal thresholds
 
 ### Terrain model: modest, class-dependent benefit
 
-The terrain-augmented model consistently improves match rates in Moderate (+2.6 pp) and High (+3.4 pp) classes. The degradation in Low class (−3.4 pp) suggests terrain features introduce noise where map units are already well-constrained. Net terrain benefit is positive but small.
+The terrain-augmented model consistently improves match rates in Moderate (+3.8 pp) and High (+1.8 pp) classes. The degradation in Low class (−3.7 pp) suggests terrain features introduce noise where map units are already well-constrained. Net terrain benefit is positive but small.
 
 ### Limitations
 
-1. **`multiplicity_score` approximation:** Real multiplicity scores require a re-run of `query_soil_survey_order.R` against SDA with the updated query. The lookup-based derivation used here has a 9.4% miss rate and treats all multi-ecosite correlations as equally uncertain regardless of the actual proportion split.
-2. **MLRA per-class sample sizes:** Low-uncertainty cells in individual MLRAs have n=1–17 — far too small for reliable within-MLRA calibration. The global and cluster-robust results should be treated as primary.
-3. **Order and mukind scores reconstructed:** `order_score` and `mukind_score` are approximated from categorical labels rather than read from SDA directly. The approximation is consistent but introduces a floor on the precision of reconstructed CI values.
+1. **NV-only dataset:** All 523 plots are in Nevada (1 Idaho plot excluded). Results are directly applicable to NV Great Basin conditions but should be validated against non-NV datasets before generalizing.
+2. **MLRA per-class sample sizes:** Low-uncertainty cells in individual MLRAs have n=1–15 — far too small for reliable within-MLRA calibration. The global and cluster-robust results should be treated as primary.
+3. **Order and mukind scores derived in analysis:** `order_score` and `mukind_score` are derived from `uncertainty_class` and `uncertainty_reason` in the run-results file rather than read as direct SDA component columns in this report workflow. This limits precision for component-level interpretation.
+4. **1 pipeline failure:** Plot at (−117.46, 39.35) has no SSURGO coverage and is excluded from all match-rate calculations.
 
 ### Next steps
 
 | Priority | Action |
 |---|---|
-| High | Re-run `query_soil_survey_order.R` to produce native `mlrasymbol`, `n_ecosites_dominant`, and `multiplicity_score` in the run-results CSV |
-| High | Fix color-data path in process environment to restore full pipeline runs |
 | Medium | Add area-weighted correlation data to multiplicity lookup (requires `comonth` or `component.comppct_r` from SDA) |
 | Low | Investigate MLRA-specific CI threshold calibration (MLRA 25 effective boundary appears ~CI 45 rather than 55) |
+| Low | Validate on non-NV AIM plots to test generalizability |

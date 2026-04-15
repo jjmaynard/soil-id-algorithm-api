@@ -1,6 +1,7 @@
 import argparse
 import io
 import json
+import os
 from datetime import datetime
 from pathlib import Path
 
@@ -250,6 +251,17 @@ def _score_summary(rows, mode_prefix, expected_col, predicted_col, source=None):
     }
 
 
+def _score_summary_with_match_col(rows, expected_col, match_col):
+    subset = [r for r in rows if _norm_text(r.get(expected_col))]
+    compared = len(subset)
+    matched = sum(1 for r in subset if r.get(match_col) is True)
+    return {
+        "compared": compared,
+        "matched": matched,
+        "accuracy": None if compared == 0 else round(matched / compared, 4),
+    }
+
+
 def _score_match_col(rows, match_col, require_col=None, changed_only=False):
     subset = rows
     if changed_only:
@@ -410,6 +422,23 @@ def main():
         choices=["rank_data_loc", "rank_data", "rank_loc"],
         default="rank_data_loc",
         help="Rank method used for top-result selection and expected-rank lookup (default: rank_data_loc)",
+    )
+    parser.add_argument(
+        "--execution-mode",
+        choices=["local", "api"],
+        default="local",
+        help="Execution backend flag accepted for compatibility with master runner",
+    )
+    parser.add_argument(
+        "--soilid-api-url",
+        default=os.getenv("SOILID_API_URL", "https://soil-id-algorithm-api.vercel.app/api/analyze-soil"),
+        help="Analyze-soil API URL (currently informational in this branch runner)",
+    )
+    parser.add_argument(
+        "--request-timeout",
+        type=float,
+        default=120.0,
+        help="HTTP timeout for API mode compatibility",
     )
     args = parser.parse_args()
 
@@ -853,22 +882,20 @@ def main():
             ),
         },
         "QC": {
-            "soil_series": _score_summary(
-                row_results, "baseline_aim", "expected_soil_series", "soil_series", source="QC"
-            ),
-            "ecological_site": _score_summary(
+            "soil_series": _score_summary_with_match_col(
                 row_results,
-                "baseline_aim",
-                "expected_ecological_site",
-                "ecological_site",
-                source="QC",
+                "qc_expected_soil_series",
+                "baseline_qc_soil_series_match",
             ),
-            "landscape_class": _score_summary(
+            "ecological_site": _score_summary_with_match_col(
                 row_results,
-                "baseline_aim",
-                "expected_landscape_class",
-                "landscape_class",
-                source="QC",
+                "qc_expected_ecological_site",
+                "baseline_qc_ecological_site_match",
+            ),
+            "landscape_class": _score_summary_with_match_col(
+                row_results,
+                "qc_expected_landscape_class",
+                "baseline_qc_landscape_class_match",
             ),
         },
     }
@@ -893,27 +920,25 @@ def main():
             ),
         },
         "QC": {
-            "soil_series": _score_summary(
-                row_results, "terrain_aim", "expected_soil_series", "soil_series", source="QC"
-            ),
-            "ecological_site": _score_summary(
+            "soil_series": _score_summary_with_match_col(
                 row_results,
-                "terrain_aim",
-                "expected_ecological_site",
-                "ecological_site",
-                source="QC",
+                "qc_expected_soil_series",
+                "terrain_qc_soil_series_match",
             ),
-            "landscape_class": _score_summary(
+            "ecological_site": _score_summary_with_match_col(
                 row_results,
-                "terrain_aim",
-                "expected_landscape_class",
-                "landscape_class",
-                source="QC",
+                "qc_expected_ecological_site",
+                "terrain_qc_ecological_site_match",
+            ),
+            "landscape_class": _score_summary_with_match_col(
+                row_results,
+                "qc_expected_landscape_class",
+                "terrain_qc_landscape_class_match",
             ),
         },
     }
 
-    # rank_soils (QC landscape inputs) vs QC reference — landscape-changed rows only
+    # rank_soils (QC landscape inputs) vs QC reference — all comparable rows
     n_landscape_changed = sum(
         1 for r in row_results if r.get("landscape_class_qc_changed") is True
     )
@@ -939,19 +964,16 @@ def main():
             row_results,
             "terrain_qc_soil_series_match",
             require_col="qc_expected_soil_series",
-            changed_only=True,
         ),
         "ecological_site": _score_match_col(
             row_results,
             "terrain_qc_ecological_site_match",
             require_col="qc_expected_ecological_site",
-            changed_only=True,
         ),
         "landscape_class": _score_match_col(
             row_results,
             "terrain_qc_landscape_class_match",
             require_col="qc_expected_landscape_class",
-            changed_only=True,
         ),
     }
 
@@ -1023,7 +1045,7 @@ def main():
                 f"  Landscape class: {terrain_scores['landscape_class']['matched']}/{terrain_scores['landscape_class']['compared']} (accuracy={terrain_scores['landscape_class']['accuracy']})",
                 "",
                 "=" * 60,
-                f"rank_soils MATCH RATES vs QC REFERENCE (landscape-changed rows, n={n_landscape_changed})",
+                f"rank_soils MATCH RATES vs QC REFERENCE (all comparable rows; landscape-changed n={n_landscape_changed})",
                 "=" * 60,
                 "",
                 "Baseline (no terrain inputs):",
