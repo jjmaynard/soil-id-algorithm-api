@@ -197,16 +197,19 @@ The backend parses each notation, looks it up in the Munsell–LAB reference tab
 
 #### curl Examples
 
-**Linux / macOS (bash/zsh)** — double quotes inside single-quoted `-d` string:
+> **`rank-soils` requires real CSV data from `list-soils`.** The fields
+> `rank_data_csv` and `map_unit_component_data_csv` must be the verbatim strings
+> returned by a prior `/api/list-soils` call. For a quick standalone test
+> (no prior step), use `/api/analyze-soil` instead — it runs `list-soils`
+> internally and accepts the same field measurements.
+
+**Quick standalone test with Munsell color — `analyze-soil` (bash/zsh):**
 ```bash
-curl -X POST 'https://your-soil-api.vercel.app/api/rank-soils' \
+curl -X POST 'https://your-soil-api.vercel.app/api/analyze-soil' \
   -H 'Content-Type: application/json' \
   -d '{
     "lon": -101.9733687,
     "lat": 33.81246789,
-    "soil_list_json": {"metadata": {}, "soilList": []},
-    "rank_data_csv": "",
-    "map_unit_component_data_csv": "",
     "soilHorizon": ["Sandy loam", "Clay loam"],
     "topDepth": [0, 20],
     "bottomDepth": [20, 50],
@@ -215,19 +218,38 @@ curl -X POST 'https://your-soil-api.vercel.app/api/rank-soils' \
     "pSlope": 5.0,
     "pElev": 800.0,
     "pAspect": 225.0,
-    "pLandscape": "Alluvial Fan"
+    "pLandscape": "Alluvial Fan",
+    "pLandscapeMode": "base"
   }'
 ```
 
-**Windows PowerShell** — escape inner double quotes with a backtick or use a variable:
+**Two-step: `list-soils` then `rank-soils` (bash/zsh):**
+```bash
+# Step 1 — capture the list-soils response
+SOIL_LIST=$(curl -s -X POST 'https://your-soil-api.vercel.app/api/list-soils' \
+  -H 'Content-Type: application/json' \
+  -d '{"lon": -101.9733687, "lat": 33.81246789}')
+
+# Step 2 — rank with the real CSV fields from Step 1
+# (merge $SOIL_LIST fields with your field measurements using jq or a script)
+curl -X POST 'https://your-soil-api.vercel.app/api/rank-soils' \
+  -H 'Content-Type: application/json' \
+  -d "$(echo $SOIL_LIST | jq '. + {
+    \"lon\": -101.9733687,
+    \"lat\": 33.81246789,
+    \"soilHorizon\": [\"Sandy loam\", \"Clay loam\"],
+    \"topDepth\": [0, 20],
+    \"bottomDepth\": [20, 50],
+    \"munsell_Color\": [\"10YR 3/2\", \"7.5YR 4/4\"]
+  }')"
+```
+
+**Windows PowerShell — `analyze-soil` (self-contained):**
 ```powershell
 $body = @'
 {
   "lon": -101.9733687,
   "lat": 33.81246789,
-  "soil_list_json": {"metadata": {}, "soilList": []},
-  "rank_data_csv": "",
-  "map_unit_component_data_csv": "",
   "soilHorizon": ["Sandy loam", "Clay loam"],
   "topDepth": [0, 20],
   "bottomDepth": [20, 50],
@@ -236,10 +258,11 @@ $body = @'
   "pSlope": 5.0,
   "pElev": 800.0,
   "pAspect": 225.0,
-  "pLandscape": "Alluvial Fan"
+  "pLandscape": "Alluvial Fan",
+  "pLandscapeMode": "base"
 }
 '@
-Invoke-RestMethod -Uri 'https://your-soil-api.vercel.app/api/rank-soils' `
+Invoke-RestMethod -Uri 'https://your-soil-api.vercel.app/api/analyze-soil' `
   -Method POST -ContentType 'application/json' -Body $body
 ```
 

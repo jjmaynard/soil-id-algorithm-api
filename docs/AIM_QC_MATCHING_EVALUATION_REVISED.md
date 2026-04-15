@@ -94,6 +94,40 @@ Updated files:
 Added:
 - `statsmodels`
 
+### 7. CI component model stage was added to the R evaluation pipeline
+Updated files:
+- `Data/aim_data/R_evaluation/scripts/analyze_ci_component_models.R`
+- `Data/aim_data/R_evaluation/scripts/run_master_series_processing.R`
+
+What it does:
+- Fits five logistic model families on the same run-results file:
+  - `ci_only`
+  - `components`
+  - `order_mukind`
+  - `dom_gap`
+  - `interaction`
+- Exports:
+  - robust coefficient table (`*_ci_component_models.csv`)
+  - model comparison table (`*_ci_component_model_comparison.csv`)
+  - variable importance table (`*_ci_component_importance.csv`)
+  - collinearity diagnostics (`*_ci_component_collinearity.csv`)
+  - text summary (`*_ci_component_summary.txt`)
+
+Recent NV run results (523 rows, 9 MLRAs):
+- Best AIC model: `ci_only` (AIC = 695.95)
+- Best predictive error metrics (lower is better): `components`
+  - logloss = 0.6567
+  - Brier = 0.2321
+- Top component predictors in full model:
+  - `dom_score_new` (strongest)
+  - `multiplicity_score` (second)
+- Collinearity was low (`max VIF = 2.98`)
+
+Interpretation:
+- CI alone remains a strong compact predictor.
+- The full component model adds only modest predictive lift.
+- Most incremental explanatory signal comes from dominance clarity and ecosite multiplicity ambiguity.
+
 ## Revised AIM/QC Evaluation Framework
 
 ### A. Data generation and enrichment
@@ -107,10 +141,13 @@ Added:
 ### B. Primary reporting outputs
 1. Run revised CI summary analysis:
    - `python scripts/_analyze_ci_revised.py`
-2. Interpret primary tables in this order:
+2. Run CI component model comparison (Stage 7):
+  - `Rscript Data/aim_data/R_evaluation/scripts/analyze_ci_component_models.R --csv <run_results_csv> --plots-csv <plots_csv> --multiplicity-csv Data/aim_data/R_evaluation/data/compname_mlra_ecosite_multiplicity.csv --out-dir Data/aim_data/R_evaluation/outputs/aim_qc`
+3. Interpret primary tables in this order:
    - 3-class Wilson CI table (primary performance summary)
    - Chi-square association test (class separability)
-   - Class-by-reason diagnostics
+  - Stage 7 model comparison + component importance
+  - Class-by-reason diagnostics
    - Calibration and rank correlation as secondary diagnostics
 
 ### C. MLRA-aware inference
@@ -134,7 +171,8 @@ Added:
 Use this hierarchy for decisions:
 1. **Primary:** 3-class Wilson CI match table + chi-square test.
 2. **Primary inferential:** MLRA cluster-robust logistic coefficient on CI.
-3. **Secondary diagnostics:** calibration bins, reason-stratified breakdowns, Spearman rank correlation.
+3. **Secondary structural diagnostics:** Stage 7 component model comparison and variable-importance outputs.
+4. **Secondary diagnostics:** calibration bins, reason-stratified breakdowns, Spearman rank correlation.
 
 This structure reduces over-reliance on a single rank-correlation metric and makes the evaluation more robust to MLRA clustering and uncertainty-class sample imbalance.
 
@@ -144,5 +182,7 @@ This structure reduces over-reliance on a single rank-correlation metric and mak
 - `scripts/run_all_aim_examples.py`
 - `scripts/_analyze_ci_revised.py`
 - `scripts/_analyze_ci_mlra_clustered.py`
+- `Data/aim_data/R_evaluation/scripts/analyze_ci_component_models.R`
+- `Data/aim_data/R_evaluation/scripts/run_master_series_processing.R`
 - `requirements/base.in`
 - `requirements.txt`

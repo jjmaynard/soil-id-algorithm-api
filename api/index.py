@@ -287,12 +287,50 @@ async def api_rank_soils(request: RankSoilsRequest):
       Returns HTTP 422 if a notation cannot be found in the reference table.
 
     Workflow:
-    1. Call list-soils to get soil component data
-    2. Store the response client-side
-    3. Collect field measurements
-    4. Send both to this endpoint for ranking
+    1. Call `/api/list-soils` to get soil component data — this returns
+       `soil_list_json`, `rank_data_csv`, and `map_unit_component_data_csv`.
+    2. Store the full response client-side.
+    3. Collect field measurements.
+    4. Pass the stored response fields together with field measurements to this endpoint.
+
+    > **Note:** `rank_data_csv` and `map_unit_component_data_csv` must be the
+    > verbatim strings returned by `list-soils`. Placeholder or empty values will
+    > be rejected with HTTP **422**. For a self-contained single request (no
+    > separate `list-soils` step), use `/api/analyze-soil` instead.
     """
     try:
+        # Validate that CSV fields look like real data from list-soils, not placeholders.
+        _REQUIRED_RANK_COLS = {"cokey", "compname", "comp_max_bottom"}
+        try:
+            import io
+            import pandas as _pd
+            _rank_cols = set(
+                _pd.read_csv(io.StringIO(request.rank_data_csv), nrows=0).columns.tolist()
+            )
+            if not _REQUIRED_RANK_COLS.issubset(_rank_cols):
+                raise HTTPException(
+                    status_code=422,
+                    detail=(
+                        "rank_data_csv does not contain the required columns "
+                        f"({sorted(_REQUIRED_RANK_COLS)}). "
+                        "This field must be the verbatim 'rank_data_csv' string "
+                        "returned by /api/list-soils. "
+                        "For a single self-contained request without a separate "
+                        "list-soils call, use /api/analyze-soil instead."
+                    ),
+                )
+        except HTTPException:
+            raise
+        except Exception:
+            raise HTTPException(
+                status_code=422,
+                detail=(
+                    "rank_data_csv could not be parsed as CSV. "
+                    "This field must be the verbatim 'rank_data_csv' string "
+                    "returned by /api/list-soils."
+                ),
+            )
+
         # Reconstruct SoilListOutputData from request
         list_output_data = SoilListOutputData(
             soil_list_json=request.soil_list_json,
