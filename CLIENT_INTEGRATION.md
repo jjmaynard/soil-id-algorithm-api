@@ -60,6 +60,8 @@ export default function SoilAnalysis() {
           bottomDepth: [20, 50],
           rfvDepth: ['0-1%', '1-15%'],
           lab_Color: [[50.5, 5.2, 20.1], [45.3, 6.1, 18.5]],
+          // Alternative: supply Munsell notation instead of pre-computed LAB
+          // munsell_Color: ['10YR 3/2', '7.5YR 4/4'],
           pSlope: 5.0,
           pElev: 800.0,
           bedrock: null,
@@ -141,6 +143,8 @@ const result = await analyzeSoil(
     bottomDepth: [20],
     rfvDepth: ['0-1%'],
     lab_Color: [[50.5, 5.2, 20.1]],
+    // Alternative: supply Munsell notation instead of pre-computed LAB
+    // munsell_Color: ['10YR 3/2'],
     pSlope: 5.0,
     pAspect: 225.0,
     pSlopeShapeVert: 'Concave',
@@ -162,6 +166,48 @@ The `rank-soils` and `analyze-soil` endpoints now accept these optional site inp
 - `pLandscapeMode`: Crosswalk sensitivity (`base`, `strict`, `loose`)
 
 If omitted or null, terrain/landscape variables are excluded from that part of similarity scoring.
+
+#### Color Input: LAB or Munsell Notation
+
+The `rank-soils` and `analyze-soil` endpoints accept soil color in two mutually exclusive forms.
+
+**Option A — pre-computed CIE LAB** (`lab_Color`):
+```json
+{
+  "lab_Color": [[50.5, 5.2, 20.1], [45.3, 6.1, 18.5]]
+}
+```
+
+**Option B — Munsell notation** (`munsell_Color`):
+```json
+{
+  "munsell_Color": ["10YR 3/2", "7.5YR 4/4"]
+}
+```
+
+The backend parses each notation, looks it up in the Munsell–LAB reference table, and converts it to `[L, A, B]` before Gower's similarity evaluation. The result is identical to providing `lab_Color` directly.
+
+- The space between the hue and the value/chroma is optional: `"10YR3/2"` and `"10YR 3/2"` are both valid.
+- Half-hue steps are supported: `"2.5YR 4/6"` is valid.
+- Use `null` for a horizon with no color observation: `["10YR 3/2", null, "7.5YR 4/4"]`.
+- Providing both `lab_Color` and `munsell_Color` in the same request returns HTTP **400**.
+- A notation that cannot be matched in the reference table returns HTTP **422** with a descriptive message.
+
+```typescript
+// TypeScript usage example
+const result = await soilApi.analyzeSoil(
+  { lon: -101.97, lat: 33.81 },
+  {
+    soilHorizon: ['Sandy loam', 'Clay loam'],
+    topDepth: [0, 20],
+    bottomDepth: [20, 50],
+    munsell_Color: ['10YR 3/2', '7.5YR 4/4'],  // Munsell instead of lab_Color
+    pSlope: 5.0,
+    pAspect: 225.0,
+    pLandscape: 'Alluvial Fan',
+  }
+);
+```
 
 ### Option 2: Separate Endpoints (For Two-Step Workflow)
 
@@ -275,7 +321,8 @@ export interface FieldMeasurements {
   topDepth?: (number | null)[];
   bottomDepth?: (number | null)[];
   rfvDepth?: (string | null)[];
-  lab_Color?: (number[] | null)[];
+  lab_Color?: (number[] | null)[];         // CIE LAB per horizon [[L, A, B], ...]
+  munsell_Color?: (string | null)[];       // Munsell notation per horizon — alternative to lab_Color
   pSlope?: number | null;
   pElev?: number | null;
   bedrock?: number | null;

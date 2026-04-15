@@ -272,11 +272,19 @@ async def api_list_soils(request: ListSoilsRequest):
 async def api_rank_soils(request: RankSoilsRequest):
     """
     Rank soil components based on field measurements.
-    
+
     This endpoint requires the output from list-soils along with
     field measurement data to calculate similarity scores and rank
     the soil components.
-    
+
+    **Color input** — two mutually exclusive options:
+    - `lab_Color`: Pre-computed CIE LAB values per horizon as `[[L, A, B], ...]`.
+    - `munsell_Color`: Munsell notation strings per horizon (e.g. `["10YR 3/2", "7.5YR 4/4"]`).
+      The backend converts each notation to LAB before Gower's similarity evaluation.
+      Half-hue steps such as `2.5YR` are supported; the space between hue and value/chroma
+      is optional (`"10YR3/2"` and `"10YR 3/2"` are both accepted).
+      Returns HTTP 422 if a notation cannot be found in the reference table.
+
     Workflow:
     1. Call list-soils to get soil component data
     2. Store the response client-side
@@ -325,14 +333,22 @@ async def api_rank_soils(request: RankSoilsRequest):
 async def api_analyze_soil_combined(request: RankSoilsRequest):
     """
     Combined endpoint that performs both list and rank operations.
-    
+
     This is a convenience endpoint that:
     1. Retrieves soil list for the location
     2. Immediately ranks them with provided field data
-    
+
     Use this when you want to perform both operations in a single request.
     This is more efficient for Vercel serverless functions as it avoids
     the need to store intermediate data.
+
+    **Color input** — two mutually exclusive options:
+    - `lab_Color`: Pre-computed CIE LAB values per horizon as `[[L, A, B], ...]`.
+    - `munsell_Color`: Munsell notation strings per horizon (e.g. `["10YR 3/2", "7.5YR 4/4"]`).
+      The backend converts each notation to LAB before Gower's similarity evaluation.
+      Half-hue steps such as `2.5YR` are supported; the space between hue and value/chroma
+      is optional (`"10YR3/2"` and `"10YR 3/2"` are both accepted).
+      Returns HTTP 422 if a notation cannot be found in the reference table.
     """
     try:
         # First, get the soil list
