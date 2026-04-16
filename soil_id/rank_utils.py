@@ -1,4 +1,14 @@
+import math
+
 import pandas as pd
+
+
+def _is_nan(value):
+    """Return True if value is a float NaN or pandas NA."""
+    try:
+        return math.isnan(value)
+    except (TypeError, ValueError):
+        return False
 
 
 def finalize_rank_output(D_final_loc: pd.DataFrame, location: str):
@@ -66,6 +76,8 @@ def finalize_rank_output(D_final_loc: pd.DataFrame, location: str):
                 if row.missing_status != "Location data only"
                 else row.Rank_Loc == "Not Displayed"
             ),
+            "ecoclassid": getattr(row, "ecoclassid", None) if not _is_nan(getattr(row, "ecoclassid", None)) and getattr(row, "ecoclassid", None) != "" else None,
+            "ecoclassname": getattr(row, "ecoclassname", None) if not _is_nan(getattr(row, "ecoclassname", None)) and getattr(row, "ecoclassname", None) != "" else None,
         }
         for _, row in df_copy.iterrows()
     ]

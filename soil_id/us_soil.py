@@ -2013,6 +2013,37 @@ def rank_soils(
     soilIDRank_output_pd = pd.read_csv(io.StringIO(list_output_data.rank_data_csv))
     mucompdata_pd = pd.read_csv(io.StringIO(list_output_data.map_unit_component_data_csv))
 
+    # Enrich mucompdata_pd with ecoclassid/ecoclassname from soil_list_json soilList entries.
+    # The CSV does not carry these columns, but soil_list_json["soilList"][i]["esd"] does.
+    _eco_records = {}
+    for _entry in list_output_data.soil_list_json.get("soilList", []):
+        _cokey = str(_entry.get("site", {}).get("siteData", {}).get("componentID", ""))
+        _esd = _entry.get("esd", {}).get("ESD", {})
+        _ecoids = _esd.get("ecoclassid") or []
+        _econames = _esd.get("ecoclassname") or []
+        if isinstance(_ecoids, str):
+            _ecoids = [_ecoids] if _ecoids else []
+        if isinstance(_econames, str):
+            _econames = [_econames] if _econames else []
+        if _cokey and _cokey not in _eco_records:
+            _eco_records[_cokey] = {
+                "ecoclassid": _ecoids[0] if _ecoids else None,
+                "ecoclassname": _econames[0] if _econames else None,
+            }
+    if _eco_records:
+        _eco_df = (
+            pd.DataFrame.from_dict(_eco_records, orient="index")
+            .reset_index()
+            .rename(columns={"index": "cokey_str"})
+        )
+        mucompdata_pd["cokey_str"] = mucompdata_pd["cokey"].astype(str)
+        mucompdata_pd = mucompdata_pd.merge(_eco_df, on="cokey_str", how="left").drop(
+            columns="cokey_str"
+        )
+    else:
+        mucompdata_pd["ecoclassid"] = None
+        mucompdata_pd["ecoclassname"] = None
+
     # Modify mucompdata_pd DataFrame
     # mucompdata_pd = process_site_data(mucompdata_pd)
 
@@ -2555,6 +2586,10 @@ def rank_soils(
     # Refactoring the code for data output
 
     # Merge D_final with additional data from mucompdata_pd
+    _ecoclass_cols = [
+        c for c in ["ecoclassid", "ecoclassname"]
+        if c in mucompdata_pd.columns
+    ]
     D_final_loc = pd.merge(
         D_final,
         mucompdata_pd[
@@ -2569,7 +2604,7 @@ def rank_soils(
                 "OSD_rfv_int",
                 "data_source",
                 "Rank_Loc",
-            ]
+            ] + _ecoclass_cols
         ],
         on="compname",
         how="left",
