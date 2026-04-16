@@ -2192,6 +2192,12 @@ def rank_soils(
         # depth coverage tracking: sum of depth weights for slices where a component has data
         _dw_total_accum = 0.0
         _dw_covered_accum = {}  # {compname: depth_weight_sum_with_data}
+        # depth lookup: {compname: mapped_bottom_depth_cm} for diagnostic output
+        _comp_depth_lookup = (
+            slices_of_soil[slices_of_soil["compname"] != "sample_pedon"]
+            .set_index("compname")["bottom_depth"]
+            .to_dict()
+        )
 
         dis_mat_list = []
         dis_slice_positions = []
@@ -2384,6 +2390,15 @@ def rank_soils(
                     )
                     for _fc, _ws in _fd.items() if _ws[1] > 0
                 }
+                horz_feature_sims[_cn]["observed_depth"] = int(max_user_depth)
+                horz_feature_sims[_cn]["mapped_depth"] = (
+                    int(_comp_depth_lookup[_cn])
+                    if _cn in _comp_depth_lookup and not (
+                        isinstance(_comp_depth_lookup[_cn], float)
+                        and np.isnan(_comp_depth_lookup[_cn])
+                    )
+                    else None
+                )
                 horz_feature_sims[_cn]["depth_coverage"] = (
                     round(_dw_covered_accum.get(_cn, 0.0) / _dw_total_accum, 3)
                     if _dw_total_accum > 0 else None
