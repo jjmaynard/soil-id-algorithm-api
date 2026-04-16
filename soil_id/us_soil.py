@@ -1702,7 +1702,8 @@ def list_soils(lon, lat, sim=True, max_distance_m=1000):
         for idx, row in mucompdata_cond_prob.iterrows()
     ]
 
-    # Reordering lists using list comprehension and mucomp_index
+    # Reorder profile lists to match the final sorted component order.
+    # Prefer key-based alignment by cokey (componentID) to avoid positional drift.
     lists_to_reorder = [
         esd_comp_list,
         hzt_lyrs,
@@ -1717,7 +1718,27 @@ def list_soils(lon, lat, sim=True, max_distance_m=1000):
         lab_lyrs,
         munsell_lyrs,
     ]
-    reordered_lists = [[lst[i] for i in mucomp_index] for lst in lists_to_reorder]
+
+    def _norm_cokey(value):
+        return re.sub(r"\.0+$", "", str(value).strip())
+
+    base_order_cokeys = [_norm_cokey(c) for c in mucompdata_pd["cokey"].tolist()]
+    final_order_cokeys = [_norm_cokey(c) for c in mucompdata_cond_prob["cokey"].tolist()]
+
+    can_key_reorder = (
+        len(base_order_cokeys) == len(set(base_order_cokeys))
+        and all(len(lst) == len(base_order_cokeys) for lst in lists_to_reorder)
+    )
+
+    if can_key_reorder:
+        def _reorder_by_cokey(lst):
+            by_cokey = dict(zip(base_order_cokeys, lst))
+            return [by_cokey[c] for c in final_order_cokeys]
+
+        reordered_lists = [_reorder_by_cokey(lst) for lst in lists_to_reorder]
+    else:
+        # Fallback to positional reordering when key-based alignment is not possible.
+        reordered_lists = [[lst[i] for i in mucomp_index] for lst in lists_to_reorder]
 
     # Destructuring reordered lists for clarity
     (
