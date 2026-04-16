@@ -2091,6 +2091,10 @@ def rank_soils(
         # Subset soil_matrix to user measured slices
         soil_matrix = soil_matrix.loc[pedon_slice_index]
 
+    # Diagnostic output: per-feature breakdown dicts populated in the sections below.
+    horz_feature_sims = {}   # {compname: {friendly_feature: similarity_0_to_1}}
+    site_feature_detail = {}  # {compname: {friendly_feature: {observed, mapped, similarity}}}
+
     # Horizon Data Similarity
     if soilIDRank_output_pd is not None:
         groups = [group for _, group in soilIDRank_output_pd.groupby(["compname"], sort=True)]
@@ -2180,6 +2184,12 @@ def rank_soils(
         }
 
         # Calculate similarity for each depth slice
+        # Pre-compute depth weights so they are available inside the slice loop.
+        depth_weight = np.concatenate((np.repeat(0.2, 20), np.repeat(1.0, 180)), axis=0)
+        depth_weight = depth_weight[pedon_slice_index]
+        # {compname: {feature_col: [weighted_dist_sum, weight_sum]}} for diagnostics
+        _feat_dist_accum = {}
+
         dis_mat_list = []
         dis_slice_positions = []
         for pos, i in enumerate(
@@ -2218,6 +2228,8 @@ def rank_soils(
                 )
             if not sample_pedon_slice_vars:
                 continue
+            # Capture compname ordering before it is dropped from sliceT
+            _slice_row_cnames = sliceT["compname"].tolist()
             sliceT = sliceT[sample_pedon_slice_vars]
 
             # Replace sandpct_intpl + claypct_intpl with a single texture_dist column.
@@ -2268,6 +2280,33 @@ def rank_soils(
             sample_pedon_slice_vars = sliceT.columns.tolist()
             theoretical_prop_ranges = [global_prop_ranges[c] for c in sample_pedon_slice_vars]
             feature_weights = np.array([HORIZON_FEATURE_WEIGHTS[c] for c in sample_pedon_slice_vars])
+
+            # Accumulate per-feature depth-weighted distances for diagnostic output.
+            # texture_dist / color_delta_e are already normalized distances from the pedon
+            # (pedon row = 0, component rows = distance). Other features are raw values
+            # that need normalizing by their theoretical range.
+            _dw = depth_weight[pos]
+            for _fc in sample_pedon_slice_vars:
+                _pv = sliceT.iloc[0][_fc]
+                for _ji, _rcn in enumerate(_slice_row_cnames[1:], start=1):
+                    if _ji >= len(sliceT):
+                        break
+                    _cv = sliceT.iloc[_ji][_fc]
+                    try:
+                        _pf, _cf = float(_pv), float(_cv)
+                    except (TypeError, ValueError):
+                        continue
+                    if np.isnan(_pf) or np.isnan(_cf):
+                        continue
+                    if _fc in ("texture_dist", "color_delta_e"):
+                        _fd = _cf
+                    else:
+                        _rng = global_prop_ranges.get(_fc, 1.0)
+                        _fd = min(1.0, abs(_pf - _cf) / _rng) if _rng > 0 else 0.0
+                    _ws = _feat_dist_accum.setdefault(_rcn, {}).setdefault(_fc, [0.0, 0.0])
+                    _ws[0] += _fd * _dw
+                    _ws[1] += _dw
+
             D = gower_distances(
                 sliceT,
                 feature_weight=feature_weights,
@@ -2279,6 +2318,7 @@ def rank_soils(
 
         if not dis_mat_list:
             D_horz = None
+            horz_feature_sims = {}
         else:
             # Determine if any components have all NaNs at every slice
             dis_mat_nan_check = np.ma.MaskedArray(dis_mat_list, mask=np.isnan(dis_mat_list))
@@ -2290,9 +2330,7 @@ def rank_soils(
             # Maximum dissimilarity
             dis_max = 1.0
 
-            # Apply depth weight
-            depth_weight = np.concatenate((np.repeat(0.2, 20), np.repeat(1.0, 180)), axis=0)
-            depth_weight = depth_weight[pedon_slice_index]
+            # depth_weight is pre-computed before the slice loop
             depth_weight_used = [depth_weight[p] for p in dis_slice_positions]
 
             # Infill Nan data: soil vs non-soil logic
@@ -2323,6 +2361,20 @@ def rank_soils(
             )
             D_sum = np.ma.filled(D_sum, fill_value=np.nan)
             D_horz = 1 - D_sum
+
+            # Build depth-weighted mean per-feature similarity for diagnostic output.
+            _FEAT_FRIENDLY = {
+                "texture_dist": "texture", "rfv_intpl": "rock_fragments",
+                "color_delta_e": "color", "sandpct_intpl": "sand",
+                "claypct_intpl": "clay", "l": "lab_l", "a": "lab_a", "b": "lab_b",
+            }
+            for _cn, _fd in _feat_dist_accum.items():
+                horz_feature_sims[_cn] = {
+                    _FEAT_FRIENDLY.get(_fc, _fc): round(
+                        1.0 - min(max(_ws[0] / _ws[1], 0.0), 1.0), 3
+                    )
+                    for _fc, _ws in _fd.items() if _ws[1] > 0
+                }
 
     else:
         D_horz = None
@@ -2379,6 +2431,7 @@ def rank_soils(
     # 3) If fewer than two features, skip entirely
     if len(features) < 2:
         D_site = None
+        site_feature_detail = {}
     else:
         # 4) Build one-row pedon DataFrame for selected site features.
         pedon_dict = {"compname": "sample_pedon"}
@@ -2401,6 +2454,9 @@ def rank_soils(
             slope_h = pd.to_numeric(mucompdata_pd["slope_h"], errors="coerce")
             in_range = slope_l.notna() & slope_h.notna() & (slope_l <= pSlope_val) & (pSlope_val <= slope_h)
             lib_df.loc[in_range.values, "slope_r"] = pSlope_val
+
+        # Capture pre-encoding library values for per-feature diagnostic output.
+        lib_df_raw = lib_df.copy()
 
         # 6) Stack them together
         full_df = pd.concat([pedon_df, lib_df], ignore_index=True)
@@ -2474,6 +2530,56 @@ def rank_soils(
 
         site_wt = 0.5
         D_site = (1 - D_site) * site_wt
+
+        # Compute per-feature site similarities for diagnostic output.
+        # Uses the pre-encoding lib_df_raw so categorical values remain as strings.
+        _SITE_FEAT_LABELS = {
+            "slope_r": "slope", "elev_r": "elevation", "bottom_depth": "bedrock_depth",
+            "aspect_northerness": "aspect_northerness",
+            "aspect_easterness": "aspect_easterness",
+            "shape_vert_class": "slope_shape_vertical",
+            "shape_horiz_class": "slope_shape_horizontal",
+            "landscape_class": "landscape",
+        }
+        for _, _cr in lib_df_raw.iterrows():
+            _cn = _cr["compname"]
+            _fd = {}
+            for _f in features:
+                _ov = provided[_f]
+                _mv = _cr.get(_f) if _f in _cr.index else None
+                try:
+                    _mv_clean = (
+                        None
+                        if _mv is None or (isinstance(_mv, float) and np.isnan(_mv))
+                        or (isinstance(_mv, str) and _mv.strip() == "")
+                        else _mv
+                    )
+                except Exception:
+                    _mv_clean = _mv
+                if _f in categorical_set:
+                    if _ov is not None and _mv_clean is not None:
+                        _sim = 1.0 if str(_ov) == str(_mv_clean) else 0.0
+                    else:
+                        _sim = None
+                else:
+                    _tr = SITE_THEORETICAL_RANGES.get(_f)
+                    if _tr and _ov is not None and _mv_clean is not None:
+                        try:
+                            _sim = round(
+                                max(0.0, 1.0 - abs(float(_ov) - float(_mv_clean)) / _tr), 3
+                            )
+                        except (TypeError, ValueError):
+                            _sim = None
+                    else:
+                        _sim = None
+                _fd[_SITE_FEAT_LABELS.get(_f, _f)] = {
+                    "observed": (
+                        None if _ov is None or (isinstance(_ov, float) and np.isnan(_ov)) else _ov
+                    ),
+                    "mapped": _mv_clean,
+                    "similarity": _sim,
+                }
+            site_feature_detail[_cn] = _fd
 
     # Create the D_final dataframe based on the availability of D_horz and D_site data
 
@@ -2708,4 +2814,9 @@ def rank_soils(
         ]
     ].fillna(0.0)
 
-    return finalize_rank_output(D_final_loc, location="us")
+    return finalize_rank_output(
+        D_final_loc,
+        location="us",
+        horz_feature_sims=horz_feature_sims,
+        site_feature_detail=site_feature_detail,
+    )

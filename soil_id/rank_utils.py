@@ -11,7 +11,12 @@ def _is_nan(value):
         return False
 
 
-def finalize_rank_output(D_final_loc: pd.DataFrame, location: str):
+def finalize_rank_output(
+    D_final_loc: pd.DataFrame,
+    location: str,
+    horz_feature_sims: dict = None,
+    site_feature_detail: dict = None,
+):
     # Calculate minimum rank values per compname_grp for each rank field
     df_copy = D_final_loc.copy()
 
@@ -78,6 +83,23 @@ def finalize_rank_output(D_final_loc: pd.DataFrame, location: str):
             ),
             "ecoclassid": getattr(row, "ecoclassid", None) if not _is_nan(getattr(row, "ecoclassid", None)) and getattr(row, "ecoclassid", None) != "" else None,
             "ecoclassname": getattr(row, "ecoclassname", None) if not _is_nan(getattr(row, "ecoclassname", None)) and getattr(row, "ecoclassname", None) != "" else None,
+            # --- Diagnostic: component-level scores and per-feature breakdown ---
+            "score_data_horz": (
+                None
+                if row.missing_status in ("Location data only", "Site data only")
+                else (None if _is_nan(float(row.D_horz)) else round(float(row.D_horz), 3))
+            ),
+            "score_data_site": (
+                None
+                if row.missing_status == "Location data only"
+                else (None if _is_nan(float(row.D_site)) else round(float(row.D_site) / 0.5, 3))
+            ),
+            "horizon_match": (
+                horz_feature_sims.get(row.compname) if horz_feature_sims else None
+            ),
+            "site_match": (
+                site_feature_detail.get(row.compname) if site_feature_detail else None
+            ),
         }
         for _, row in df_copy.iterrows()
     ]
