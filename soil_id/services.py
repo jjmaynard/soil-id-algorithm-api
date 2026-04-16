@@ -142,7 +142,7 @@ def get_soilgrids_classification_data(lon, lat):
     return result
 
 
-def get_soilweb_data(lon, lat):
+def get_soilweb_data(lon, lat, radius_m=1000):
     """
     Fetch SSURGO data from the SoilWeb API for a specified longitude and latitude.
 
@@ -158,7 +158,7 @@ def get_soilweb_data(lon, lat):
         "q": "spn",  # Query type - static for this function's purpose
         "lon": lon,
         "lat": lat,
-        "r": 1000,  # Radius (in TODO: units)
+        "r": radius_m,  # Radius in meters
     }
     result = None
 

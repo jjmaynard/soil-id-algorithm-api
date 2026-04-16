@@ -4,6 +4,42 @@
 
 -   Python: 3.12 or better
 
+## API Usage
+
+The API now supports a configurable SSURGO search radius using `max_distance_m`.
+If omitted, the default is `1000` meters.
+
+### List Soils Example
+
+```bash
+curl -X POST "https://soil-id-algorithm-api.vercel.app/api/list-soils" \
+	-H "Content-Type: application/json" \
+	-d '{
+		"lon": -119.2511091,
+		"lat": 40.08420215,
+		"sim": true,
+		"max_distance_m": 5000
+	}'
+```
+
+### Analyze Soil Example
+
+```bash
+curl -X POST "https://soil-id-algorithm-api.vercel.app/api/analyze-soil" \
+	-H "Content-Type: application/json" \
+	-d '{
+		"lon": -119.2511091,
+		"lat": 40.08420215,
+		"sim": true,
+		"max_distance_m": 5000,
+		"soilHorizon": ["Sandy loam", "Sandy loam"],
+		"topDepth": [0, 8],
+		"bottomDepth": [8, 25],
+		"rfvDepth": [18, 6],
+		"munsell_Color": ["10YR 4.0/2.0", "10YR 4.0/3.0"]
+	}'
+```
+
 # Contributing
 
 Configure git to automatically lint your code and validate validate your commit messages:

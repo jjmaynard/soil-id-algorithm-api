@@ -8,7 +8,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import Optional, List, Union
 from mangum import Mangum
 import sys
 from pathlib import Path
@@ -44,13 +44,19 @@ class ListSoilsRequest(BaseModel):
     lon: float = Field(..., description="Longitude coordinate")
     lat: float = Field(..., description="Latitude coordinate")
     sim: bool = Field(True, description="Whether to run soil simulation calculations (AWS_PIW90, Soil Data Value)")
+    max_distance_m: Optional[float] = Field(
+        1000,
+        ge=0,
+        description="Maximum SSURGO component distance from point in meters"
+    )
     
     class Config:
         json_schema_extra = {
             "example": {
                 "lon": -101.9733687,
                 "lat": 33.81246789,
-                "sim": True
+                "sim": True,
+                "max_distance_m": 1000
             }
         }
 
@@ -83,12 +89,17 @@ class RankSoilsRequest(BaseModel):
     
     # Simulation parameter
     sim: bool = Field(True, description="Whether to run soil simulation calculations (AWS_PIW90, Soil Data Value)")
+    max_distance_m: Optional[float] = Field(
+        1000,
+        ge=0,
+        description="Maximum SSURGO component distance from point in meters (used by /api/analyze-soil)"
+    )
     
     # Field measurement data
     soilHorizon: Optional[List[Optional[str]]] = Field(None, description="Soil texture classifications")
     topDepth: Optional[List[Optional[float]]] = Field(None, description="Top depth of each horizon (cm)")
     bottomDepth: Optional[List[Optional[float]]] = Field(None, description="Bottom depth of each horizon (cm)")
-    rfvDepth: Optional[List[Optional[str]]] = Field(None, description="Rock fragment volume classes")
+    rfvDepth: Optional[List[Optional[Union[str, float]]]] = Field(None, description="Rock fragment volume per horizon. Accepts either a class string (e.g. '0-1%', '1-15%', '15-35%', '35-60%', '>60%') or a numeric value in cm³/100cm³ (e.g. 18.5).")
     claypct_est: Optional[List[Optional[float]]] = Field(None, description="Field-estimated clay % per horizon (AIM). QC-checked against soilHorizon texture class bounds; ignored if outside the USDA class range.")
     lab_Color: Optional[List[Optional[List[float]]]] = Field(None, description="LAB color values [L, A, B] per horizon")
     munsell_Color: Optional[List[Optional[str]]] = Field(None, description="Munsell color notation per horizon (e.g. '10YR 3/2'). Alternative to lab_Color; cannot specify both.")
@@ -111,6 +122,7 @@ class RankSoilsRequest(BaseModel):
                 "rank_data_csv": "compname,sandpct_intpl...",
                 "map_unit_component_data_csv": "mukey,cokey...",
                 "sim": True,
+                "max_distance_m": 1000,
                 "soilHorizon": ["Sandy loam", "Clay loam"],
                 "topDepth": [0, 20],
                 "bottomDepth": [20, 50],
@@ -248,7 +260,12 @@ async def api_list_soils(request: ListSoilsRequest):
     endpoint along with field measurement data.
     """
     try:
-        result = list_soils(request.lon, request.lat, sim=request.sim)
+        result = list_soils(
+            request.lon,
+            request.lat,
+            sim=request.sim,
+            max_distance_m=request.max_distance_m,
+        )
         
         # Handle error case where result is a string
         if isinstance(result, str):
@@ -393,7 +410,12 @@ async def api_analyze_soil_combined(request: RankSoilsRequest):
     """
     try:
         # First, get the soil list
-        list_result = list_soils(request.lon, request.lat, sim=request.sim)
+        list_result = list_soils(
+            request.lon,
+            request.lat,
+            sim=request.sim,
+            max_distance_m=request.max_distance_m,
+        )
         
         # Handle error case
         if isinstance(list_result, str):

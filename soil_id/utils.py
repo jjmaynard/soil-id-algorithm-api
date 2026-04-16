@@ -331,6 +331,10 @@ def getCF(cf):
 
 
 def getCF_fromClass(cf):
+    # If already numeric, return as-is (passthrough for direct measurements).
+    if isinstance(cf, (int, float)) and not (isinstance(cf, float) and np.isnan(cf)):
+        return float(cf)
+
     cf_to_value = {
         "0-1%": 0,
         "0-15%": 0,

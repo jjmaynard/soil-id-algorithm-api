@@ -55,6 +55,7 @@ export default function SoilAnalysis() {
         body: JSON.stringify({
           lon: -101.9733687,
           lat: 33.81246789,
+          max_distance_m: 5000,
           soilHorizon: ['Sandy loam', 'Clay loam'],
           topDepth: [0, 20],
           bottomDepth: [20, 50],
@@ -138,6 +139,7 @@ async function analyzeSoil(location, fieldData) {
 const result = await analyzeSoil(
   { lon: -101.97, lat: 33.81 },
   {
+    max_distance_m: 5000,
     soilHorizon: ['Sandy loam'],
     topDepth: [0],
     bottomDepth: [20],
@@ -164,6 +166,10 @@ The `rank-soils` and `analyze-soil` endpoints now accept these optional site inp
 - `pSlopeShapeHoriz`: Horizontal slope shape text (for example `Convex`, `Planar`)
 - `pLandscape`: Landscape position text (for example `Alluvial Fan`, `Floodplain/Basin`)
 - `pLandscapeMode`: Crosswalk sensitivity (`base`, `strict`, `loose`)
+
+The `list-soils` and `analyze-soil` endpoints also accept:
+
+- `max_distance_m`: Maximum SSURGO component distance in meters (default `1000`)
 
 If omitted or null, terrain/landscape variables are excluded from that part of similarity scoring.
 
@@ -310,7 +316,7 @@ export default function SoilWorkflow() {
     const response = await fetch(`${process.env.NEXT_PUBLIC_SOIL_API_URL}/api/list-soils`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ lon, lat }),
+      body: JSON.stringify({ lon, lat, max_distance_m: 5000 }),
     });
 
     const data = await response.json();
