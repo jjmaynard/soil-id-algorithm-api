@@ -207,7 +207,7 @@ def _fetch_ssurgo_terrain_data(comp_key):
 ############################################################################################
 #                                   list_soils                                 #
 ############################################################################################
-def list_soils(lon, lat, sim=True):
+def list_soils(lon, lat, sim=True, max_distance_m=1000):
     # Load in LAB to Munsell conversion look-up table
     color_ref = pd.read_csv(soil_id.config.MUNSELL_RGB_LAB_PATH)
     LAB_ref = color_ref[["cielab_l", "cielab_a", "cielab_b"]]
@@ -230,8 +230,11 @@ def list_soils(lon, lat, sim=True):
         mucompdata_pd = pd.json_normalize(out["spn"])
         mucompdata_pd = process_site_data(mucompdata_pd)
 
-        # For SSURGO, filter out data for distances over 1000m
-        mucompdata_pd = mucompdata_pd[mucompdata_pd["distance"] <= 1000]
+        # For SSURGO, filter out data beyond caller-configured max distance.
+        # Keep backward-compatible behavior at 1000 m when no value is provided.
+        if max_distance_m is None:
+            max_distance_m = 1000
+        mucompdata_pd = mucompdata_pd[mucompdata_pd["distance"] <= float(max_distance_m)]
 
         if mucompdata_pd.empty:
             # Extract STATSGO data at point

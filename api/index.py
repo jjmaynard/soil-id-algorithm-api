@@ -44,13 +44,19 @@ class ListSoilsRequest(BaseModel):
     lon: float = Field(..., description="Longitude coordinate")
     lat: float = Field(..., description="Latitude coordinate")
     sim: bool = Field(True, description="Whether to run soil simulation calculations (AWS_PIW90, Soil Data Value)")
+    max_distance_m: Optional[float] = Field(
+        1000,
+        ge=0,
+        description="Maximum SSURGO component distance from point in meters"
+    )
     
     class Config:
         json_schema_extra = {
             "example": {
                 "lon": -101.9733687,
                 "lat": 33.81246789,
-                "sim": True
+                "sim": True,
+                "max_distance_m": 1000
             }
         }
 
@@ -83,6 +89,11 @@ class RankSoilsRequest(BaseModel):
     
     # Simulation parameter
     sim: bool = Field(True, description="Whether to run soil simulation calculations (AWS_PIW90, Soil Data Value)")
+    max_distance_m: Optional[float] = Field(
+        1000,
+        ge=0,
+        description="Maximum SSURGO component distance from point in meters (used by /api/analyze-soil)"
+    )
     
     # Field measurement data
     soilHorizon: Optional[List[Optional[str]]] = Field(None, description="Soil texture classifications")
@@ -111,6 +122,7 @@ class RankSoilsRequest(BaseModel):
                 "rank_data_csv": "compname,sandpct_intpl...",
                 "map_unit_component_data_csv": "mukey,cokey...",
                 "sim": True,
+                "max_distance_m": 1000,
                 "soilHorizon": ["Sandy loam", "Clay loam"],
                 "topDepth": [0, 20],
                 "bottomDepth": [20, 50],
@@ -248,7 +260,12 @@ async def api_list_soils(request: ListSoilsRequest):
     endpoint along with field measurement data.
     """
     try:
-        result = list_soils(request.lon, request.lat, sim=request.sim)
+        result = list_soils(
+            request.lon,
+            request.lat,
+            sim=request.sim,
+            max_distance_m=request.max_distance_m,
+        )
         
         # Handle error case where result is a string
         if isinstance(result, str):
@@ -393,7 +410,12 @@ async def api_analyze_soil_combined(request: RankSoilsRequest):
     """
     try:
         # First, get the soil list
-        list_result = list_soils(request.lon, request.lat, sim=request.sim)
+        list_result = list_soils(
+            request.lon,
+            request.lat,
+            sim=request.sim,
+            max_distance_m=request.max_distance_m,
+        )
         
         # Handle error case
         if isinstance(list_result, str):
