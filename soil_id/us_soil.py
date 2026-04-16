@@ -213,7 +213,9 @@ def list_soils(lon, lat, sim=True, max_distance_m=1000):
     LAB_ref = color_ref[["cielab_l", "cielab_a", "cielab_b"]]
     munsell_ref = color_ref[["hue", "value", "chroma"]]
 
-    out = get_soilweb_data(lon, lat)
+    if max_distance_m is None:
+        max_distance_m = 1000
+    out = get_soilweb_data(lon, lat, radius_m=max_distance_m)
 
     OSD_compkind = ["Series", "Variant", "Family", "Taxadjunct"]
     # Check if point is in a NOTCOM area, and if so then infill with STATSGO from NRCS SDA
@@ -232,8 +234,6 @@ def list_soils(lon, lat, sim=True, max_distance_m=1000):
 
         # For SSURGO, filter out data beyond caller-configured max distance.
         # Keep backward-compatible behavior at 1000 m when no value is provided.
-        if max_distance_m is None:
-            max_distance_m = 1000
         mucompdata_pd = mucompdata_pd[mucompdata_pd["distance"] <= float(max_distance_m)]
 
         if mucompdata_pd.empty:
