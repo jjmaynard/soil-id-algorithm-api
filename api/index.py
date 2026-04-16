@@ -8,7 +8,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import Optional, List, Union
 from mangum import Mangum
 import sys
 from pathlib import Path
@@ -88,7 +88,7 @@ class RankSoilsRequest(BaseModel):
     soilHorizon: Optional[List[Optional[str]]] = Field(None, description="Soil texture classifications")
     topDepth: Optional[List[Optional[float]]] = Field(None, description="Top depth of each horizon (cm)")
     bottomDepth: Optional[List[Optional[float]]] = Field(None, description="Bottom depth of each horizon (cm)")
-    rfvDepth: Optional[List[Optional[str]]] = Field(None, description="Rock fragment volume classes")
+    rfvDepth: Optional[List[Optional[Union[str, float]]]] = Field(None, description="Rock fragment volume per horizon. Accepts either a class string (e.g. '0-1%', '1-15%', '15-35%', '35-60%', '>60%') or a numeric value in cm³/100cm³ (e.g. 18.5).")
     claypct_est: Optional[List[Optional[float]]] = Field(None, description="Field-estimated clay % per horizon (AIM). QC-checked against soilHorizon texture class bounds; ignored if outside the USDA class range.")
     lab_Color: Optional[List[Optional[List[float]]]] = Field(None, description="LAB color values [L, A, B] per horizon")
     munsell_Color: Optional[List[Optional[str]]] = Field(None, description="Munsell color notation per horizon (e.g. '10YR 3/2'). Alternative to lab_Color; cannot specify both.")
