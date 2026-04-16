@@ -163,13 +163,17 @@ def aim_to_standard_class(aim_label: Optional[str]) -> Optional[str]:
     if aim_label is None:
         return None
     key = aim_label.strip()
+
     # direct match first
     if key in AIM_TO_STANDARD:
         return AIM_TO_STANDARD[key]
-    # case-insensitive fallback
-    key_lower = key.lower()
+
+    def _canon(s: str) -> str:
+        return re.sub(r"[^a-z0-9]+", "", s.lower())
+
+    key_canon = _canon(key)
     for k, v in AIM_TO_STANDARD.items():
-        if k.lower() == key_lower:
+        if _canon(k) == key_canon:
             return v
     return "other"
 
@@ -198,7 +202,7 @@ def _compile_ssurgo_rules(mode: str) -> list[tuple[str, re.Pattern]]:
             ("flat_plain",        r"\bplain\b|\bflat\b|\btableland\b|\bvalley floor\b"),
             ("summit_interfluve", r"\bsummit\b|\binterfluve\b|\bmountaintop\b"),
             ("shoulder_backslope",r"\bshoulder\b|\bbackslope\b|\bside slope\b|\bhead slope\b|\bnose slope\b"),
-            ("hill_mountain",     r"\bhill\b|\bmountain\b|\bridge\b|\bescarpment\b|\bupland\b"),
+            ("hill_mountain",     r"\bhills?\b|\bmountains?\b|\bridges?\b|\bescarpment\b|\bupland\b"),
             ("dunes_sands",       r"\bdune\b|\bsand sheet\b|\baeolian\b"),
             ("rocklands",         r"\brock outcrop\b|\bbadland\b|\bcliff\b|\btalus\b"),
         ]
@@ -213,7 +217,7 @@ def _compile_ssurgo_rules(mode: str) -> list[tuple[str, re.Pattern]]:
             ("flat_plain",        r"plain|flat|level"),
             ("summit_interfluve", r"summit|interfluve|crest|mountaintop"),
             ("shoulder_backslope",r"shoulder|backslope|sideslope|side slope|head slope|nose slope|footslope|toeslope"),
-            ("hill_mountain",     r"hill|mountain|ridge|escarpment|upland|slope"),
+            ("hill_mountain",     r"hills?|mountains?|ridges?|escarpment|upland|slope"),
             ("dunes_sands",       r"dune|sand|aeolian"),
             ("rocklands",         r"rock|outcrop|badland|cliff|talus|ledge"),
         ]
@@ -230,7 +234,7 @@ def _compile_ssurgo_rules(mode: str) -> list[tuple[str, re.Pattern]]:
             ("flat_plain",        r"\bplain\b|\bflat\b|\btableland\b|\bvalley floor\b"),
             ("summit_interfluve", r"\bsummit\b|\binterfluve\b|\bmountaintop\b|\bcrest\b"),
             ("shoulder_backslope",r"\bshoulder\b|\bbackslope\b|\bside slope\b|\bhead slope\b|\bnose slope\b"),
-            ("hill_mountain",     r"\bhill\b|\bmountain\b|\bridge\b|\bescarpment\b|\bupland\b"),
+            ("hill_mountain",     r"\bhills?\b|\bmountains?\b|\bridges?\b|\bescarpment\b|\bupland\b"),
             ("dunes_sands",       r"\bdune\b|\bsand sheet\b|\baeolian\b"),
             ("rocklands",         r"\brock outcrop\b|\bbadland\b|\bcliff\b|\btalus\b"),
         ]
