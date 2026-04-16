@@ -2189,6 +2189,9 @@ def rank_soils(
         depth_weight = depth_weight[pedon_slice_index]
         # {compname: {feature_col: [weighted_dist_sum, weight_sum]}} for diagnostics
         _feat_dist_accum = {}
+        # depth coverage tracking: sum of depth weights for slices where a component has data
+        _dw_total_accum = 0.0
+        _dw_covered_accum = {}  # {compname: depth_weight_sum_with_data}
 
         dis_mat_list = []
         dis_slice_positions = []
@@ -2286,6 +2289,8 @@ def rank_soils(
             # (pedon row = 0, component rows = distance). Other features are raw values
             # that need normalizing by their theoretical range.
             _dw = depth_weight[pos]
+            _dw_total_accum += _dw
+            _has_data_at_slice = set()  # compnames that have ≥1 valid feature at this slice
             for _fc in sample_pedon_slice_vars:
                 _pv = sliceT.iloc[0][_fc]
                 for _ji, _rcn in enumerate(_slice_row_cnames[1:], start=1):
@@ -2306,6 +2311,10 @@ def rank_soils(
                     _ws = _feat_dist_accum.setdefault(_rcn, {}).setdefault(_fc, [0.0, 0.0])
                     _ws[0] += _fd * _dw
                     _ws[1] += _dw
+                    _has_data_at_slice.add(_rcn)
+
+            for _rcn in _has_data_at_slice:
+                _dw_covered_accum[_rcn] = _dw_covered_accum.get(_rcn, 0.0) + _dw
 
             D = gower_distances(
                 sliceT,
@@ -2375,6 +2384,10 @@ def rank_soils(
                     )
                     for _fc, _ws in _fd.items() if _ws[1] > 0
                 }
+                horz_feature_sims[_cn]["depth_coverage"] = (
+                    round(_dw_covered_accum.get(_cn, 0.0) / _dw_total_accum, 3)
+                    if _dw_total_accum > 0 else None
+                )
 
     else:
         D_horz = None
