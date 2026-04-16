@@ -14,6 +14,7 @@
 # along with this program. If not, see https://www.gnu.org/licenses/.
 
 import math
+import re
 
 import numpy as np
 import pandas as pd
@@ -136,6 +137,55 @@ def lab2munsell(color_ref, LAB_ref, lab):
         _fast_matcher = FastColorMatcher()
     
     return _fast_matcher.lab2munsell(lab)
+
+
+def munsell_notation_to_lab(notation):
+    """
+    Convert a Munsell notation string to CIE LAB values.
+
+    Accepts standard Munsell strings with or without a space between the hue
+    and the value/chroma parts, e.g. '10YR 3/2', '10YR3/2', '2.5YR 4/6'.
+
+    Parameters:
+    - notation (str): Munsell color string in the form '<hue> <value>/<chroma>'.
+
+    Returns:
+    - list: [L, A, B] float values, or None if the notation is invalid or not
+      found in the reference table.
+    """
+    if not notation:
+        return None
+
+    m = re.match(
+        r'^(\d+(?:\.\d+)?[A-Z]+)\s*(\d+(?:\.\d+)?)/(\d+(?:\.\d+)?)$',
+        notation.strip().upper(),
+    )
+    if not m:
+        return None
+
+    hue = m.group(1)
+    try:
+        value = int(float(m.group(2)))
+        chroma = int(float(m.group(3)))
+    except ValueError:
+        return None
+
+    global _fast_matcher
+    if _fast_matcher is None:
+        _fast_matcher = FastColorMatcher()
+
+    color_ref = _fast_matcher.color_ref
+    mask = (
+        (color_ref['hue'] == hue)
+        & (color_ref['value'].astype(int) == value)
+        & (color_ref['chroma'].astype(int) == chroma)
+    )
+    matches = color_ref[mask]
+    if matches.empty:
+        return None
+
+    row = matches.iloc[0]
+    return [float(row['cielab_l']), float(row['cielab_a']), float(row['cielab_b'])]
 
 
 def munsell2rgb(color_ref, munsell_ref, munsell):
