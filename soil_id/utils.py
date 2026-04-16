@@ -331,7 +331,7 @@ def getCF(cf):
 
 
 def getCF_fromClass(cf):
-    # If already numeric, return as-is (clipped to valid range).
+    # If already numeric, return as-is (passthrough for direct measurements).
     if isinstance(cf, (int, float)) and not (isinstance(cf, float) and np.isnan(cf)):
         return float(cf)
 
