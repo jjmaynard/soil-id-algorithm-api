@@ -187,6 +187,10 @@ def aim_to_standard_class(aim_label: Optional[str]) -> Optional[str]:
 
 _SSURGO_RULES: dict[str, list[tuple[str, re.Pattern]]] = {}
 
+# Generic geomftname category labels that carry no landform signal; skip them
+# so the more diagnostic geomfname / geompos* fields are not overshadowed.
+_GEOMFTNAME_SKIP: frozenset[str] = frozenset(["landform", "landscape"])
+
 
 def _compile_ssurgo_rules(mode: str) -> list[tuple[str, re.Pattern]]:
     """Return compiled (class, pattern) pairs for SSURGO text matching."""
@@ -195,29 +199,37 @@ def _compile_ssurgo_rules(mode: str) -> list[tuple[str, re.Pattern]]:
             # Tread / riser must come before generic terrace/fan
             ("terrace_tread",     r"\btread\b"),
             ("terrace_riser",     r"\briser\b"),
-            ("playa",             r"\bplaya\b"),
-            ("alluvial_fan",      r"\balluvial fan\b|\bfan remnant\b|\balluvial apron\b"),
-            ("terrace",           r"\bstream terrace\b|\bterrace\b|\bbench\b"),
-            ("floodplain_basin",  r"\bflood plain\b|\bfloodplain\b|\bdrainageway\b|\bbasin\b|\blake plain\b"),
-            ("flat_plain",        r"\bplain\b|\bflat\b|\btableland\b|\bvalley floor\b"),
+            ("playa",             r"\bplayas?\b"),
+            ("alluvial_fan",      r"\balluvial fans?\b|\bfan remnants?\b|\balluvial apron\b"
+                                  r"|\bfan aprons?\b|\binset fans?\b|\bfan piedmonts?\b"
+                                  r"|\bfan skirts?\b|\bpiedmonts?\b|\bpediments?\b"),
+            ("terrace",           r"\bstream terraces?\b|\bterraces?\b|\bbenches?\b"
+                                  r"|\bbeach terraces?\b|\blake terraces?\b"),
+            ("floodplain_basin",  r"\bflood plains?\b|\bfloodplains?\b|\bdrainageways?\b"
+                                  r"|\bbasins?\b|\blake plains?\b|\bbolsons?\b"
+                                  r"|\blagoons?\b|\bintermontane\b"),
+            ("flat_plain",        r"\bplains?\b|\bflats?\b|\btablelands?\b|\bvalley floor\b"
+                                  r"|\bplateaus?\b"),
             ("summit_interfluve", r"\bsummit\b|\binterfluve\b|\bmountaintop\b"),
             ("shoulder_backslope",r"\bshoulder\b|\bbackslope\b|\bside slope\b|\bhead slope\b|\bnose slope\b"),
-            ("hill_mountain",     r"\bhills?\b|\bmountains?\b|\bridges?\b|\bescarpment\b|\bupland\b"),
-            ("dunes_sands",       r"\bdune\b|\bsand sheet\b|\baeolian\b"),
-            ("rocklands",         r"\brock outcrop\b|\bbadland\b|\bcliff\b|\btalus\b"),
+            ("hill_mountain",     r"\bhills?\b|\bhillsides?\b|\bmountains?\b|\bmountainflank\b"
+                                  r"|\bmountainsides?\b|\bridges?\b|\bescarpments?\b|\bupland\b"
+                                  r"|\bballenas?\b"),
+            ("dunes_sands",       r"\bdunes?\b|\bsand sheets?\b|\baeolian\b"),
+            ("rocklands",         r"\brock outcrops?\b|\bbadlands?\b|\bcliffs?\b|\btalus\b"),
         ]
     elif mode == "loose":
         raw = [
             ("terrace_tread",     r"tread"),
             ("terrace_riser",     r"riser"),
             ("playa",             r"playa|salt flat|dry lake"),
-            ("alluvial_fan",      r"alluvial|fan|apron"),
+            ("alluvial_fan",      r"alluvial|fan|apron|piedmont|pediment"),
             ("terrace",           r"terrace|bench|tableland"),
-            ("floodplain_basin",  r"flood|floodplain|drainageway|basin|valley|lake plain|swale|wash|draw|arroyo|channel|bottom"),
-            ("flat_plain",        r"plain|flat|level"),
+            ("floodplain_basin",  r"flood|floodplain|drainageway|basin|valley|lake plain|swale|wash|draw|arroyo|channel|bottom|bolson|lagoon|intermontane|river valley|barrier beach|longshore bar"),
+            ("flat_plain",        r"plain|flat|level|plateau|mesa"),
             ("summit_interfluve", r"summit|interfluve|crest|mountaintop"),
             ("shoulder_backslope",r"shoulder|backslope|sideslope|side slope|head slope|nose slope|footslope|toeslope"),
-            ("hill_mountain",     r"hills?|mountains?|ridges?|escarpment|upland|slope"),
+            ("hill_mountain",     r"hills?|hillside|mountainside|mountains?|mountainflank|ridges?|escarpment|upland|slope|ballena"),
             ("dunes_sands",       r"dune|sand|aeolian"),
             ("rocklands",         r"rock|outcrop|badland|cliff|talus|ledge"),
         ]
@@ -226,17 +238,26 @@ def _compile_ssurgo_rules(mode: str) -> list[tuple[str, re.Pattern]]:
             # Position-specific terms evaluated before generic landform terms
             ("terrace_tread",     r"\btread\b"),
             ("terrace_riser",     r"\briser\b"),
-            ("playa",             r"\bplaya\b|\bsalt flat\b|\bdry lake\b"),
-            ("alluvial_fan",      r"\balluvial fan\b|\bfan remnant\b|\balluvial apron\b|\bfan apron\b"),
-            ("terrace",           r"\bstream terrace\b|\bterrace\b|\bbench\b"),
-            ("floodplain_basin",  r"\bflood plain\b|\bfloodplain\b|\bdrainageway\b|\bbasin\b"
-                                  r"|\blake plain\b|\bswale\b|\bdraw\b|\barroyo\b|\bwash\b|\bbottom\b"),
-            ("flat_plain",        r"\bplain\b|\bflat\b|\btableland\b|\bvalley floor\b"),
+            ("playa",             r"\bplayas?\b|\bsalt flat\b|\bdry lake\b"),
+            ("alluvial_fan",      r"\balluvial fans?\b|\bfan remnants?\b|\balluvial apron\b"
+                                  r"|\bfan aprons?\b|\binset fans?\b|\bfan piedmonts?\b"
+                                  r"|\bfan skirts?\b|\bpiedmonts?\b|\bpediments?\b"),
+            ("terrace",           r"\bstream terraces?\b|\bterraces?\b|\bbenches?\b"
+                                  r"|\bbeach terraces?\b|\blake terraces?\b"),
+            ("floodplain_basin",  r"\bflood plains?\b|\bfloodplains?\b|\bdrainageways?\b"
+                                  r"|\bbasins?\b|\blake plains?\b|\bswales?\b|\bdraws?\b"
+                                  r"|\barroyo\b|\bwash\b|\bbottoms?\b|\bbolsons?\b"
+                                  r"|\blagoons?\b|\bintermontane\b|\briver valleys\b"
+                                  r"|\bbarrier beaches?\b|\blongshore bars?\b"),
+            ("flat_plain",        r"\bplains?\b|\bflats?\b|\btablelands?\b|\bvalley floor\b"
+                                  r"|\bplateaus?\b|\bmesas?\b"),
             ("summit_interfluve", r"\bsummit\b|\binterfluve\b|\bmountaintop\b|\bcrest\b"),
             ("shoulder_backslope",r"\bshoulder\b|\bbackslope\b|\bside slope\b|\bhead slope\b|\bnose slope\b"),
-            ("hill_mountain",     r"\bhills?\b|\bmountains?\b|\bridges?\b|\bescarpment\b|\bupland\b"),
-            ("dunes_sands",       r"\bdune\b|\bsand sheet\b|\baeolian\b"),
-            ("rocklands",         r"\brock outcrop\b|\bbadland\b|\bcliff\b|\btalus\b"),
+            ("hill_mountain",     r"\bhills?\b|\bhillsides?\b|\bmountains?\b|\bmountainflank\b"
+                                  r"|\bmountainsides?\b|\bridges?\b|\bescarpments?\b|\bupland\b"
+                                  r"|\bballenas?\b"),
+            ("dunes_sands",       r"\bdunes?\b|\bsand sheets?\b|\baeolian\b"),
+            ("rocklands",         r"\brock outcrops?\b|\bbadlands?\b|\bcliffs?\b|\btalus\b"),
         ]
     return [(cls, re.compile(pat, re.IGNORECASE)) for cls, pat in raw]
 
@@ -354,14 +375,23 @@ def ssurgo_to_standard_class(
     #   geomftname   – landform type; evaluated AFTER position fields
     #   geomfmod     – modifier (dissected, undulating …); least diagnostic
     #   geomposflats – flat position; typically broad / low-priority
+    # geomftname values "Landform" and "Landscape" are generic SDA category
+    # labels with no landform signal; skip them so the more diagnostic
+    # geomfname / geompos* fields are not obscured.
+    geomftname_filtered = (
+        None
+        if normalize_txt(geomftname) in _GEOMFTNAME_SKIP
+        else geomftname
+    )
+
     priority_fields = [
-        geomfname,       # 1 – specific landform name (highest priority)
-        geompostrce,     # 2 – tread / riser (position on terrace/fan)
-        geomposmntn,     # 3 – position on mountain
-        geomposhill,     # 3 – position on hill
-        geomftname,      # 4 – landform type name
-        geomfmod,        # 5 – landform modifier
-        geomposflats,    # 6 – position on flats (least specific)
+        geomfname,          # 1 – specific landform name (highest priority)
+        geompostrce,        # 2 – tread / riser (position on terrace/fan)
+        geomposmntn,        # 3 – position on mountain
+        geomposhill,        # 3 – position on hill
+        geomftname_filtered,# 4 – landform type name (generic labels filtered)
+        geomfmod,           # 5 – landform modifier
+        geomposflats,       # 6 – position on flats (least specific)
     ]
 
     # Try each field individually in priority order
