@@ -194,9 +194,27 @@ def _norm_ecosite(v):
 
 
 def _norm_series_name(v: str) -> str:
-    """Normalise a series/compname for matching: uppercase, strip non-alphanumeric."""
+    """Normalise a series/compname for matching and export consistency.
+
+    Rules:
+      - uppercase + trim
+      - remove common descriptor words like VARIANT/FAMILY
+      - strip non-alphanumeric characters except spaces
+      - collapse repeated whitespace
+    """
     s = str(v).strip().upper()
-    return re.sub(r"[^A-Z0-9 ]", "", s).strip()
+    s = re.sub(r"\b(VARIANT|VAR\.?|FAMILY|FAM\.?|FAMILIES)\b", " ", s)
+    s = re.sub(r"[^A-Z0-9 ]", "", s)
+    s = re.sub(r"\s+", " ", s)
+    return s.strip()
+
+
+def standardize_raw_pairs(df: pd.DataFrame) -> pd.DataFrame:
+    """Return copy with standardized compname/ecoclassid fields."""
+    out = df.copy()
+    out["compname"] = out["compname"].apply(_norm_series_name)
+    out["ecoclassid"] = out["ecoclassid"].apply(_norm_ecosite)
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -427,6 +445,9 @@ def main():
     if raw_df is None or raw_df.empty:
         logger.error("No data returned from SDA. Exiting.")
         return
+
+    # Standardize compname/ecoclassid in generated outputs and downstream analyses.
+    raw_df = standardize_raw_pairs(raw_df)
 
     # Collect the MLRAs actually returned (may differ from requested when ALL)
     returned_mlras = sorted(

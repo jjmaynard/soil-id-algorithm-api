@@ -61,8 +61,6 @@ export default function SoilAnalysis() {
           bottomDepth: [20, 50],
           rfvDepth: ['0-1%', '1-15%'],
           lab_Color: [[50.5, 5.2, 20.1], [45.3, 6.1, 18.5]],
-          // Alternative: supply Munsell notation instead of pre-computed LAB
-          // munsell_Color: ['10YR 3/2', '7.5YR 4/4'],
           pSlope: 5.0,
           pElev: 800.0,
           bedrock: null,
@@ -145,8 +143,6 @@ const result = await analyzeSoil(
     bottomDepth: [20],
     rfvDepth: ['0-1%'],
     lab_Color: [[50.5, 5.2, 20.1]],
-    // Alternative: supply Munsell notation instead of pre-computed LAB
-    // munsell_Color: ['10YR 3/2'],
     pSlope: 5.0,
     pAspect: 225.0,
     pSlopeShapeVert: 'Concave',
@@ -172,121 +168,6 @@ The `list-soils` and `analyze-soil` endpoints also accept:
 - `max_distance_m`: Maximum SSURGO component distance in meters (default `1000`)
 
 If omitted or null, terrain/landscape variables are excluded from that part of similarity scoring.
-
-#### Color Input: LAB or Munsell Notation
-
-The `rank-soils` and `analyze-soil` endpoints accept soil color in two mutually exclusive forms.
-
-**Option A — pre-computed CIE LAB** (`lab_Color`):
-```json
-{
-  "lab_Color": [[50.5, 5.2, 20.1], [45.3, 6.1, 18.5]]
-}
-```
-
-**Option B — Munsell notation** (`munsell_Color`):
-```json
-{
-  "munsell_Color": ["10YR 3/2", "7.5YR 4/4"]
-}
-```
-
-The backend parses each notation, looks it up in the Munsell–LAB reference table, and converts it to `[L, A, B]` before Gower's similarity evaluation. The result is identical to providing `lab_Color` directly.
-
-- The space between the hue and the value/chroma is optional: `"10YR3/2"` and `"10YR 3/2"` are both valid.
-- Half-hue steps are supported: `"2.5YR 4/6"` is valid.
-- Use `null` for a horizon with no color observation: `["10YR 3/2", null, "7.5YR 4/4"]`.
-- Providing both `lab_Color` and `munsell_Color` in the same request returns HTTP **400**.
-- A notation that cannot be matched in the reference table returns HTTP **422** with a descriptive message.
-
-> **JSON quoting note:** All string values in a JSON body must use double quotes (`"`), not single quotes (`'`). `"10YR 3/2"` is valid JSON; `'10YR 3/2'` is not.
-
-#### curl Examples
-
-> **`rank-soils` requires real CSV data from `list-soils`.** The fields
-> `rank_data_csv` and `map_unit_component_data_csv` must be the verbatim strings
-> returned by a prior `/api/list-soils` call. For a quick standalone test
-> (no prior step), use `/api/analyze-soil` instead — it runs `list-soils`
-> internally and accepts the same field measurements.
-
-**Quick standalone test with Munsell color — `analyze-soil` (bash/zsh):**
-```bash
-curl -X POST 'https://your-soil-api.vercel.app/api/analyze-soil' \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "lon": -101.9733687,
-    "lat": 33.81246789,
-    "soilHorizon": ["Sandy loam", "Clay loam"],
-    "topDepth": [0, 20],
-    "bottomDepth": [20, 50],
-    "rfvDepth": ["0-1%", "1-15%"],
-    "munsell_Color": ["10YR 3/2", "7.5YR 4/4"],
-    "pSlope": 5.0,
-    "pElev": 800.0,
-    "pAspect": 225.0,
-    "pLandscape": "Alluvial Fan",
-    "pLandscapeMode": "base"
-  }'
-```
-
-**Two-step: `list-soils` then `rank-soils` (bash/zsh):**
-```bash
-# Step 1 — capture the list-soils response
-SOIL_LIST=$(curl -s -X POST 'https://your-soil-api.vercel.app/api/list-soils' \
-  -H 'Content-Type: application/json' \
-  -d '{"lon": -101.9733687, "lat": 33.81246789}')
-
-# Step 2 — rank with the real CSV fields from Step 1
-# (merge $SOIL_LIST fields with your field measurements using jq or a script)
-curl -X POST 'https://your-soil-api.vercel.app/api/rank-soils' \
-  -H 'Content-Type: application/json' \
-  -d "$(echo $SOIL_LIST | jq '. + {
-    \"lon\": -101.9733687,
-    \"lat\": 33.81246789,
-    \"soilHorizon\": [\"Sandy loam\", \"Clay loam\"],
-    \"topDepth\": [0, 20],
-    \"bottomDepth\": [20, 50],
-    \"munsell_Color\": [\"10YR 3/2\", \"7.5YR 4/4\"]
-  }')"
-```
-
-**Windows PowerShell — `analyze-soil` (self-contained):**
-```powershell
-$body = @'
-{
-  "lon": -101.9733687,
-  "lat": 33.81246789,
-  "soilHorizon": ["Sandy loam", "Clay loam"],
-  "topDepth": [0, 20],
-  "bottomDepth": [20, 50],
-  "rfvDepth": ["0-1%", "1-15%"],
-  "munsell_Color": ["10YR 3/2", "7.5YR 4/4"],
-  "pSlope": 5.0,
-  "pElev": 800.0,
-  "pAspect": 225.0,
-  "pLandscape": "Alluvial Fan",
-  "pLandscapeMode": "base"
-}
-'@
-Invoke-RestMethod -Uri 'https://your-soil-api.vercel.app/api/analyze-soil' `
-  -Method POST -ContentType 'application/json' -Body $body
-```
-
-```typescript
-// TypeScript usage example
-const result = await soilApi.analyzeSoil(
-  { lon: -101.97, lat: 33.81 },
-  {
-    soilHorizon: ['Sandy loam', 'Clay loam'],
-    topDepth: [0, 20],
-    bottomDepth: [20, 50],
-    munsell_Color: ['10YR 3/2', '7.5YR 4/4'],  // Munsell instead of lab_Color
-    pSlope: 5.0,
-    pAspect: 225.0,
-    pLandscape: 'Alluvial Fan',
-  }
-);
-```
 
 ### Option 2: Separate Endpoints (For Two-Step Workflow)
 
@@ -400,8 +281,7 @@ export interface FieldMeasurements {
   topDepth?: (number | null)[];
   bottomDepth?: (number | null)[];
   rfvDepth?: (string | null)[];
-  lab_Color?: (number[] | null)[];         // CIE LAB per horizon [[L, A, B], ...]
-  munsell_Color?: (string | null)[];       // Munsell notation per horizon — alternative to lab_Color
+  lab_Color?: (number[] | null)[];
   pSlope?: number | null;
   pElev?: number | null;
   bedrock?: number | null;

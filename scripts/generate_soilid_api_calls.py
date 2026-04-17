@@ -96,7 +96,7 @@ def _build_rank_inputs_with_munsell(plot_key, horizons_df):
         "soilHorizon": hz["Texture"].tolist(),
         "topDepth": hz["HorizonDepthUpper"].astype(int).tolist(),
         "bottomDepth": hz["HorizonDepthLower"].astype(int).tolist(),
-        "rfvDepth": hz["RockFragments"].apply(_rfv_bucket).tolist(),
+        "rfvDepth": hz["RockFragments"].apply(_to_optional_float).tolist(),
         "claypct_est": hz["ClayPct"].apply(_to_optional_float).tolist(),
         "munsell_Color": munsell_colors,
     }

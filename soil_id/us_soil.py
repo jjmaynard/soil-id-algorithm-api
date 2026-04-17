@@ -500,10 +500,7 @@ def list_soils(lon, lat, sim=True, max_distance_m=1000):
     muhorzdata_pd = muhorzdata_pd[~muhorzdata_pd["hzname"].str.contains("R", case=False, na=False)]
 
     # Group data by cokey (component key)
-    # sort=False preserves the Comp_Rank order (cond_prob/distance) established above.
-    # sort=True would re-sort by raw cokey value, misaligning all index-based layer lists
-    # (snd_lyrs, cly_lyrs, OSD_text_int, etc.) with mucompdata_pd row order.
-    muhorzdata_group_cokey = [group for _, group in muhorzdata_pd.groupby("cokey", sort=False)]
+    muhorzdata_group_cokey = [group for _, group in muhorzdata_pd.groupby("cokey", sort=True)]
 
     getProfile_cokey = []
     comp_max_depths = []
