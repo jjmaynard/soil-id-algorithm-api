@@ -29,5 +29,5 @@ prof/
 Data/
 !Data/LandPKS_munsell_rgb_lab.csv
 bulk_test_result*
-
+docs/terrain-id
 get-pip.py*

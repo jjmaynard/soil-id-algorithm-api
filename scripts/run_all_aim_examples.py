@@ -1,10 +1,12 @@
 import argparse
 import io
 import json
+import os
 from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
+import requests
 
 import soil_id.config
 from soil_id.color import find_closest_rgb_in_reference, munsell2rgb
@@ -144,58 +146,75 @@ def _metadata_for_component(comp_meta_by_id, component_id="", component_name="")
 
 
 def _build_component_metadata(list_output_data):
-    comp_df = pd.read_csv(io.StringIO(list_output_data.map_unit_component_data_csv))
-    comp_df.columns = [str(c).strip() for c in comp_df.columns]
-
     by_id = {}
-    for _, row in comp_df.iterrows():
-        cokey = _norm_text(row.get("cokey"))
-        compname = _norm_text(row.get("compname"))
-        landscape_type = _norm_text(
-            build_sda_landscape_label(
-                row.get("geomftname"),
-                row.get("geomfname"),
-                row.get("geomfmod"),
-                row.get("geomposmntn"),
-                row.get("geomposhill"),
-                row.get("geompostrce"),
-                row.get("geomposflats"),
-                row.get("shapeacross"),
-                row.get("shapedown"),
-            )
-        )
-        metadata = {
-            "landscape_type": landscape_type,
-            "landscape_class": _norm_text(
-                row.get("landscape_class")
-                or ssurgo_to_standard_class(
-                    geomftname=row.get("geomftname"),
-                    geomfname=row.get("geomfname"),
-                    geomfmod=row.get("geomfmod"),
-                    geomposmntn=row.get("geomposmntn"),
-                    geomposhill=row.get("geomposhill"),
-                    geompostrce=row.get("geompostrce"),
-                    geomposflats=row.get("geomposflats"),
-                    shapeacross=row.get("shapeacross"),
-                    shapedown=row.get("shapedown"),
-                    mode="base",
-                )
-            ),
-            "ecological_site": _norm_ecological_site(
-                row.get("ecoclassid_update") or row.get("ecoclassid")
-            ).upper(),
-        }
-        if not cokey:
-            if compname:
-                by_id[f"name::{_norm_name(compname)}"] = metadata
-            continue
-        by_id[cokey] = metadata
-        if compname and f"name::{_norm_name(compname)}" not in by_id:
-            by_id[f"name::{_norm_name(compname)}"] = metadata
+    map_unit_component_data_csv = _norm_text(
+        getattr(list_output_data, "map_unit_component_data_csv", "")
+    )
+    if not map_unit_component_data_csv and isinstance(list_output_data, dict):
+        map_unit_component_data_csv = _norm_text(list_output_data.get("map_unit_component_data_csv"))
 
-    for entry in list_output_data.soil_list_json.get("soilList", []):
-        comp_id = _norm_text(entry.get("id", {}).get("componentID"))
-        comp_name = _norm_text(entry.get("id", {}).get("name"))
+    if map_unit_component_data_csv:
+        comp_df = pd.read_csv(io.StringIO(map_unit_component_data_csv))
+        comp_df.columns = [str(c).strip() for c in comp_df.columns]
+
+        for _, row in comp_df.iterrows():
+            cokey = _norm_text(row.get("cokey"))
+            compname = _norm_text(row.get("compname"))
+            landscape_type = _norm_text(
+                build_sda_landscape_label(
+                    row.get("geomftname"),
+                    row.get("geomfname"),
+                    row.get("geomfmod"),
+                    row.get("geomposmntn"),
+                    row.get("geomposhill"),
+                    row.get("geompostrce"),
+                    row.get("geomposflats"),
+                    row.get("shapeacross"),
+                    row.get("shapedown"),
+                )
+            )
+            metadata = {
+                "landscape_type": landscape_type,
+                "landscape_class": _norm_text(
+                    row.get("landscape_class")
+                    or ssurgo_to_standard_class(
+                        geomftname=row.get("geomftname"),
+                        geomfname=row.get("geomfname"),
+                        geomfmod=row.get("geomfmod"),
+                        geomposmntn=row.get("geomposmntn"),
+                        geomposhill=row.get("geomposhill"),
+                        geompostrce=row.get("geompostrce"),
+                        geomposflats=row.get("geomposflats"),
+                        shapeacross=row.get("shapeacross"),
+                        shapedown=row.get("shapedown"),
+                        mode="base",
+                    )
+                ),
+                "ecological_site": _norm_ecological_site(
+                    row.get("ecoclassid_update") or row.get("ecoclassid")
+                ).upper(),
+            }
+            if not cokey:
+                if compname:
+                    by_id[f"name::{_norm_name(compname)}"] = metadata
+                continue
+            by_id[cokey] = metadata
+            if compname and f"name::{_norm_name(compname)}" not in by_id:
+                by_id[f"name::{_norm_name(compname)}"] = metadata
+
+    soil_list_json = getattr(list_output_data, "soil_list_json", None)
+    if soil_list_json is None and isinstance(list_output_data, dict):
+        soil_list_json = list_output_data.get("soil_list_json")
+    if not isinstance(soil_list_json, dict):
+        soil_list_json = {}
+
+    for entry in soil_list_json.get("soilList", []):
+        id_obj = entry.get("id", {}) if isinstance(entry, dict) else {}
+        site_data = (
+            entry.get("site", {}).get("siteData", {}) if isinstance(entry, dict) else {}
+        )
+        comp_id = _norm_text(id_obj.get("componentID") or site_data.get("componentID"))
+        comp_name = _norm_text(id_obj.get("component") or id_obj.get("name"))
         if not comp_id:
             comp_id = f"name::{_norm_name(comp_name)}" if comp_name else ""
         if not comp_id:
@@ -211,6 +230,71 @@ def _build_component_metadata(list_output_data):
             by_id[comp_id]["ecological_site"] = ecoclassid
 
     return by_id
+
+
+def _call_analyze_soil_api(api_url, payload, timeout_seconds):
+    try:
+        response = requests.post(api_url, json=payload, timeout=timeout_seconds)
+    except requests.RequestException as exc:
+        raise RuntimeError(f"API request failed: {exc}") from exc
+
+    if response.status_code >= 400:
+        try:
+            err_json = response.json()
+            detail = err_json.get("detail") or err_json
+        except Exception:
+            detail = response.text
+        raise RuntimeError(
+            f"API analyze-soil failed ({response.status_code}): {detail}"
+        )
+
+    try:
+        return response.json()
+    except ValueError as exc:
+        raise RuntimeError("API analyze-soil returned non-JSON response") from exc
+
+
+def _build_analyze_payload(
+    lon,
+    lat,
+    rank_inputs,
+    p_slope,
+    p_elev,
+    bedrock_depth,
+    p_aspect=None,
+    p_shape_vert=None,
+    p_shape_horiz=None,
+    p_landscape=None,
+):
+    payload = {
+        "lon": lon,
+        "lat": lat,
+        # Required by current API request schema; ignored by combined endpoint.
+        "soil_list_json": {"metadata": {}, "soilList": []},
+        "rank_data_csv": "compname,sandpct_intpl",
+        "map_unit_component_data_csv": "mukey,cokey",
+        "sim": False,
+        "soilHorizon": rank_inputs.get("soilHorizon"),
+        "topDepth": rank_inputs.get("topDepth"),
+        "bottomDepth": rank_inputs.get("bottomDepth"),
+        "rfvDepth": rank_inputs.get("rfvDepth"),
+        "claypct_est": rank_inputs.get("claypct_est"),
+        "lab_Color": rank_inputs.get("lab_Color"),
+        "pSlope": p_slope,
+        "pElev": p_elev,
+        "bedrock": bedrock_depth,
+        "cracks": False,
+        "pLandscapeMode": "base",
+    }
+    if p_aspect is not None:
+        payload["pAspect"] = p_aspect
+    if _norm_text(p_shape_vert):
+        payload["pSlopeShapeVert"] = p_shape_vert
+    if _norm_text(p_shape_horiz):
+        payload["pSlopeShapeHoriz"] = p_shape_horiz
+    if _norm_text(p_landscape):
+        payload["pLandscape"] = p_landscape
+    return payload
 
 
 def _match(expected, predicted):
@@ -243,6 +327,17 @@ def _score_summary(rows, mode_prefix, expected_col, predicted_col, source=None):
         subset = [r for r in subset if _norm_source(r.get("source")) == source]
     compared = len(subset)
     matched = sum(1 for r in subset if r.get(f"{mode_prefix}_{predicted_col}_match") is True)
+    return {
+        "compared": compared,
+        "matched": matched,
+        "accuracy": None if compared == 0 else round(matched / compared, 4),
+    }
+
+
+def _score_summary_with_match_col(rows, expected_col, match_col):
+    subset = [r for r in rows if _norm_text(r.get(expected_col))]
+    compared = len(subset)
+    matched = sum(1 for r in subset if r.get(match_col) is True)
     return {
         "compared": compared,
         "matched": matched,
@@ -304,6 +399,16 @@ def _normalize_texture_value(texture_value):
     return TEXTURE_ABBREV_MAP.get(raw, raw)
 
 
+def _to_optional_float(value):
+    txt = _norm_text(value)
+    if not txt:
+        return None
+    try:
+        return float(txt)
+    except (TypeError, ValueError):
+        return None
+
+
 def _build_rank_inputs_all_horizons(plot_key, horizons_df):
     hz = horizons_df[horizons_df["PrimaryKey"] == plot_key].copy()
     hz = hz.sort_values("HorizonDepthUpper", kind="stable")
@@ -325,6 +430,7 @@ def _build_rank_inputs_all_horizons(plot_key, horizons_df):
         "topDepth": hz["HorizonDepthUpper"].astype(int).tolist(),
         "bottomDepth": hz["HorizonDepthLower"].astype(int).tolist(),
         "rfvDepth": hz["RockFragments"].apply(_rfv_bucket).tolist(),
+        "claypct_est": hz["ClayPct"].apply(_to_optional_float).tolist(),
         "lab_Color": [],
     }
 
@@ -389,6 +495,11 @@ def main():
         help="Plot characteristics CSV path (absolute, workspace-relative, or under Data/aim_data)",
     )
     parser.add_argument(
+        "--horizons-csv",
+        default=str(HORIZONS_CSV),
+        help="Soil horizons CSV path containing Texture/RockFragments/ClayPct",
+    )
+    parser.add_argument(
         "--output-dir",
         default=str(TERRAIN_DATA_DIR),
         help="Directory to write result artifacts",
@@ -411,6 +522,29 @@ def main():
         default="rank_data_loc",
         help="Rank method used for top-result selection and expected-rank lookup (default: rank_data_loc)",
     )
+    parser.add_argument(
+        "--execution-mode",
+        choices=["local", "api"],
+        default="local",
+        help="Execution backend: local Python functions or API endpoint (default: local)",
+    )
+    parser.add_argument(
+        "--soilid-api-url",
+        default=os.getenv("SOILID_API_URL", "https://soil-id-algorithm-api.vercel.app/api/analyze-soil"),
+        help="Full analyze-soil API URL used when --execution-mode=api",
+    )
+    parser.add_argument(
+        "--request-timeout",
+        type=float,
+        default=120.0,
+        help="HTTP timeout in seconds for API mode (default: 120)",
+    )
+    parser.add_argument(
+        "--buffer-meters",
+        type=int,
+        default=1000,
+        help="Search radius in metres used for list_soils in live/local mode (default: 1000)",
+    )
     args = parser.parse_args()
 
     plot_csv_arg = Path(args.plot_csv)
@@ -425,7 +559,7 @@ def main():
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
     plot_df = pd.read_csv(plot_csv)
-    horizons_df = pd.read_csv(HORIZONS_CSV)
+    horizons_df = pd.read_csv(Path(args.horizons_csv))
 
     matched = plot_df.merge(
         horizons_df[["PrimaryKey"]].drop_duplicates(), on="PrimaryKey", how="inner"
@@ -497,12 +631,55 @@ def main():
             )
             any_qc_changed = str(row.get("Any_qc_changed", "")).strip().upper() == "TRUE"
 
-            if args.list_source == "live":
-                lon = _to_float(row.get("Longitude_NAD83"))
-                lat = _to_float(row.get("Latitude_NAD83"))
+            lon = _to_float(row.get("Longitude_NAD83"))
+            lat = _to_float(row.get("Latitude_NAD83"))
+
+            if args.execution_mode == "api":
+                if lon is None or lat is None:
+                    raise RuntimeError("Missing Longitude_NAD83/Latitude_NAD83 for API mode")
+
+                baseline_payload = _build_analyze_payload(
+                    lon=lon,
+                    lat=lat,
+                    rank_inputs=rank_inputs,
+                    p_slope=p_slope,
+                    p_elev=p_elev,
+                    bedrock_depth=bedrock_depth,
+                )
+                baseline_api_response = _call_analyze_soil_api(
+                    args.soilid_api_url,
+                    baseline_payload,
+                    args.request_timeout,
+                )
+
+                terrain_payload = _build_analyze_payload(
+                    lon=lon,
+                    lat=lat,
+                    rank_inputs=rank_inputs,
+                    p_slope=p_slope,
+                    p_elev=p_elev,
+                    bedrock_depth=bedrock_depth,
+                    p_aspect=p_aspect,
+                    p_shape_vert=p_shape_vert,
+                    p_shape_horiz=p_shape_horiz,
+                    p_landscape=p_landscape,
+                )
+                terrain_api_response = _call_analyze_soil_api(
+                    args.soilid_api_url,
+                    terrain_payload,
+                    args.request_timeout,
+                )
+
+                list_output_data = {
+                    "soil_list_json": baseline_api_response.get("soil_list_json") or {},
+                    "map_unit_component_data_csv": baseline_api_response.get("map_unit_component_data_csv") or "",
+                }
+                baseline = baseline_api_response.get("ranking_result") or {}
+                with_terrain = terrain_api_response.get("ranking_result") or {}
+            elif args.list_source == "live":
                 if lon is None or lat is None:
                     raise RuntimeError("Missing Longitude_NAD83/Latitude_NAD83 for live list_soils")
-                list_output_data = list_soils(lon=lon, lat=lat, sim=False)
+                list_output_data = list_soils(lon=lon, lat=lat, sim=False, max_distance_m=args.buffer_meters)
                 if not hasattr(list_output_data, "map_unit_component_data_csv"):
                     skipped += 1
                     row_results.append(
@@ -562,6 +739,42 @@ def main():
                         }
                     )
                     continue
+
+                baseline = rank_soils(
+                    lon=0.0,
+                    lat=0.0,
+                    list_output_data=list_output_data,
+                    soilHorizon=rank_inputs["soilHorizon"],
+                    topDepth=rank_inputs["topDepth"],
+                    bottomDepth=rank_inputs["bottomDepth"],
+                    rfvDepth=rank_inputs["rfvDepth"],
+                    claypct_est=rank_inputs["claypct_est"],
+                    lab_Color=rank_inputs["lab_Color"],
+                    pSlope=p_slope,
+                    pElev=p_elev,
+                    bedrock=bedrock_depth,
+                    cracks=False,
+                )
+
+                with_terrain = rank_soils(
+                    lon=0.0,
+                    lat=0.0,
+                    list_output_data=list_output_data,
+                    soilHorizon=rank_inputs["soilHorizon"],
+                    topDepth=rank_inputs["topDepth"],
+                    bottomDepth=rank_inputs["bottomDepth"],
+                    rfvDepth=rank_inputs["rfvDepth"],
+                    claypct_est=rank_inputs["claypct_est"],
+                    lab_Color=rank_inputs["lab_Color"],
+                    pSlope=p_slope,
+                    pElev=p_elev,
+                    bedrock=bedrock_depth,
+                    cracks=False,
+                    pAspect=p_aspect,
+                    pSlopeShapeVert=p_shape_vert,
+                    pSlopeShapeHoriz=p_shape_horiz,
+                    pLandscape=p_landscape,
+                )
             else:
                 # Synthetic candidates are only allowed when explicitly requested.
                 if synthetic_list_output_data is None:
@@ -570,41 +783,43 @@ def main():
                     synthetic_list_output_data = _build_list_output_data()
                 list_output_data = synthetic_list_output_data
 
+                baseline = rank_soils(
+                    lon=0.0,
+                    lat=0.0,
+                    list_output_data=list_output_data,
+                    soilHorizon=rank_inputs["soilHorizon"],
+                    topDepth=rank_inputs["topDepth"],
+                    bottomDepth=rank_inputs["bottomDepth"],
+                    rfvDepth=rank_inputs["rfvDepth"],
+                    claypct_est=rank_inputs["claypct_est"],
+                    lab_Color=rank_inputs["lab_Color"],
+                    pSlope=p_slope,
+                    pElev=p_elev,
+                    bedrock=bedrock_depth,
+                    cracks=False,
+                )
+
+                with_terrain = rank_soils(
+                    lon=0.0,
+                    lat=0.0,
+                    list_output_data=list_output_data,
+                    soilHorizon=rank_inputs["soilHorizon"],
+                    topDepth=rank_inputs["topDepth"],
+                    bottomDepth=rank_inputs["bottomDepth"],
+                    rfvDepth=rank_inputs["rfvDepth"],
+                    claypct_est=rank_inputs["claypct_est"],
+                    lab_Color=rank_inputs["lab_Color"],
+                    pSlope=p_slope,
+                    pElev=p_elev,
+                    bedrock=bedrock_depth,
+                    cracks=False,
+                    pAspect=p_aspect,
+                    pSlopeShapeVert=p_shape_vert,
+                    pSlopeShapeHoriz=p_shape_horiz,
+                    pLandscape=p_landscape,
+                )
+
             comp_meta_by_id = _build_component_metadata(list_output_data)
-
-            baseline = rank_soils(
-                lon=0.0,
-                lat=0.0,
-                list_output_data=list_output_data,
-                soilHorizon=rank_inputs["soilHorizon"],
-                topDepth=rank_inputs["topDepth"],
-                bottomDepth=rank_inputs["bottomDepth"],
-                rfvDepth=rank_inputs["rfvDepth"],
-                lab_Color=rank_inputs["lab_Color"],
-                pSlope=p_slope,
-                pElev=p_elev,
-                bedrock=bedrock_depth,
-                cracks=False,
-            )
-
-            with_terrain = rank_soils(
-                lon=0.0,
-                lat=0.0,
-                list_output_data=list_output_data,
-                soilHorizon=rank_inputs["soilHorizon"],
-                topDepth=rank_inputs["topDepth"],
-                bottomDepth=rank_inputs["bottomDepth"],
-                rfvDepth=rank_inputs["rfvDepth"],
-                lab_Color=rank_inputs["lab_Color"],
-                pSlope=p_slope,
-                pElev=p_elev,
-                bedrock=bedrock_depth,
-                cracks=False,
-                pAspect=p_aspect,
-                pSlopeShapeVert=p_shape_vert,
-                pSlopeShapeHoriz=p_shape_horiz,
-                pLandscape=p_landscape,
-            )
 
             if not baseline.get("soilRank") or not with_terrain.get("soilRank"):
                 raise RuntimeError("Empty soilRank in output")
@@ -623,24 +838,49 @@ def main():
             # QC terrain run: re-rank with QC landscape type (only when it changed from AIM)
             p_landscape_qc = _norm_text(row.get("LandscapeType_QC")) or p_landscape
             if landscape_class_qc_changed:
-                with_terrain_qc = rank_soils(
-                    lon=0.0,
-                    lat=0.0,
-                    list_output_data=list_output_data,
-                    soilHorizon=rank_inputs["soilHorizon"],
-                    topDepth=rank_inputs["topDepth"],
-                    bottomDepth=rank_inputs["bottomDepth"],
-                    rfvDepth=rank_inputs["rfvDepth"],
-                    lab_Color=rank_inputs["lab_Color"],
-                    pSlope=p_slope,
-                    pElev=p_elev,
-                    bedrock=bedrock_depth,
-                    cracks=False,
-                    pAspect=p_aspect,
-                    pSlopeShapeVert=p_shape_vert,
-                    pSlopeShapeHoriz=p_shape_horiz,
-                    pLandscape=p_landscape_qc,
-                )
+                if args.execution_mode == "api":
+                    if lon is None or lat is None:
+                        raise RuntimeError("Missing Longitude_NAD83/Latitude_NAD83 for API mode")
+                    qc_payload = _build_analyze_payload(
+                        lon=lon,
+                        lat=lat,
+                        rank_inputs=rank_inputs,
+                        p_slope=p_slope,
+                        p_elev=p_elev,
+                        bedrock_depth=bedrock_depth,
+                        p_aspect=p_aspect,
+                        p_shape_vert=p_shape_vert,
+                        p_shape_horiz=p_shape_horiz,
+                        p_landscape=p_landscape_qc,
+                    )
+                    with_terrain_qc = (
+                        _call_analyze_soil_api(
+                            args.soilid_api_url,
+                            qc_payload,
+                            args.request_timeout,
+                        ).get("ranking_result")
+                        or {}
+                    )
+                else:
+                    with_terrain_qc = rank_soils(
+                        lon=0.0,
+                        lat=0.0,
+                        list_output_data=list_output_data,
+                        soilHorizon=rank_inputs["soilHorizon"],
+                        topDepth=rank_inputs["topDepth"],
+                        bottomDepth=rank_inputs["bottomDepth"],
+                        rfvDepth=rank_inputs["rfvDepth"],
+                        claypct_est=rank_inputs["claypct_est"],
+                        lab_Color=rank_inputs["lab_Color"],
+                        pSlope=p_slope,
+                        pElev=p_elev,
+                        bedrock=bedrock_depth,
+                        cracks=False,
+                        pAspect=p_aspect,
+                        pSlopeShapeVert=p_shape_vert,
+                        pSlopeShapeHoriz=p_shape_horiz,
+                        pLandscape=p_landscape_qc,
+                    )
                 if not with_terrain_qc.get("soilRank"):
                     raise RuntimeError("Empty soilRank in QC terrain output")
                 terrain_qc_top = _extract_top_metadata(with_terrain_qc, comp_meta_by_id, args.rank_method)
@@ -853,22 +1093,20 @@ def main():
             ),
         },
         "QC": {
-            "soil_series": _score_summary(
-                row_results, "baseline_aim", "expected_soil_series", "soil_series", source="QC"
-            ),
-            "ecological_site": _score_summary(
+            "soil_series": _score_summary_with_match_col(
                 row_results,
-                "baseline_aim",
-                "expected_ecological_site",
-                "ecological_site",
-                source="QC",
+                "qc_expected_soil_series",
+                "baseline_qc_soil_series_match",
             ),
-            "landscape_class": _score_summary(
+            "ecological_site": _score_summary_with_match_col(
                 row_results,
-                "baseline_aim",
-                "expected_landscape_class",
-                "landscape_class",
-                source="QC",
+                "qc_expected_ecological_site",
+                "baseline_qc_ecological_site_match",
+            ),
+            "landscape_class": _score_summary_with_match_col(
+                row_results,
+                "qc_expected_landscape_class",
+                "baseline_qc_landscape_class_match",
             ),
         },
     }
@@ -893,27 +1131,25 @@ def main():
             ),
         },
         "QC": {
-            "soil_series": _score_summary(
-                row_results, "terrain_aim", "expected_soil_series", "soil_series", source="QC"
-            ),
-            "ecological_site": _score_summary(
+            "soil_series": _score_summary_with_match_col(
                 row_results,
-                "terrain_aim",
-                "expected_ecological_site",
-                "ecological_site",
-                source="QC",
+                "qc_expected_soil_series",
+                "terrain_qc_soil_series_match",
             ),
-            "landscape_class": _score_summary(
+            "ecological_site": _score_summary_with_match_col(
                 row_results,
-                "terrain_aim",
-                "expected_landscape_class",
-                "landscape_class",
-                source="QC",
+                "qc_expected_ecological_site",
+                "terrain_qc_ecological_site_match",
+            ),
+            "landscape_class": _score_summary_with_match_col(
+                row_results,
+                "qc_expected_landscape_class",
+                "terrain_qc_landscape_class_match",
             ),
         },
     }
 
-    # rank_soils (QC landscape inputs) vs QC reference — landscape-changed rows only
+    # rank_soils (QC landscape inputs) vs QC reference — evaluate across all comparable rows
     n_landscape_changed = sum(
         1 for r in row_results if r.get("landscape_class_qc_changed") is True
     )
@@ -939,19 +1175,16 @@ def main():
             row_results,
             "terrain_qc_soil_series_match",
             require_col="qc_expected_soil_series",
-            changed_only=True,
         ),
         "ecological_site": _score_match_col(
             row_results,
             "terrain_qc_ecological_site_match",
             require_col="qc_expected_ecological_site",
-            changed_only=True,
         ),
         "landscape_class": _score_match_col(
             row_results,
             "terrain_qc_landscape_class_match",
             require_col="qc_expected_landscape_class",
-            changed_only=True,
         ),
     }
 
@@ -976,6 +1209,8 @@ def main():
 
     summary = {
         "run_utc": timestamp,
+        "execution_mode": args.execution_mode,
+        "soilid_api_url": args.soilid_api_url if args.execution_mode == "api" else "",
         "list_source": args.list_source,
         "rank_method": args.rank_method,
         "plot_csv": str(plot_csv),
@@ -1001,6 +1236,8 @@ def main():
         "\n".join(
             [
                 f"Run UTC: {timestamp}",
+                f"Execution mode: {args.execution_mode}",
+                f"Analyze API URL: {args.soilid_api_url if args.execution_mode == 'api' else 'n/a'}",
                 f"List source: {args.list_source}",
                 f"Rank method: {args.rank_method}",
                 f"Plot CSV: {plot_csv}",
@@ -1023,7 +1260,7 @@ def main():
                 f"  Landscape class: {terrain_scores['landscape_class']['matched']}/{terrain_scores['landscape_class']['compared']} (accuracy={terrain_scores['landscape_class']['accuracy']})",
                 "",
                 "=" * 60,
-                f"rank_soils MATCH RATES vs QC REFERENCE (landscape-changed rows, n={n_landscape_changed})",
+                f"rank_soils MATCH RATES vs QC REFERENCE (all comparable rows; landscape-changed n={n_landscape_changed})",
                 "=" * 60,
                 "",
                 "Baseline (no terrain inputs):",

@@ -16,6 +16,7 @@
 # Third-party libraries
 import logging
 import re
+import time
 from typing import List
 
 import numpy as np
@@ -45,6 +46,152 @@ from .utils import (
     simulate_correlated_triangular,
     slice_and_aggregate_soil_data,
 )
+
+# ------------------------------------------------------------------------
+# Module-level constants for performance optimization
+# ------------------------------------------------------------------------
+
+# Global soil property correlation matrix (derived from KSSL SPCS)
+# Used when local correlation matrix cannot be calculated
+GLOBAL_CORRELATION_MATRIX = np.array(
+    [
+        [1.0000000, 0.6149869, -0.30000031, 0.5573609, 0.5240642, -0.33380115],  # "ilr1"
+        [0.6149869, 1.0000000, -0.18742324, 0.5089337, 0.7580271, -0.32807023],  # "ilr2"
+        [-0.30000031, -0.18742324, 1.00000000, -0.7706528, -0.5117794, 0.02803607],  # "dbovendry_r"
+        [0.5573609, 0.5089337, -0.77065276, 1.0000000, 0.7826896, -0.14029112],  # "wthirdbar_r"
+        [0.5240642, 0.7580271, -0.51177936, 0.7826896, 1.0000000, -0.17901686],  # "wfifteenbar_r"
+        [-0.33380115, -0.32807023, 0.02803607, -0.14029112, -0.17901686, 1.00000000],  # "rfv_r"
+    ]
+)
+
+# Global soil texture correlation matrix (used for sand/silt/clay simulation)
+TEXTURE_CORRELATION_MATRIX = np.array(
+    [
+        [1.0000000, -0.76231798, -0.67370589],
+        [-0.7623180, 1.00000000, 0.03617498],
+        [-0.6737059, 0.03617498, 1.00000000],
+    ]
+)
+
+# Vertical autocorrelation coefficients (lag-1) for each property
+# These control how strongly adjacent horizons are correlated
+VERTICAL_RHO = {
+    'ilr1': 0.85,                # Sand/Silt ratio - texture changes slowly with depth
+    'ilr2': 0.85,                # Clay ratio - texture changes slowly  
+    'bulk_density': 0.75,        # Moderate correlation
+    'water_retention_33': 0.70,  # Field capacity - moderate variability
+    'water_retention_1500': 0.70,# Wilting point - moderate variability
+    'rfv': 0.60,                 # Rock fragments - more variable
+}
+
+# ------------------------------------------------------------------------
+def add_vertical_correlation(sim_data_df: pd.DataFrame, 
+                             rho_dict: dict = None,
+                             depth_col: str = 'hzdept_r') -> pd.DataFrame:
+    """
+    Apply AR(1) vertical autocorrelation to simulated soil properties.
+    
+    This function adds realistic depth-wise correlation where adjacent horizons
+    have correlated properties, rather than being independent. Uses an AR(1)
+    autoregressive model: Y_z = rho * Y_{z-1} + sqrt(1-rho^2) * epsilon
+    
+    Parameters:
+    -----------
+    sim_data_df : pd.DataFrame
+        Dataframe with simulated properties (output from Step 2e)
+    rho_dict : dict, optional
+        Property-specific rho values. If None, uses VERTICAL_RHO defaults.
+        Keys should match property names in the dataframe.
+    depth_col : str
+        Column name for depth sorting
+        
+    Returns:
+    --------
+    pd.DataFrame with vertically correlated properties
+    
+    Notes:
+    ------
+    - Operates within each compname_grp (soil component) independently
+    - Preserves marginal distributions while adding spatial structure
+    - Higher rho = stronger vertical correlation (0.6-0.9 typical)
+    """
+    if rho_dict is None:
+        rho_dict = VERTICAL_RHO
+    
+    # Properties to apply vertical correlation to
+    # These correspond to the 6 properties in GLOBAL_CORRELATION_MATRIX
+    property_mapping = {
+        'ilr1': 'ilr1',
+        'ilr2': 'ilr2', 
+        'bulk_density': 'bulk_density_third_bar',
+        'water_retention_33': 'water_retention_third_bar',
+        'water_retention_1500': 'water_retention_15_bar',
+        'rfv': 'rfv'
+    }
+    
+    # Work on a copy to avoid modifying original
+    df = sim_data_df.copy()
+    
+    # Group by component (each component has multiple depths)
+    for compname, group_df in df.groupby('compname_grp'):
+        # Sort by depth within component
+        group_df = group_df.sort_values(depth_col).reset_index(drop=True)
+        
+        # Get unique depths (horizons)
+        depths = group_df[depth_col].unique()
+        n_depths = len(depths)
+        
+        if n_depths < 2:
+            continue  # Need at least 2 horizons for correlation
+        
+        # For each property, apply AR(1) transformation
+        for prop_key, col_name in property_mapping.items():
+            if col_name not in group_df.columns:
+                continue
+                
+            rho = rho_dict.get(prop_key, 0.7)  # Default to 0.7 if not specified
+            
+            # Get indices for this component
+            comp_mask = df['compname_grp'] == compname
+            
+            # For each depth after the first
+            for i, depth in enumerate(depths[1:], start=1):
+                # Get simulated values at current and previous depth
+                curr_mask = comp_mask & (df[depth_col] == depth)
+                prev_mask = comp_mask & (df[depth_col] == depths[i-1])
+                
+                # Get values
+                y_curr = df.loc[curr_mask, col_name].values
+                y_prev = df.loc[prev_mask, col_name].values
+                
+                # Both should have same length (n_sim)
+                if len(y_curr) != len(y_prev):
+                    continue
+                
+                # Standardize current values (mean=0, std=1)
+                y_mean = y_curr.mean()
+                y_std = y_curr.std()
+                if y_std == 0:
+                    continue
+                y_curr_std = (y_curr - y_mean) / y_std
+                
+                # Standardize previous values
+                y_prev_mean = y_prev.mean()
+                y_prev_std = y_prev.std()
+                if y_prev_std == 0:
+                    continue
+                y_prev_std = (y_prev - y_prev_mean) / y_prev_std
+                
+                # Apply AR(1) transformation: Y_z = rho * Y_{z-1} + sqrt(1-rho^2) * epsilon
+                y_new_std = rho * y_prev_std + np.sqrt(1 - rho**2) * y_curr_std
+                
+                # Transform back to original scale
+                y_new = y_new_std * y_std + y_mean
+                
+                # Update dataframe
+                df.loc[curr_mask, col_name] = y_new
+    
+    return df
 
 
 # ------------------------------------------------------------------------
@@ -154,6 +301,7 @@ def soil_sim(muhorzdata_pd):
     if agg_data_df["compname_grp"].nunique() < 2:
         aws_PIW90 = "Data not available"
         var_imp = "Data not available"
+        return aws_PIW90, var_imp
     else:
         # Extract columns with names ending in '_r'
         agg_data_r = agg_data_df[[col for col in agg_data_df.columns if col.endswith("_r")]]
@@ -211,64 +359,16 @@ def soil_sim(muhorzdata_pd):
 
         local_correlation_matrix, _ = spearmanr(correlation_matrix_data, axis=0)
 
-        # Define global correlation matrix data (derived from KSSL SPCS)
-        # Used if unable to calculate a local_correlation_matrix
-        global_correlation_matrix = np.array(
-            [
-                [1.0000000, 0.6149869, -0.30000031, 0.5573609, 0.5240642, -0.33380115],  # "ilr1"
-                [0.6149869, 1.0000000, -0.18742324, 0.5089337, 0.7580271, -0.32807023],  # "ilr2"
-                [
-                    -0.30000031,
-                    -0.18742324,
-                    1.00000000,
-                    -0.7706528,
-                    -0.5117794,
-                    0.02803607,
-                ],  # "dbovendry_r"
-                [
-                    0.5573609,
-                    0.5089337,
-                    -0.77065276,
-                    1.0000000,
-                    0.7826896,
-                    -0.14029112,
-                ],  # "wthirdbar_r"
-                [
-                    0.5240642,
-                    0.7580271,
-                    -0.51177936,
-                    0.7826896,
-                    1.0000000,
-                    -0.17901686,
-                ],  # "wfifteenbar_r"
-                [
-                    -0.33380115,
-                    -0.32807023,
-                    0.02803607,
-                    -0.14029112,
-                    -0.17901686,
-                    1.00000000,
-                ],  # "rfv_r"
-            ]
-        )
-
         # Check for NaNs or infs in the local correlation matrix and if so,
-        # replace with global matrix
+        # replace with global matrix (defined at module level for performance)
         if np.isnan(local_correlation_matrix).any() or np.isinf(local_correlation_matrix).any():
-            local_correlation_matrix = global_correlation_matrix
+            local_correlation_matrix = GLOBAL_CORRELATION_MATRIX
 
         """
         Step 2. Simulate data for each row, with the number of simulations equal
                 to the (cond_prob*100)*10
         """
-        # Global soil texture correlation matrix (used for initial simulation)
-        texture_correlation_matrix = np.array(
-            [
-                [1.0000000, -0.76231798, -0.67370589],
-                [-0.7623180, 1.00000000, 0.03617498],
-                [-0.6737059, 0.03617498, 1.00000000],
-            ]
-        )
+        step2_start = time.time()
 
         sim_data_out = []
 
@@ -291,7 +391,7 @@ def soil_sim(muhorzdata_pd):
 
             simulated_txt = acomp(
                 simulate_correlated_triangular(
-                    (int(row["cond_prob"] * 1000)), params_txt, texture_correlation_matrix
+                    (int(row["cond_prob"] * 1000)), params_txt, TEXTURE_CORRELATION_MATRIX
                 )
             )
             simulated_txt_ilr = ilr(simulated_txt)
@@ -428,13 +528,12 @@ def soil_sim(muhorzdata_pd):
                         ],
                     )
 
-                sim_data["water_retention_third_bar"] = sim_data["water_retention_third_bar"].div(
-                    100
-                )
-                sim_data["water_retention_15_bar"] = sim_data["water_retention_15_bar"].div(100)
+                # In-place division for better performance
+                sim_data["water_retention_third_bar"] /= 100
+                sim_data["water_retention_15_bar"] /= 100
                 sim_txt = ilr_inv(sim_data[["ilr1", "ilr2"]])
                 sim_txt = pd.DataFrame(sim_txt, columns=["sand_total", "silt_total", "clay_total"])
-                sim_txt = sim_txt.multiply(100)
+                sim_txt *= 100  # In-place multiplication
                 multi_sim = pd.concat([sim_data.drop(columns=["ilr1", "ilr2"]), sim_txt], axis=1)
                 multi_sim["compname_grp"] = row["compname_grp"]
                 multi_sim["hzdept_r"] = row["hzdept_r"]
@@ -445,10 +544,21 @@ def soil_sim(muhorzdata_pd):
         Step 2e. Append simulated values to dataframe
         """
         sim_data_df = pd.concat(sim_data_out, axis=0, ignore_index=True)
+        
+        """
+        Step 2f. Apply vertical correlation (AR-1 autoregressive model)
+        """
+        # Add depth-wise correlation so adjacent horizons have correlated properties
+        sim_data_df = add_vertical_correlation(sim_data_df, rho_dict=VERTICAL_RHO)
+        
+        step2_elapsed = time.time() - step2_start
+        if logging.getLogger().isEnabledFor(logging.DEBUG):
+            print(f"⏱️  Step 2 (Simulation + Vertical Correlation): {step2_elapsed:.3f}s")
 
         # ------------------------------------------------------------------------------------
         # Step 3. Run Rosetta and other Van Genuchten equations
         # ------------------------------------------------------------------------------------
+        step3_start = time.time()
 
         # Step 3a: Run Rosetta
 
@@ -472,11 +582,19 @@ def soil_sim(muhorzdata_pd):
         )
         rosetta_data["layerID"] = sim_data_df["layerID"]
 
+        rosetta_elapsed = time.time() - step3_start
+        if logging.getLogger().isEnabledFor(logging.DEBUG):
+            print(f"⏱️  Rosetta API: {rosetta_elapsed:.3f}s")
+        
+        awc_start = time.time()
         awc = calculate_vwc_awc(rosetta_data)
         awc = awc.map(lambda x: x.tolist() if isinstance(x, np.ndarray) else x)
         awc["top"] = sim_data_df["hzdept_r"]
         awc["bottom"] = sim_data_df["hzdepb_r"]
         awc["compname_grp"] = sim_data_df["compname_grp"]
+        awc_elapsed = time.time() - awc_start
+        if logging.getLogger().isEnabledFor(logging.DEBUG):
+            print(f"⏱️  AWC Calculation: {awc_elapsed:.3f}s")
 
         awc_grouped = awc.groupby(["top"])
         data_len_depth = awc_grouped.apply(
@@ -531,6 +649,7 @@ def soil_sim(muhorzdata_pd):
         aws_PIW90 = round(float(aws_PIW90.iloc[0]), 2)
         # ---------------------------------------------------------------------------
         # Calculate Information Gain, i.e., soil input variable importance
+        info_gain_start = time.time()
 
         sim_data_df["texture"] = sim_data_df.apply(getTexture, axis=1)
         sim_data_df["rfv_class"] = sim_data_df.apply(getCF_class, axis=1)
@@ -585,6 +704,9 @@ def soil_sim(muhorzdata_pd):
         var_imp = information_gain(
             result_df, ["compname_grp"], ["texture_0", "texture_30", "rfv_class_0", "rfv_class_30"]
         )
+        info_gain_elapsed = time.time() - info_gain_start
+        if logging.getLogger().isEnabledFor(logging.DEBUG):
+            print(f"⏱️  Information Gain: {info_gain_elapsed:.3f}s")
     return aws_PIW90, var_imp
 
 
