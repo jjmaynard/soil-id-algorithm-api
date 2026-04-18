@@ -101,7 +101,7 @@ Per run timestamp:
 
 ---
 
-## Column Descriptions: study_plot_characteristics_enriched_run_results_20260414T031040Z_ci_revised_rows.csv
+## Column Descriptions: study_plot_characteristics_enriched_run_results_<TIMESTAMP>_ci_revised_rows.csv
 
 Source file:
 Data/aim_data/R_evaluation/outputs/aim_qc/study_plot_characteristics_enriched_run_results_20260414T031040Z_ci_revised_rows.csv
@@ -123,17 +123,15 @@ This file is the Stage 5 per-row CI-revised output. It contains original Stage 4
 | component_gap | Difference between dominant and second component percentages. |
 | n_ecosites_dominant | Number of ecosites associated with dominant series/component context. |
 | multiplicity_score | Original multiplicity score input to confidence framework. |
-| expected_soil_series | Expected soil series reference value used for evaluation. |
-| expected_ecological_site | Expected ecological site reference value used for evaluation. |
-| expected_landscape_type | Expected landscape type reference value used for evaluation. |
-| expected_landscape_class | Expected landscape class reference value used for evaluation. |
-| expected_rank_baseline | Rank position of expected series in baseline ranking output. |
-| expected_rank_terrain | Rank position of expected series in terrain-aware ranking output. |
-| expected_component_id_baseline | Component identifier tied to expected baseline selection. |
-| expected_component_id_terrain | Component identifier tied to expected terrain selection. |
-| expected_sda_ecological_site | SDA ecological site attached to expected component context. |
-| expected_sda_landscape_type | SDA landscape type attached to expected component context. |
-| expected_sda_landscape_class | SDA landscape class attached to expected component context. |
+| aim_expected_rank_baseline | Rank position of AIM expected series in baseline (no terrain inputs) ranking output. |
+| aim_expected_rank_terrain | Rank position of AIM expected series in AIM terrain-aware ranking output. |
+| qc_expected_rank_baseline | Rank position of QC expected series in baseline (no terrain inputs) ranking output. |
+| qc_expected_rank_terrain | Rank position of QC expected series in QC terrain-aware ranking output. |
+| expected_component_id_baseline | Component identifier of the expected series as found in the baseline soilRank output. |
+| expected_component_id_terrain | Component identifier of the expected series as found in the AIM terrain soilRank output. |
+| expected_sda_ecological_site | Ecological site from SDA component records for the expected series component. |
+| expected_sda_landscape_type | Raw SDA landscape label assembled from geomorphic position fields for the expected series component. |
+| expected_sda_landscape_class | Crosswalk-normalized landscape class from SDA geomorphic fields for the expected series component. |
 | baseline_soil_series | Baseline selected soil series (without terrain adjustment). |
 | baseline_ecological_site | Baseline selected ecological site. |
 | baseline_landscape_class | Baseline selected landscape class. |
@@ -170,6 +168,32 @@ This file is the Stage 5 per-row CI-revised output. It contains original Stage 4
 | aim_qc_soil_series_match | Indicator that AIM expected series equals QC expected series. |
 | aim_qc_ecological_site_match | Indicator that AIM expected ecological site equals QC expected ecological site. |
 | aim_qc_landscape_class_match | Indicator that AIM expected landscape class equals QC expected landscape class. |
+| aim_expected_ecosite_rank | Rank position of AIM expected ecological site matched by ecoclassid in the QC terrain-aware ranking output. |
+| qc_expected_ecosite_rank | Rank position of QC expected ecological site matched by ecoclassid in the QC terrain-aware ranking output. |
+| qc_expected_score_data_horz | Horizon data score for the QC expected series component from the QC terrain ranking output. |
+| qc_expected_score_data_site | Site data score for the QC expected series component from the QC terrain ranking output. |
+| terrain_qc_score_data_horz | Horizon data score for the rank-1 component in the QC terrain ranking output. |
+| terrain_qc_score_data_site | Site data score for the rank-1 component in the QC terrain ranking output. |
+| terrain_qc_horz_texture | Texture match detail for rank-1 QC terrain component. |
+| terrain_qc_horz_rock_fragments | Rock fragment match detail for rank-1 QC terrain component. |
+| terrain_qc_horz_color | Color match detail for rank-1 QC terrain component. |
+| terrain_qc_horz_observed_depth | Observed horizon depth for rank-1 QC terrain component. |
+| terrain_qc_horz_mapped_depth | Mapped horizon depth for rank-1 QC terrain component. |
+| terrain_qc_horz_depth_coverage | Horizon depth coverage score for rank-1 QC terrain component. |
+| terrain_qc_site_slope_observed | Observed slope for rank-1 QC terrain component site match. |
+| terrain_qc_site_slope_mapped | Mapped slope for rank-1 QC terrain component site match. |
+| terrain_qc_site_elev_observed | Observed elevation for rank-1 QC terrain component site match. |
+| terrain_qc_site_elev_mapped | Mapped elevation for rank-1 QC terrain component site match. |
+| terrain_qc_site_aspect_north_observed | Observed northerness aspect for rank-1 QC terrain component site match. |
+| terrain_qc_site_aspect_north_mapped | Mapped northerness aspect for rank-1 QC terrain component site match. |
+| terrain_qc_site_aspect_east_observed | Observed easterness aspect for rank-1 QC terrain component site match. |
+| terrain_qc_site_aspect_east_mapped | Mapped easterness aspect for rank-1 QC terrain component site match. |
+| terrain_qc_site_shape_vert_observed | Observed vertical slope shape for rank-1 QC terrain component site match. |
+| terrain_qc_site_shape_vert_mapped | Mapped vertical slope shape for rank-1 QC terrain component site match. |
+| terrain_qc_site_shape_horiz_observed | Observed horizontal slope shape for rank-1 QC terrain component site match. |
+| terrain_qc_site_shape_horiz_mapped | Mapped horizontal slope shape for rank-1 QC terrain component site match. |
+| terrain_qc_site_landscape_observed | Observed landscape class for rank-1 QC terrain component site match. |
+| terrain_qc_site_landscape_mapped | Mapped landscape class for rank-1 QC terrain component site match. |
 | join_key | Join key created for stable joins across runtime and plot metadata tables. |
 | compname_norm | Normalized component/series name used for multiplicity and lookup joins. |
 | dom | Numeric cast of dominant_comppct_r used in revised CI scoring. |

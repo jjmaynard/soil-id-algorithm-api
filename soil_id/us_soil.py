@@ -1415,11 +1415,75 @@ def list_soils(lon, lat, sim=True, max_distance_m=1000):
             else:
                 ESDcompdata_pd = None
 
+        # SDA fallback for SSURGO: SoilWeb ESD coverage has gaps — some cokeys are
+        # present in the map unit but have no ESD row in the SoilWeb response, leaving
+        # ecoclassid as NULL after the left-merge above.  Without a fallback, those
+        # components borrow an ecoclassid from a sibling compname via update_esd_data,
+        # which varies by location and produces inconsistent predictions.
+        # Query SDA for only the cokeys that are still missing ecoclassid so we get
+        # authoritative coecoclass data for every component.
+        missing_cokeys = []
+        if ESDcompdata_pd is not None:
+            null_mask = ESDcompdata_pd["ecoclassid"].isna() | (
+                ESDcompdata_pd["ecoclassid"].astype(str).str.strip().isin(["", "nan", "None"])
+            )
+            missing_cokeys = ESDcompdata_pd.loc[null_mask, "cokey"].unique().tolist()
+        elif comp_key:
+            # ESDcompdata_pd is None means SoilWeb returned no ESD at all
+            missing_cokeys = [str(k) for k in comp_key]
+
+        if missing_cokeys:
+            _sda_eco_qry = (
+                "SELECT cokey, ecoclassid, ecoclassname, ecoclasstypename"
+                " FROM coecoclass WHERE cokey IN ("
+                + ",".join(str(k) for k in missing_cokeys)
+                + ") ORDER BY cokey, ecoclasstypename, ecoclassid"
+            )
+            _sda_eco_out = sda_return(propQry=_sda_eco_qry)
+            if _sda_eco_out is not None:
+                _sda_rows = _sda_eco_out["Table"].iloc[0]
+                _sda_df = pd.DataFrame(_sda_rows[1:], columns=_sda_rows[0])
+                _sda_df[["cokey", "ecoclassid", "ecoclassname"]] = _sda_df[
+                    ["cokey", "ecoclassid", "ecoclassname"]
+                ].astype(str)
+                _sda_df["edit_url"] = (
+                    NEW_ESD_BASE_URL
+                    + "/"
+                    + _sda_df["ecoclassid"].str[1:5]
+                    + "/"
+                    + _sda_df["ecoclassid"]
+                )
+                if ESDcompdata_pd is not None:
+                    # Drop the null rows and replace with SDA data merged back in
+                    ESDcompdata_pd = ESDcompdata_pd[~null_mask]
+                    _sda_merged = pd.merge(
+                        mucompdata_pd.loc[
+                            mucompdata_pd["cokey"].astype(str).isin(missing_cokeys),
+                            ["mukey", "cokey", "compname"],
+                        ],
+                        _sda_df,
+                        on="cokey",
+                        how="left",
+                    )
+                    ESDcompdata_pd = pd.concat(
+                        [ESDcompdata_pd, _sda_merged], ignore_index=True
+                    )
+                else:
+                    # SoilWeb had no ESD at all; bootstrap from SDA data
+                    if any(_sda_df["cokey"].isin(mucompdata_pd["cokey"])):
+                        ESDcompdata_pd = pd.merge(
+                            mucompdata_pd[["mukey", "cokey", "compname"]],
+                            _sda_df,
+                            on="cokey",
+                            how="left",
+                        )
+
     elif data_source == "STATSGO":
         ESDcompdataQry = (
-            "SELECT cokey,  ecoclassid, ecoclassname FROM coecoclass WHERE cokey IN ("
+            "SELECT cokey, ecoclassid, ecoclassname, ecoclasstypename"
+            " FROM coecoclass WHERE cokey IN ("
             + ",".join(map(str, comp_key))
-            + ") ORDER BY cokey"
+            + ") ORDER BY cokey, ecoclasstypename, ecoclassid"
         )
         ESDcompdata_out = sda_return(propQry=ESDcompdataQry)
 
@@ -1461,15 +1525,55 @@ def list_soils(lon, lat, sim=True, max_distance_m=1000):
     if ESDcompdata_pd is not None:
         # Process DataFrame: cleaning and updating
         ESDcompdata_pd.replace("NULL", np.nan, inplace=True)
+        # Sort by ecoclasstypename priority then ecoclassid before deduplication so that
+        # when a component has multiple coecoclass entries the most authoritative one is
+        # kept consistently regardless of SDA/SoilWeb result ordering.
+        #
+        # Priority rationale:
+        #   1. 'NRCS Rangeland Site' – current national standard (ecoclassid has 'R' prefix)
+        #   2. 'Range Site' / 'Range' – legacy format, superseded by NRCS standard
+        #   3. Other/NULL types – lowest priority, kept only if nothing better exists
+        #
+        # Within each type, the R-prefixed ecoclassid sorts before legacy ones, then
+        # alphabetically, so the selection is fully deterministic.
+        _TYPE_PRIORITY = {"NRCS Rangeland Site": 0}
+        if "ecoclasstypename" in ESDcompdata_pd.columns:
+            ESDcompdata_pd["_type_pri"] = (
+                ESDcompdata_pd["ecoclasstypename"]
+                .map(lambda t: _TYPE_PRIORITY.get(t, 1) if pd.notna(t) else 1)
+            )
+        else:
+            ESDcompdata_pd["_type_pri"] = 1
+        ESDcompdata_pd["_id_pri"] = (
+            ESDcompdata_pd["ecoclassid"]
+            .map(lambda e: 0 if (pd.notna(e) and str(e).upper().startswith("R")) else 1)
+        )
+        ESDcompdata_pd.sort_values(
+            ["cokey", "_type_pri", "_id_pri", "ecoclassid"],
+            ascending=[True, True, True, True],
+            na_position="last",
+            inplace=True,
+        )
+        ESDcompdata_pd.drop(columns=["_type_pri", "_id_pri"], inplace=True)
         ESDcompdata_pd.drop_duplicates(subset=["cokey"], keep="first", inplace=True)
         ESDcompdata_pd = ESDcompdata_pd[ESDcompdata_pd["cokey"].isin(comp_key)]
-        ESDcompdata_pd["Comp_Rank"] = ESDcompdata_pd["cokey"].map(cokey_Index)
-        ESDcompdata_pd.sort_values("Comp_Rank", ascending=True, inplace=True)
-        ESDcompdata_pd.drop(columns="Comp_Rank", inplace=True)
+        # Use the current mucompdata_pd row order (compname_grp sorted) as the reference,
+        # NOT cokey_Index which reflects the original pre-sort order.  This ensures that
+        # esd_comp_list[i] lines up with mucompdata_pd.iloc[i] for the key-based alignment.
+        _mucomp_order = {str(ck): i for i, ck in enumerate(mucompdata_pd["cokey"].tolist())}
+        ESDcompdata_pd["_mucomp_rank"] = ESDcompdata_pd["cokey"].map(_mucomp_order)
+        ESDcompdata_pd.sort_values("_mucomp_rank", ascending=True, na_position="last", inplace=True)
+        ESDcompdata_pd.drop(columns="_mucomp_rank", inplace=True)
         ESDcompdata_pd["ecoclassname"] = ESDcompdata_pd["ecoclassname"].str.title()
 
         # Further processing and checks for missing ESD data
         ESDcompdata_pd = update_esd_data(ESDcompdata_pd)
+
+        # update_esd_data reorders rows by compname_grp; restore mucompdata_pd order so
+        # that esd_comp_list[i] aligns with mucompdata_pd.iloc[i] for key-based reorder.
+        ESDcompdata_pd["_mucomp_rank"] = ESDcompdata_pd["cokey"].map(_mucomp_order)
+        ESDcompdata_pd.sort_values("_mucomp_rank", ascending=True, na_position="last", inplace=True)
+        ESDcompdata_pd.drop(columns="_mucomp_rank", inplace=True)
 
         # Aggregate the ESD components for output
         for _, group in ESDcompdata_pd.groupby("cokey", sort=False):
@@ -1845,6 +1949,7 @@ def rank_soils(
     pSlopeShapeHoriz=None,
     pLandscape=None,
     pLandscapeMode="base",
+    legacy_gower=False,
 ):
     """
     TODO: Future testing to see if deltaE2000 values should be incorporated
@@ -2271,7 +2376,8 @@ def rank_soils(
             # TEXTURE_MAX_EUCLIDEAN_DIST. This treats texture as one feature (not two)
             # because both sand% and clay% derive from the same single field observation.
             # Falls back to separate columns if the pedon has missing sand or clay.
-            if "sandpct_intpl" in sliceT.columns and "claypct_intpl" in sliceT.columns:
+            # Skipped when legacy_gower=True to reproduce pre-44cad9e behaviour.
+            if not legacy_gower and "sandpct_intpl" in sliceT.columns and "claypct_intpl" in sliceT.columns:
                 pedon_sand = float(sliceT["sandpct_intpl"].iloc[0])
                 pedon_clay = float(sliceT["claypct_intpl"].iloc[0])
                 if not (np.isnan(pedon_sand) or np.isnan(pedon_clay)):
@@ -2289,7 +2395,8 @@ def rank_soils(
             # ΔE2000 is computed between the sample_pedon's LAB and each component's
             # LAB at this depth slice, then normalized by DELTA_E_MAX (50 ΔE units).
             # Falls back to separate l/a/b if the pedon has missing LAB data.
-            if "l" in sliceT.columns and "a" in sliceT.columns and "b" in sliceT.columns:
+            # Skipped when legacy_gower=True to reproduce pre-44cad9e behaviour.
+            if not legacy_gower and "l" in sliceT.columns and "a" in sliceT.columns and "b" in sliceT.columns:
                 pedon_lab = [
                     float(sliceT["l"].iloc[0]),
                     float(sliceT["a"].iloc[0]),
@@ -2312,7 +2419,10 @@ def rank_soils(
 
             sample_pedon_slice_vars = sliceT.columns.tolist()
             theoretical_prop_ranges = [global_prop_ranges[c] for c in sample_pedon_slice_vars]
-            feature_weights = np.array([HORIZON_FEATURE_WEIGHTS[c] for c in sample_pedon_slice_vars])
+            if legacy_gower:
+                feature_weights = None  # equal weights — pre-44cad9e behaviour
+            else:
+                feature_weights = np.array([HORIZON_FEATURE_WEIGHTS[c] for c in sample_pedon_slice_vars])
 
             # Accumulate per-feature depth-weighted distances for diagnostic output.
             # texture_dist / color_delta_e are already normalized distances from the pedon

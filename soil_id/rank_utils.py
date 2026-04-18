@@ -11,12 +11,32 @@ def _is_nan(value):
         return False
 
 
+_RANK_SCORE_COL = {
+    "rank_data_loc": "Score_Data_Loc",
+    "rank_data": "Score_Data",
+    "rank_loc": "cond_prob",
+}
+_RANK_FIELD_COL = {
+    "rank_data_loc": "Rank_Data_Loc",
+    "rank_data": "Rank_Data",
+    "rank_loc": "Rank_Loc",
+}
+
+
 def finalize_rank_output(
     D_final_loc: pd.DataFrame,
     location: str,
     horz_feature_sims: dict = None,
     site_feature_detail: dict = None,
+    rank_method: str = "rank_data_loc",
 ):
+    """Build soilRank output sorted by the chosen rank method.
+
+    rank_method options:
+        "rank_data_loc" (default) – combined data + location score
+        "rank_data"               – data (horizon + site) score only
+        "rank_loc"                – location (spatial probability) score only
+    """
     # Calculate minimum rank values per compname_grp for each rank field
     df_copy = D_final_loc.copy()
 
@@ -41,6 +61,17 @@ def finalize_rank_output(
 
     # Merge minimum values back to original data
     df_copy = df_copy.merge(min_values, on="compname_grp")
+
+    # Sort by the chosen rank method so soilRank order reflects it.
+    score_col = _RANK_SCORE_COL.get(rank_method, "Score_Data_Loc")
+    rank_field = _RANK_FIELD_COL.get(rank_method, "Rank_Data_Loc")
+    sort_cols = (
+        ["soilID_rank_final", score_col, "compname"]
+        if "soilID_rank_final" in df_copy.columns
+        else [score_col, "compname"]
+    )
+    sort_asc = [False] * (len(sort_cols) - 1) + [True]
+    df_copy = df_copy.sort_values(sort_cols, ascending=sort_asc).reset_index(drop=True)
 
     Rank = [
         {
@@ -77,9 +108,9 @@ def finalize_rank_output(
             "rank_loc_group": row.Rank_Loc_grp,
             "componentData": row.missing_status,
             "not_displayed": (
-                row.Rank_Data_Loc == "Not Displayed"
-                if row.missing_status != "Location data only"
-                else row.Rank_Loc == "Not Displayed"
+                row.Rank_Loc == "Not Displayed"
+                if row.missing_status == "Location data only"
+                else getattr(row, rank_field) == "Not Displayed"
             ),
             "ecoclassid": getattr(row, "ecoclassid", None) if not _is_nan(getattr(row, "ecoclassid", None)) and getattr(row, "ecoclassid", None) != "" else None,
             "ecoclassname": getattr(row, "ecoclassname", None) if not _is_nan(getattr(row, "ecoclassname", None)) and getattr(row, "ecoclassname", None) != "" else None,
@@ -108,6 +139,7 @@ def finalize_rank_output(
         "metadata": {
             "location": location,
             "model": "v2",
+            "rank_method": rank_method,
         },
         "soilRank": Rank,
     }

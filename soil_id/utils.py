@@ -2673,6 +2673,22 @@ def rename_simulated_soil_profile_columns(df, soil_property_columns, depth):
 
 
 # Function to handle the update of ecological site data
+def _sort_ecoclassids(ids):
+    """Return ecoclassids sorted so the most authoritative candidate comes first.
+
+    Priority order:
+      1. R-prefixed ids (current NRCS Rangeland Site format, e.g. ``R027XY018NV``)
+      2. All other ids, sorted alphabetically
+      3. Empty strings / NaN are excluded by the caller via dropna()
+    """
+
+    def _key(eid):
+        s = str(eid).strip()
+        return (0 if s.upper().startswith("R") else 1, s)
+
+    return sorted(ids, key=_key)
+
+
 def update_esd_data(df):
     """
     Processes the given DataFrame by updating missing ESD data based on component
@@ -2688,14 +2704,16 @@ def update_esd_data(df):
     # Generate a list of updated groups
     updated_groups = []
     for _, group in grouped:
-        unique_ids = group["ecoclassid"].dropna().unique()
-        unique_names = group["ecoclassname"].dropna().unique()
+        # Sort candidates so R-prefixed (current NRCS format) ecoclassids are preferred
+        # over legacy formats when multiple options exist within a compname group.
+        unique_ids = _sort_ecoclassids(group["ecoclassid"].dropna().unique())
+        unique_names = sorted(group["ecoclassname"].dropna().unique())
         if group["ecoclassid"].isnull().all() or group["ecoclassname"].isnull().all():
             # Fill all missing values if all are missing within the group
             group.fillna(
                 {
-                    "ecoclassid": unique_ids[0] if unique_ids.size > 0 else "",
-                    "ecoclassname": unique_names[0] if unique_names.size > 0 else "",
+                    "ecoclassid": unique_ids[0] if unique_ids else "",
+                    "ecoclassname": unique_names[0] if unique_names else "",
                 },
                 inplace=True,
             )
