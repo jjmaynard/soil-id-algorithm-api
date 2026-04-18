@@ -107,18 +107,53 @@ def _extract_top_metadata(rank_result, comp_meta_by_id, rank_method="rank_data_l
     if not meta:
         meta = comp_meta_by_id.get(f"name::{_norm_name(soil_series)}", {})
 
+    # Prefer landscape_class from the rank output (site_match.landscape.mapped),
+    # which is populated in all execution modes including api mode.
+    rank_landscape_class = _norm_text(
+        top.get("site_match", {}).get("landscape", {}).get("mapped")
+    )
+    landscape_class = rank_landscape_class or _norm_text(meta.get("landscape_class"))
+
+    horizon_match = top.get("horizon_match") or {}
+    site_match = top.get("site_match") or {}
+
+    def _sm(field, key):
+        return site_match.get(field, {}).get(key)
+
     return {
         "soil_series": soil_series,
         "ecological_site": _norm_text(meta.get("ecological_site")),
-        "landscape_class": _norm_text(meta.get("landscape_class")),
+        "landscape_class": landscape_class,
         "component_id": component_id,
+        "score_data_horz": top.get("score_data_horz"),
+        "score_data_site": top.get("score_data_site"),
+        "horz_texture": horizon_match.get("texture"),
+        "horz_rock_fragments": horizon_match.get("rock_fragments"),
+        "horz_color": horizon_match.get("color"),
+        "horz_observed_depth": horizon_match.get("observed_depth"),
+        "horz_mapped_depth": horizon_match.get("mapped_depth"),
+        "horz_depth_coverage": horizon_match.get("depth_coverage"),
+        "site_slope_observed": _sm("slope", "observed"),
+        "site_slope_mapped": _sm("slope", "mapped"),
+        "site_elev_observed": _sm("elevation", "observed"),
+        "site_elev_mapped": _sm("elevation", "mapped"),
+        "site_aspect_north_observed": _sm("aspect_northerness", "observed"),
+        "site_aspect_north_mapped": _sm("aspect_northerness", "mapped"),
+        "site_aspect_east_observed": _sm("aspect_easterness", "observed"),
+        "site_aspect_east_mapped": _sm("aspect_easterness", "mapped"),
+        "site_shape_vert_observed": _sm("slope_shape_vertical", "observed"),
+        "site_shape_vert_mapped": _sm("slope_shape_vertical", "mapped"),
+        "site_shape_horiz_observed": _sm("slope_shape_horizontal", "observed"),
+        "site_shape_horiz_mapped": _sm("slope_shape_horizontal", "mapped"),
+        "site_landscape_observed": _sm("landscape", "observed"),
+        "site_landscape_mapped": _sm("landscape", "mapped"),
     }
 
 
 def _extract_expected_rank(rank_result, expected_soil_series, rank_method="rank_data_loc"):
     expected = _norm_name(expected_soil_series)
     if not expected:
-        return {"component_id": "", "rank": ""}
+        return {"component_id": "", "rank": "", "score_data_horz": None, "score_data_site": None}
 
     soil_rank = rank_result.get("soilRank") or []
     for item in soil_rank:
@@ -128,9 +163,26 @@ def _extract_expected_rank(rank_result, expected_soil_series, rank_method="rank_
             return {
                 "component_id": _norm_text(item.get("componentID")),
                 "rank": rank,
+                "score_data_horz": item.get("score_data_horz"),
+                "score_data_site": item.get("score_data_site"),
             }
 
-    return {"component_id": "", "rank": ""}
+    return {"component_id": "", "rank": "", "score_data_horz": None, "score_data_site": None}
+
+
+def _extract_expected_ecosite_rank(rank_result, expected_ecosite, rank_method="rank_data_loc"):
+    """Return the rank of the first soilRank item whose ecoclassid matches expected_ecosite."""
+    expected_norm = _norm_ecological_site(expected_ecosite)
+    if not expected_norm:
+        return {"rank": ""}
+
+    soil_rank = rank_result.get("soilRank") or []
+    for item in soil_rank:
+        ecoclassid = _norm_ecological_site(_norm_text(item.get("ecoclassid") or ""))
+        if ecoclassid and ecoclassid == expected_norm:
+            return {"rank": _norm_text(item.get(rank_method))}
+
+    return {"rank": ""}
 
 
 def _metadata_for_component(comp_meta_by_id, component_id="", component_name=""):
@@ -545,6 +597,20 @@ def main():
         default=1000,
         help="Search radius in metres used for list_soils in live/local mode (default: 1000)",
     )
+    parser.add_argument(
+        "--retry-csv",
+        default=None,
+        help="Path to a previous run-results CSV. Only rows with status != 'passed' will be re-run; "
+             "results are merged back and a new combined CSV is written.",
+    )
+    parser.add_argument(
+        "--legacy-gower",
+        action="store_true",
+        default=False,
+        help="Use pre-44cad9e Gower normalization: separate sand/clay/l/a/b features with equal "
+             "weights instead of texture_dist + color_delta_e with HORIZON_FEATURE_WEIGHTS. "
+             "Only applies to --execution-mode local.",
+    )
     args = parser.parse_args()
 
     plot_csv_arg = Path(args.plot_csv)
@@ -576,6 +642,17 @@ def main():
     if args.max_rows is not None:
         valid = valid.iloc[: args.max_rows]
 
+    # Retry mode: load previous results and restrict processing to non-passed rows.
+    prior_rows_df = None
+    if args.retry_csv:
+        prior_rows_df = pd.read_csv(args.retry_csv, dtype=str)
+        retry_keys = set(
+            prior_rows_df.loc[prior_rows_df["status"] != "passed", "PrimaryKey"]
+        )
+        n_prior_passed = int((prior_rows_df["status"] == "passed").sum())
+        valid = valid[valid["PrimaryKey"].isin(retry_keys)].copy()
+        print(f"retry_mode=True  prior_passed={n_prior_passed}  retrying={len(valid)}", flush=True)
+
     synthetic_list_output_data = None
 
     total = len(valid)
@@ -585,7 +662,7 @@ def main():
     failures = []
     row_results = []
 
-    for _, row in valid.iterrows():
+    for plot_idx, (_, row) in enumerate(valid.iterrows(), start=1):
         key = row["PrimaryKey"]
         try:
             rank_inputs = _build_rank_inputs_all_horizons(key, horizons_df)
@@ -684,17 +761,16 @@ def main():
                     skipped += 1
                     row_results.append(
                         {
+                            "plot_id": plot_idx,
                             "PrimaryKey": key,
                             "source": row_source,
                             "status": "skipped",
                             "error": _norm_text(list_output_data) or "No SoilListOutputData returned",
                             **plot_metadata,
-                            "expected_soil_series": expected_soil_series,
-                            "expected_ecological_site": expected_ecological_site,
-                            "expected_landscape_type": expected_landscape_raw,
-                            "expected_landscape_class": expected_landscape_class,
-                            "expected_rank_baseline": "",
-                            "expected_rank_terrain": "",
+                            "aim_expected_rank_baseline": "",
+                            "aim_expected_rank_terrain": "",
+                            "qc_expected_rank_baseline": "",
+                            "qc_expected_rank_terrain": "",
                             "expected_component_id_baseline": "",
                             "expected_component_id_terrain": "",
                             "expected_sda_ecological_site": "",
@@ -754,6 +830,7 @@ def main():
                     pElev=p_elev,
                     bedrock=bedrock_depth,
                     cracks=False,
+                    legacy_gower=args.legacy_gower,
                 )
 
                 with_terrain = rank_soils(
@@ -774,6 +851,7 @@ def main():
                     pSlopeShapeVert=p_shape_vert,
                     pSlopeShapeHoriz=p_shape_horiz,
                     pLandscape=p_landscape,
+                    legacy_gower=args.legacy_gower,
                 )
             else:
                 # Synthetic candidates are only allowed when explicitly requested.
@@ -797,6 +875,7 @@ def main():
                     pElev=p_elev,
                     bedrock=bedrock_depth,
                     cracks=False,
+                    legacy_gower=args.legacy_gower,
                 )
 
                 with_terrain = rank_soils(
@@ -817,6 +896,7 @@ def main():
                     pSlopeShapeVert=p_shape_vert,
                     pSlopeShapeHoriz=p_shape_horiz,
                     pLandscape=p_landscape,
+                    legacy_gower=args.legacy_gower,
                 )
 
             comp_meta_by_id = _build_component_metadata(list_output_data)
@@ -831,6 +911,11 @@ def main():
                 component_id=baseline_expected["component_id"] or terrain_expected["component_id"],
                 component_name=expected_soil_series,
             )
+
+            # AIM/QC specific baseline and AIM-terrain rank lookups
+            aim_baseline_rank = _extract_expected_rank(baseline, aim_expected_soil_series, args.rank_method)
+            aim_terrain_rank = _extract_expected_rank(with_terrain, aim_expected_soil_series, args.rank_method)
+            qc_baseline_rank = _extract_expected_rank(baseline, qc_expected_soil_series, args.rank_method)
 
             baseline_top = _extract_top_metadata(baseline, comp_meta_by_id, args.rank_method)
             terrain_top = _extract_top_metadata(with_terrain, comp_meta_by_id, args.rank_method)
@@ -880,6 +965,7 @@ def main():
                         pSlopeShapeVert=p_shape_vert,
                         pSlopeShapeHoriz=p_shape_horiz,
                         pLandscape=p_landscape_qc,
+                        legacy_gower=args.legacy_gower,
                     )
                 if not with_terrain_qc.get("soilRank"):
                     raise RuntimeError("Empty soilRank in QC terrain output")
@@ -888,20 +974,33 @@ def main():
                 # landscape class unchanged — QC terrain result equals AIM terrain result
                 terrain_qc_top = terrain_top.copy()
 
+            # Rank lookups against the terrain_qc result for expected series/ecosites
+            qc_rank_result = with_terrain_qc if landscape_class_qc_changed else with_terrain
+            aim_expected_rank_qc = _extract_expected_rank(
+                qc_rank_result, aim_expected_soil_series, args.rank_method
+            )
+            qc_expected_rank_qc = _extract_expected_rank(
+                qc_rank_result, qc_expected_soil_series, args.rank_method
+            )
+            aim_expected_ecosite_rank_qc = _extract_expected_ecosite_rank(
+                qc_rank_result, aim_expected_eco_site, args.rank_method
+            )
+            qc_expected_ecosite_rank_qc = _extract_expected_ecosite_rank(
+                qc_rank_result, qc_expected_eco_site, args.rank_method
+            )
+
             passed += 1
             row_results.append(
                 {
+                    "plot_id": plot_idx,
                     "PrimaryKey": key,
                     "source": row_source,
                     "status": "passed",
                     "error": "",
                     **plot_metadata,
-                    "expected_soil_series": expected_soil_series,
-                    "expected_ecological_site": expected_ecological_site,
-                    "expected_landscape_type": expected_landscape_raw,
-                    "expected_landscape_class": expected_landscape_class,
-                    "expected_rank_baseline": baseline_expected["rank"],
-                    "expected_rank_terrain": terrain_expected["rank"],
+                    "aim_expected_rank_baseline": aim_baseline_rank["rank"],
+                    "aim_expected_rank_terrain": aim_terrain_rank["rank"],
+                    "qc_expected_rank_baseline": qc_baseline_rank["rank"],
                     "expected_component_id_baseline": baseline_expected["component_id"],
                     "expected_component_id_terrain": terrain_expected["component_id"],
                     "expected_sda_ecological_site": _norm_text(expected_meta.get("ecological_site")),
@@ -976,6 +1075,36 @@ def main():
                     "aim_qc_landscape_class_match": _match(
                         qc_expected_landscape_class, aim_expected_landscape_class
                     ),
+                    # Expected series/ecosite ranks in the terrain_qc result
+                    "qc_expected_rank_terrain": qc_expected_rank_qc["rank"],
+                    "aim_expected_ecosite_rank": aim_expected_ecosite_rank_qc["rank"],
+                    "qc_expected_ecosite_rank": qc_expected_ecosite_rank_qc["rank"],
+                    # QC expected series score detail from terrain_qc result
+                    "qc_expected_score_data_horz": qc_expected_rank_qc["score_data_horz"],
+                    "qc_expected_score_data_site": qc_expected_rank_qc["score_data_site"],
+                    # Terrain (QC) rank-1 component match detail scores
+                    "terrain_qc_score_data_horz": terrain_qc_top.get("score_data_horz"),
+                    "terrain_qc_score_data_site": terrain_qc_top.get("score_data_site"),
+                    "terrain_qc_horz_texture": terrain_qc_top.get("horz_texture"),
+                    "terrain_qc_horz_rock_fragments": terrain_qc_top.get("horz_rock_fragments"),
+                    "terrain_qc_horz_color": terrain_qc_top.get("horz_color"),
+                    "terrain_qc_horz_observed_depth": terrain_qc_top.get("horz_observed_depth"),
+                    "terrain_qc_horz_mapped_depth": terrain_qc_top.get("horz_mapped_depth"),
+                    "terrain_qc_horz_depth_coverage": terrain_qc_top.get("horz_depth_coverage"),
+                    "terrain_qc_site_slope_observed": terrain_qc_top.get("site_slope_observed"),
+                    "terrain_qc_site_slope_mapped": terrain_qc_top.get("site_slope_mapped"),
+                    "terrain_qc_site_elev_observed": terrain_qc_top.get("site_elev_observed"),
+                    "terrain_qc_site_elev_mapped": terrain_qc_top.get("site_elev_mapped"),
+                    "terrain_qc_site_aspect_north_observed": terrain_qc_top.get("site_aspect_north_observed"),
+                    "terrain_qc_site_aspect_north_mapped": terrain_qc_top.get("site_aspect_north_mapped"),
+                    "terrain_qc_site_aspect_east_observed": terrain_qc_top.get("site_aspect_east_observed"),
+                    "terrain_qc_site_aspect_east_mapped": terrain_qc_top.get("site_aspect_east_mapped"),
+                    "terrain_qc_site_shape_vert_observed": terrain_qc_top.get("site_shape_vert_observed"),
+                    "terrain_qc_site_shape_vert_mapped": terrain_qc_top.get("site_shape_vert_mapped"),
+                    "terrain_qc_site_shape_horiz_observed": terrain_qc_top.get("site_shape_horiz_observed"),
+                    "terrain_qc_site_shape_horiz_mapped": terrain_qc_top.get("site_shape_horiz_mapped"),
+                    "terrain_qc_site_landscape_observed": terrain_qc_top.get("site_landscape_observed"),
+                    "terrain_qc_site_landscape_mapped": terrain_qc_top.get("site_landscape_mapped"),
                 }
             )
         except Exception as exc:
@@ -983,19 +1112,16 @@ def main():
             failures.append((key, str(exc)))
             row_results.append(
                 {
+                    "plot_id": plot_idx,
                     "PrimaryKey": key,
                     "source": _norm_source(row.get("source") or row.get("Source")),
                     "status": "failed",
                     "error": str(exc),
                     **_extract_plot_metadata(row),
-                    "expected_soil_series": _pick_expected_soil_series(row),
-                    "expected_ecological_site": _norm_text(row.get("EcolSite")),
-                    "expected_landscape_type": _norm_text(row.get("LandscapeType")),
-                    "expected_landscape_class": _aim_landscape_class(
-                        _norm_text(row.get("LandscapeType"))
-                    ),
-                    "expected_rank_baseline": "",
-                    "expected_rank_terrain": "",
+                    "aim_expected_rank_baseline": "",
+                    "aim_expected_rank_terrain": "",
+                    "qc_expected_rank_baseline": "",
+                    "qc_expected_rank_terrain": "",
                     "expected_component_id_baseline": "",
                     "expected_component_id_terrain": "",
                     "expected_sda_ecological_site": "",
@@ -1041,6 +1167,34 @@ def main():
                     "aim_qc_soil_series_match": None,
                     "aim_qc_ecological_site_match": None,
                     "aim_qc_landscape_class_match": None,
+                    "aim_expected_rank": "",
+                    "qc_expected_rank": "",
+                    "aim_expected_ecosite_rank": "",
+                    "qc_expected_ecosite_rank": "",
+                    "qc_expected_score_data_horz": None,
+                    "qc_expected_score_data_site": None,
+                    "terrain_qc_score_data_horz": None,
+                    "terrain_qc_score_data_site": None,
+                    "terrain_qc_horz_texture": None,
+                    "terrain_qc_horz_rock_fragments": None,
+                    "terrain_qc_horz_color": None,
+                    "terrain_qc_horz_observed_depth": None,
+                    "terrain_qc_horz_mapped_depth": None,
+                    "terrain_qc_horz_depth_coverage": None,
+                    "terrain_qc_site_slope_observed": None,
+                    "terrain_qc_site_slope_mapped": None,
+                    "terrain_qc_site_elev_observed": None,
+                    "terrain_qc_site_elev_mapped": None,
+                    "terrain_qc_site_aspect_north_observed": None,
+                    "terrain_qc_site_aspect_north_mapped": None,
+                    "terrain_qc_site_aspect_east_observed": None,
+                    "terrain_qc_site_aspect_east_mapped": None,
+                    "terrain_qc_site_shape_vert_observed": None,
+                    "terrain_qc_site_shape_vert_mapped": None,
+                    "terrain_qc_site_shape_horiz_observed": None,
+                    "terrain_qc_site_shape_horiz_mapped": None,
+                    "terrain_qc_site_landscape_observed": None,
+                    "terrain_qc_site_landscape_mapped": None,
                 }
             )
 
@@ -1051,60 +1205,92 @@ def main():
     summary_json_path = output_dir / f"{stem}_run_summary_{timestamp}.json"
     summary_txt_path = output_dir / f"{stem}_run_summary_{timestamp}.txt"
 
-    pd.DataFrame(row_results).to_csv(rows_path, index=False)
+    retry_df = pd.DataFrame(row_results)
+
+    # In retry mode: merge fresh results over the prior passed rows.
+    if prior_rows_df is not None and not retry_df.empty:
+        passed_df = prior_rows_df[prior_rows_df["status"] == "passed"].copy()
+        # Align dtypes so concat doesn't break numeric columns
+        combined_df = pd.concat([passed_df, retry_df], ignore_index=True)
+        # Restore original plot_id order
+        combined_df["plot_id"] = pd.to_numeric(combined_df["plot_id"], errors="coerce")
+        combined_df = combined_df.sort_values("plot_id").reset_index(drop=True)
+        # Recount totals from merged results
+        total = len(combined_df)
+        passed = int((combined_df["status"] == "passed").sum())
+        failed = int((combined_df["status"] == "failed").sum())
+        skipped = int((combined_df["status"] == "skipped").sum())
+    else:
+        combined_df = retry_df
+
+    combined_df.to_csv(rows_path, index=False)
+
+    # Use combined (merged) rows for all summary scoring
+    score_rows = combined_df.to_dict("records")
+    # Fix boolean columns that may have been stringified by CSV round-trip
+    for _r in score_rows:
+        for _col in list(_r.keys()):
+            if str(_r[_col]).lower() == "true":
+                _r[_col] = True
+            elif str(_r[_col]).lower() == "false":
+                _r[_col] = False
+
+    n_landscape_changed = sum(
+        1 for _r in score_rows if _r.get("landscape_class_qc_changed") is True
+    )
 
     baseline_scores = {
-        "soil_series": _score_summary(row_results, "baseline_aim", "expected_soil_series", "soil_series"),
+        "soil_series": _score_summary(score_rows, "baseline_aim", "aim_expected_soil_series", "soil_series"),
         "ecological_site": _score_summary(
-            row_results, "baseline_aim", "expected_ecological_site", "ecological_site"
+            score_rows, "baseline_aim", "aim_expected_ecological_site", "ecological_site"
         ),
         "landscape_class": _score_summary(
-            row_results, "baseline_aim", "expected_landscape_class", "landscape_class"
+            score_rows, "baseline_aim", "aim_expected_landscape_class", "landscape_class"
         ),
     }
     terrain_scores = {
-        "soil_series": _score_summary(row_results, "terrain_aim", "expected_soil_series", "soil_series"),
+        "soil_series": _score_summary(score_rows, "terrain_aim", "aim_expected_soil_series", "soil_series"),
         "ecological_site": _score_summary(
-            row_results, "terrain_aim", "expected_ecological_site", "ecological_site"
+            score_rows, "terrain_aim", "aim_expected_ecological_site", "ecological_site"
         ),
         "landscape_class": _score_summary(
-            row_results, "terrain_aim", "expected_landscape_class", "landscape_class"
+            score_rows, "terrain_aim", "aim_expected_landscape_class", "landscape_class"
         ),
     }
 
     baseline_scores_by_source = {
         "AIM": {
             "soil_series": _score_summary(
-                row_results, "baseline_aim", "expected_soil_series", "soil_series", source="AIM"
+                score_rows, "baseline_aim", "aim_expected_soil_series", "soil_series", source="AIM"
             ),
             "ecological_site": _score_summary(
-                row_results,
+                score_rows,
                 "baseline_aim",
-                "expected_ecological_site",
+                "aim_expected_ecological_site",
                 "ecological_site",
                 source="AIM",
             ),
             "landscape_class": _score_summary(
-                row_results,
+                score_rows,
                 "baseline_aim",
-                "expected_landscape_class",
+                "aim_expected_landscape_class",
                 "landscape_class",
                 source="AIM",
             ),
         },
         "QC": {
             "soil_series": _score_summary_with_match_col(
-                row_results,
+                score_rows,
                 "qc_expected_soil_series",
                 "baseline_qc_soil_series_match",
             ),
             "ecological_site": _score_summary_with_match_col(
-                row_results,
+                score_rows,
                 "qc_expected_ecological_site",
                 "baseline_qc_ecological_site_match",
             ),
             "landscape_class": _score_summary_with_match_col(
-                row_results,
+                score_rows,
                 "qc_expected_landscape_class",
                 "baseline_qc_landscape_class_match",
             ),
@@ -1113,36 +1299,36 @@ def main():
     terrain_scores_by_source = {
         "AIM": {
             "soil_series": _score_summary(
-                row_results, "terrain_aim", "expected_soil_series", "soil_series", source="AIM"
+                score_rows, "terrain_aim", "aim_expected_soil_series", "soil_series", source="AIM"
             ),
             "ecological_site": _score_summary(
-                row_results,
+                score_rows,
                 "terrain_aim",
-                "expected_ecological_site",
+                "aim_expected_ecological_site",
                 "ecological_site",
                 source="AIM",
             ),
             "landscape_class": _score_summary(
-                row_results,
+                score_rows,
                 "terrain_aim",
-                "expected_landscape_class",
+                "aim_expected_landscape_class",
                 "landscape_class",
                 source="AIM",
             ),
         },
         "QC": {
             "soil_series": _score_summary_with_match_col(
-                row_results,
+                score_rows,
                 "qc_expected_soil_series",
                 "terrain_qc_soil_series_match",
             ),
             "ecological_site": _score_summary_with_match_col(
-                row_results,
+                score_rows,
                 "qc_expected_ecological_site",
                 "terrain_qc_ecological_site_match",
             ),
             "landscape_class": _score_summary_with_match_col(
-                row_results,
+                score_rows,
                 "qc_expected_landscape_class",
                 "terrain_qc_landscape_class_match",
             ),
@@ -1150,39 +1336,36 @@ def main():
     }
 
     # rank_soils (QC landscape inputs) vs QC reference — evaluate across all comparable rows
-    n_landscape_changed = sum(
-        1 for r in row_results if r.get("landscape_class_qc_changed") is True
-    )
     baseline_qc_scores = {
         "soil_series": _score_match_col(
-            row_results,
+            score_rows,
             "baseline_qc_soil_series_match",
             require_col="qc_expected_soil_series",
         ),
         "ecological_site": _score_match_col(
-            row_results,
+            score_rows,
             "baseline_qc_ecological_site_match",
             require_col="qc_expected_ecological_site",
         ),
         "landscape_class": _score_match_col(
-            row_results,
+            score_rows,
             "baseline_qc_landscape_class_match",
             require_col="qc_expected_landscape_class",
         ),
     }
     terrain_qc_scores = {
         "soil_series": _score_match_col(
-            row_results,
+            score_rows,
             "terrain_qc_soil_series_match",
             require_col="qc_expected_soil_series",
         ),
         "ecological_site": _score_match_col(
-            row_results,
+            score_rows,
             "terrain_qc_ecological_site_match",
             require_col="qc_expected_ecological_site",
         ),
         "landscape_class": _score_match_col(
-            row_results,
+            score_rows,
             "terrain_qc_landscape_class_match",
             require_col="qc_expected_landscape_class",
         ),
@@ -1191,17 +1374,17 @@ def main():
     # AIM vs QC reference agreement (how often AIM and QC agree on soil series / eco site / landscape)
     aim_qc_agreement = {
         "soil_series": _score_match_col(
-            row_results,
+            score_rows,
             "aim_qc_soil_series_match",
             require_col="qc_expected_soil_series",
         ),
         "ecological_site": _score_match_col(
-            row_results,
+            score_rows,
             "aim_qc_ecological_site_match",
             require_col="qc_expected_ecological_site",
         ),
         "landscape_class": _score_match_col(
-            row_results,
+            score_rows,
             "aim_qc_landscape_class_match",
             require_col="qc_expected_landscape_class",
         ),
