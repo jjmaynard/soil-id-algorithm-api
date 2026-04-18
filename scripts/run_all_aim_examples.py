@@ -373,10 +373,12 @@ def _first_nonempty(row, columns):
     return ""
 
 
-def _score_summary(rows, mode_prefix, expected_col, predicted_col, source=None):
+def _score_summary(rows, mode_prefix, expected_col, predicted_col, source=None, passed_only=False):
     subset = [r for r in rows if _norm_text(r.get(expected_col))]
     if source:
         subset = [r for r in subset if _norm_source(r.get("source")) == source]
+    if passed_only:
+        subset = [r for r in subset if r.get("status") == "passed"]
     compared = len(subset)
     matched = sum(1 for r in subset if r.get(f"{mode_prefix}_{predicted_col}_match") is True)
     return {
@@ -386,8 +388,10 @@ def _score_summary(rows, mode_prefix, expected_col, predicted_col, source=None):
     }
 
 
-def _score_summary_with_match_col(rows, expected_col, match_col):
+def _score_summary_with_match_col(rows, expected_col, match_col, passed_only=False):
     subset = [r for r in rows if _norm_text(r.get(expected_col))]
+    if passed_only:
+        subset = [r for r in subset if r.get("status") == "passed"]
     compared = len(subset)
     matched = sum(1 for r in subset if r.get(match_col) is True)
     return {
@@ -397,12 +401,14 @@ def _score_summary_with_match_col(rows, expected_col, match_col):
     }
 
 
-def _score_match_col(rows, match_col, require_col=None, changed_only=False):
+def _score_match_col(rows, match_col, require_col=None, changed_only=False, passed_only=False):
     subset = rows
     if changed_only:
         subset = [r for r in subset if r.get("landscape_class_qc_changed") is True]
     if require_col:
         subset = [r for r in subset if _norm_text(r.get(require_col))]
+    if passed_only:
+        subset = [r for r in subset if r.get("status") == "passed"]
     compared = len(subset)
     matched = sum(1 for r in subset if r.get(match_col) is True)
     return {
@@ -1257,6 +1263,25 @@ def main():
             score_rows, "terrain_aim", "aim_expected_landscape_class", "landscape_class"
         ),
     }
+    # Passed-only variants (exclude failed rows from denominator)
+    baseline_scores_passed = {
+        "soil_series": _score_summary(score_rows, "baseline_aim", "aim_expected_soil_series", "soil_series", passed_only=True),
+        "ecological_site": _score_summary(
+            score_rows, "baseline_aim", "aim_expected_ecological_site", "ecological_site", passed_only=True
+        ),
+        "landscape_class": _score_summary(
+            score_rows, "baseline_aim", "aim_expected_landscape_class", "landscape_class", passed_only=True
+        ),
+    }
+    terrain_scores_passed = {
+        "soil_series": _score_summary(score_rows, "terrain_aim", "aim_expected_soil_series", "soil_series", passed_only=True),
+        "ecological_site": _score_summary(
+            score_rows, "terrain_aim", "aim_expected_ecological_site", "ecological_site", passed_only=True
+        ),
+        "landscape_class": _score_summary(
+            score_rows, "terrain_aim", "aim_expected_landscape_class", "landscape_class", passed_only=True
+        ),
+    }
 
     baseline_scores_by_source = {
         "AIM": {
@@ -1370,6 +1395,47 @@ def main():
             require_col="qc_expected_landscape_class",
         ),
     }
+    # Passed-only QC variants
+    baseline_qc_scores_passed = {
+        "soil_series": _score_match_col(
+            score_rows,
+            "baseline_qc_soil_series_match",
+            require_col="qc_expected_soil_series",
+            passed_only=True,
+        ),
+        "ecological_site": _score_match_col(
+            score_rows,
+            "baseline_qc_ecological_site_match",
+            require_col="qc_expected_ecological_site",
+            passed_only=True,
+        ),
+        "landscape_class": _score_match_col(
+            score_rows,
+            "baseline_qc_landscape_class_match",
+            require_col="qc_expected_landscape_class",
+            passed_only=True,
+        ),
+    }
+    terrain_qc_scores_passed = {
+        "soil_series": _score_match_col(
+            score_rows,
+            "terrain_qc_soil_series_match",
+            require_col="qc_expected_soil_series",
+            passed_only=True,
+        ),
+        "ecological_site": _score_match_col(
+            score_rows,
+            "terrain_qc_ecological_site_match",
+            require_col="qc_expected_ecological_site",
+            passed_only=True,
+        ),
+        "landscape_class": _score_match_col(
+            score_rows,
+            "terrain_qc_landscape_class_match",
+            require_col="qc_expected_landscape_class",
+            passed_only=True,
+        ),
+    }
 
     # AIM vs QC reference agreement (how often AIM and QC agree on soil series / eco site / landscape)
     aim_qc_agreement = {
@@ -1405,8 +1471,12 @@ def main():
         "n_landscape_changed": n_landscape_changed,
         "baseline_match_aim": baseline_scores,
         "terrain_aim_match": terrain_scores,
+        "baseline_match_aim_passed_only": baseline_scores_passed,
+        "terrain_aim_match_passed_only": terrain_scores_passed,
         "baseline_qc_match": baseline_qc_scores,
         "terrain_qc_match": terrain_qc_scores,
+        "baseline_qc_match_passed_only": baseline_qc_scores_passed,
+        "terrain_qc_match_passed_only": terrain_qc_scores_passed,
         "aim_qc_reference_agreement": aim_qc_agreement,
         "baseline_match_by_source": baseline_scores_by_source,
         "terrain_match_by_source": terrain_scores_by_source,
@@ -1429,7 +1499,7 @@ def main():
                 f"Rows with QC landscape change: {n_landscape_changed}",
                 "",
                 "=" * 60,
-                "rank_soils MATCH RATES vs AIM REFERENCE (all rows)",
+                "rank_soils MATCH RATES vs AIM REFERENCE (all rows incl. failed)",
                 "=" * 60,
                 "",
                 "Baseline (no terrain inputs):",
@@ -1443,7 +1513,21 @@ def main():
                 f"  Landscape class: {terrain_scores['landscape_class']['matched']}/{terrain_scores['landscape_class']['compared']} (accuracy={terrain_scores['landscape_class']['accuracy']})",
                 "",
                 "=" * 60,
-                f"rank_soils MATCH RATES vs QC REFERENCE (all comparable rows; landscape-changed n={n_landscape_changed})",
+                "rank_soils MATCH RATES vs AIM REFERENCE (passed rows only)",
+                "=" * 60,
+                "",
+                "Baseline (no terrain inputs):",
+                f"  Soil series:     {baseline_scores_passed['soil_series']['matched']}/{baseline_scores_passed['soil_series']['compared']} (accuracy={baseline_scores_passed['soil_series']['accuracy']})",
+                f"  Ecological site: {baseline_scores_passed['ecological_site']['matched']}/{baseline_scores_passed['ecological_site']['compared']} (accuracy={baseline_scores_passed['ecological_site']['accuracy']})",
+                f"  Landscape class: {baseline_scores_passed['landscape_class']['matched']}/{baseline_scores_passed['landscape_class']['compared']} (accuracy={baseline_scores_passed['landscape_class']['accuracy']})",
+                "",
+                "With terrain (AIM landscape inputs):",
+                f"  Soil series:     {terrain_scores_passed['soil_series']['matched']}/{terrain_scores_passed['soil_series']['compared']} (accuracy={terrain_scores_passed['soil_series']['accuracy']})",
+                f"  Ecological site: {terrain_scores_passed['ecological_site']['matched']}/{terrain_scores_passed['ecological_site']['compared']} (accuracy={terrain_scores_passed['ecological_site']['accuracy']})",
+                f"  Landscape class: {terrain_scores_passed['landscape_class']['matched']}/{terrain_scores_passed['landscape_class']['compared']} (accuracy={terrain_scores_passed['landscape_class']['accuracy']})",
+                "",
+                "=" * 60,
+                f"rank_soils MATCH RATES vs QC REFERENCE (all rows incl. failed; landscape-changed n={n_landscape_changed})",
                 "=" * 60,
                 "",
                 "Baseline (no terrain inputs):",
@@ -1455,6 +1539,20 @@ def main():
                 f"  Soil series:     {terrain_qc_scores['soil_series']['matched']}/{terrain_qc_scores['soil_series']['compared']} (accuracy={terrain_qc_scores['soil_series']['accuracy']})",
                 f"  Ecological site: {terrain_qc_scores['ecological_site']['matched']}/{terrain_qc_scores['ecological_site']['compared']} (accuracy={terrain_qc_scores['ecological_site']['accuracy']})",
                 f"  Landscape class: {terrain_qc_scores['landscape_class']['matched']}/{terrain_qc_scores['landscape_class']['compared']} (accuracy={terrain_qc_scores['landscape_class']['accuracy']})",
+                "",
+                "=" * 60,
+                f"rank_soils MATCH RATES vs QC REFERENCE (passed rows only; landscape-changed n={n_landscape_changed})",
+                "=" * 60,
+                "",
+                "Baseline (no terrain inputs):",
+                f"  Soil series:     {baseline_qc_scores_passed['soil_series']['matched']}/{baseline_qc_scores_passed['soil_series']['compared']} (accuracy={baseline_qc_scores_passed['soil_series']['accuracy']})",
+                f"  Ecological site: {baseline_qc_scores_passed['ecological_site']['matched']}/{baseline_qc_scores_passed['ecological_site']['compared']} (accuracy={baseline_qc_scores_passed['ecological_site']['accuracy']})",
+                f"  Landscape class: {baseline_qc_scores_passed['landscape_class']['matched']}/{baseline_qc_scores_passed['landscape_class']['compared']} (accuracy={baseline_qc_scores_passed['landscape_class']['accuracy']})",
+                "",
+                "With terrain (QC landscape inputs):",
+                f"  Soil series:     {terrain_qc_scores_passed['soil_series']['matched']}/{terrain_qc_scores_passed['soil_series']['compared']} (accuracy={terrain_qc_scores_passed['soil_series']['accuracy']})",
+                f"  Ecological site: {terrain_qc_scores_passed['ecological_site']['matched']}/{terrain_qc_scores_passed['ecological_site']['compared']} (accuracy={terrain_qc_scores_passed['ecological_site']['accuracy']})",
+                f"  Landscape class: {terrain_qc_scores_passed['landscape_class']['matched']}/{terrain_qc_scores_passed['landscape_class']['compared']} (accuracy={terrain_qc_scores_passed['landscape_class']['accuracy']})",
                 "",
                 "=" * 60,
                 "AIM vs QC REFERENCE AGREEMENT",
