@@ -140,6 +140,21 @@ _SHAPE_RULES: list[tuple[str, re.Pattern]] = [
     ("undulating", re.compile(r"undulat|wavy|irregular|rolling", re.IGNORECASE)),
 ]
 
+# Partial Gower distances between canonical slope shape classes.
+# Values encode geomorphic similarity; pairs absent from the table default to 1.0.
+_SHAPE_PARTIAL_DIST: dict[frozenset, float] = {
+    frozenset({"concave",    "linear"}):     0.50,
+    frozenset({"convex",     "linear"}):     0.50,
+    frozenset({"concave",    "convex"}):     0.75,
+    frozenset({"concave",    "undulating"}): 0.25,
+    frozenset({"convex",     "undulating"}): 0.25,
+    frozenset({"linear",     "undulating"}): 0.25,
+    frozenset({"other",      "concave"}):    0.75,
+    frozenset({"other",      "convex"}):     0.75,
+    frozenset({"other",      "linear"}):     0.75,
+    frozenset({"other",      "undulating"}): 0.75,
+}
+
 # ---------------------------------------------------------------------------
 # Slope shape crosswalk
 # ---------------------------------------------------------------------------
@@ -401,7 +416,9 @@ def slope_shape_gowers_distance(
     sda_class = crosswalk_slope_shape(sda_label)
     if obs_class is None or sda_class is None:
         return None
-    return 0.0 if obs_class == sda_class else 1.0
+    if obs_class == sda_class:
+        return 0.0
+    return _SHAPE_PARTIAL_DIST.get(frozenset({obs_class, sda_class}), 1.0)
 
 
 # ---------------------------------------------------------------------------

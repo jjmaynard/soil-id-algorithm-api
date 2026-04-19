@@ -129,6 +129,14 @@ AIM_TO_STANDARD: dict[str, str] = {
     "Playa":            "playa",
     "Dunes":            "dunes_sands",
     "Other":            "other",
+    # --- AIM field-data CSV aliases (underscore / camelCase / abbreviated variants) ---
+    "Floodplain":       "floodplain_basin",   # CSV omits "/Basin"
+    "Hillslope":        "hill_mountain",       # generic hillslope context
+    "Fan_remnant":      "alluvial_fan",
+    "Fan remnant":      "alluvial_fan",
+    "BasinFloor":       "floodplain_basin",
+    "Basin Floor":      "floodplain_basin",
+    "Basin_Floor":      "floodplain_basin",
 }
 
 

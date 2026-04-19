@@ -317,6 +317,7 @@ def _build_analyze_payload(
     p_shape_vert=None,
     p_shape_horiz=None,
     p_landscape=None,
+    max_distance_m=1000,
 ):
     payload = {
         "lon": lon,
@@ -326,6 +327,7 @@ def _build_analyze_payload(
         "rank_data_csv": "compname,sandpct_intpl",
         "map_unit_component_data_csv": "mukey,cokey",
         "sim": False,
+        "max_distance_m": max_distance_m,
         "soilHorizon": rank_inputs.get("soilHorizon"),
         "topDepth": rank_inputs.get("topDepth"),
         "bottomDepth": rank_inputs.get("bottomDepth"),
@@ -549,7 +551,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--plot-csv",
-        default="study_plot_characteristics_AIM.csv",
+        default="study_plot_characteristics_enriched.csv",
         help="Plot characteristics CSV path (absolute, workspace-relative, or under Data/aim_data)",
     )
     parser.add_argument(
@@ -728,6 +730,7 @@ def main():
                     p_slope=p_slope,
                     p_elev=p_elev,
                     bedrock_depth=bedrock_depth,
+                    max_distance_m=args.buffer_meters,
                 )
                 baseline_api_response = _call_analyze_soil_api(
                     args.soilid_api_url,
@@ -746,6 +749,7 @@ def main():
                     p_shape_vert=p_shape_vert,
                     p_shape_horiz=p_shape_horiz,
                     p_landscape=p_landscape,
+                    max_distance_m=args.buffer_meters,
                 )
                 terrain_api_response = _call_analyze_soil_api(
                     args.soilid_api_url,
@@ -943,6 +947,7 @@ def main():
                         p_shape_vert=p_shape_vert,
                         p_shape_horiz=p_shape_horiz,
                         p_landscape=p_landscape_qc,
+                        max_distance_m=args.buffer_meters,
                     )
                     with_terrain_qc = (
                         _call_analyze_soil_api(

@@ -25,7 +25,16 @@ def test_slope_shape_gowers_distance_linear_planar_match():
 
 
 def test_slope_shape_gowers_distance_convex_concave_mismatch():
-    assert slope_shape_gowers_distance("Convex", "Concave") == 1.0
+    # convex ↔ concave are opposites: partial distance 0.75 (not binary 1.0)
+    assert slope_shape_gowers_distance("Convex", "Concave") == 0.75
+
+
+def test_slope_shape_gowers_distance_concave_linear_partial():
+    assert slope_shape_gowers_distance("Concave", "Linear") == 0.50
+
+
+def test_slope_shape_gowers_distance_concave_undulating_partial():
+    assert slope_shape_gowers_distance("Concave", "Undulate") == 0.25
 
 
 def test_aspect_vector_roundtrip_cardinal_directions():

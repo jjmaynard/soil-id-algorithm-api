@@ -33,11 +33,12 @@ from .landscape_crosswalk import (
     aim_to_standard_class,
     build_sda_landscape_label,
     crosswalk_landscape_class,
+    landscape_gowers_distance,
     ssurgo_to_standard_class,
 )
 from .rank_utils import finalize_rank_output
 from .services import get_elev_data, get_soil_series_data, get_soilweb_data, sda_return
-from .terrain_crosswalk import crosswalk_slope_shape
+from .terrain_crosswalk import crosswalk_slope_shape, slope_shape_gowers_distance
 
 # Try to import soil_sim, but make it optional
 try:
@@ -2563,6 +2564,8 @@ def rank_soils(
     obs_landscape = aim_to_standard_class(pLandscape)
     if obs_landscape in (None, "other"):
         obs_landscape = crosswalk_landscape_class(pLandscape, mode=landscape_mode)
+    if obs_landscape == "other":
+        obs_landscape = None  # exclude from features rather than penalizing with max distance
 
     if pElev_val is None:
         pElev_dict = get_elev_data(lon, lat)
@@ -2629,11 +2632,28 @@ def rank_soils(
                 slices_of_soil[["compname", "bottom_depth"]], on="compname", how="left"
             )
 
-        categorical_set = {"shape_vert_class", "shape_horiz_class", "landscape_class"}
-        categorical_features = [feature for feature in features if feature in categorical_set]
-        for feature in categorical_features:
-            codes = pd.Categorical(full_df[feature]).codes
-            full_df[feature] = np.where(codes < 0, np.nan, codes.astype(float))
+        # Pre-compute partial Gower distances for categorical terrain features.
+        # Each column is replaced with numeric values in [0, 1]: the pedon row is
+        # set to 0.0 (distance to itself); lib rows get the semantically-graded
+        # partial distance from the observed value to the component's class.
+        # The columns are then treated as numeric features with range 1.0 below.
+        categorical_set: set = set()  # all categorical features handled below
+        _PRECOMP_FEATS = {"landscape_class", "shape_vert_class", "shape_horiz_class"}
+        for _pf in [f for f in features if f in _PRECOMP_FEATS]:
+            _obs_val = provided[_pf]
+            if _pf == "landscape_class":
+                _dist_vals = [
+                    landscape_gowers_distance(_obs_val, lc)
+                    for lc in lib_df[_pf]
+                ]
+            else:
+                _dist_vals = [
+                    slope_shape_gowers_distance(_obs_val, sc)
+                    for sc in lib_df[_pf]
+                ]
+            full_df[_pf] = [0.0] + [
+                d if d is not None else np.nan for d in _dist_vals
+            ]
 
         # 8) Build your weight vector
         DEFAULT_WEIGHTS = {
@@ -2644,7 +2664,7 @@ def rank_soils(
             "aspect_easterness": 0.25,
             "shape_vert_class": 0.25,
             "shape_horiz_class": 0.25,
-            "landscape_class": 2.0,
+            "landscape_class": 0.75,
         }
         weights = np.array([DEFAULT_WEIGHTS[f] for f in features])
 
@@ -2659,6 +2679,9 @@ def rank_soils(
             "bottom_depth": 200.0,    # interpolation ceiling in the horizon pipeline
             "aspect_northerness": 2.0,  # cos(θ) ∈ [-1, 1], range = 2
             "aspect_easterness": 2.0,   # sin(θ) ∈ [-1, 1], range = 2
+            "landscape_class": 1.0,   # pre-computed partial distance ∈ [0, 1]
+            "shape_vert_class": 1.0,  # pre-computed partial distance ∈ [0, 1]
+            "shape_horiz_class": 1.0, # pre-computed partial distance ∈ [0, 1]
         }
         numeric_features = [f for f in features if f not in categorical_set]
         site_theoretical_ranges = [
@@ -2718,11 +2741,12 @@ def rank_soils(
                     )
                 except Exception:
                     _mv_clean = _mv
-                if _f in categorical_set:
-                    if _ov is not None and _mv_clean is not None:
-                        _sim = 1.0 if str(_ov) == str(_mv_clean) else 0.0
-                    else:
-                        _sim = None
+                if _f == "landscape_class":
+                    _d = landscape_gowers_distance(_ov, _mv_clean)
+                    _sim = round(1.0 - _d, 3) if _d is not None else None
+                elif _f in {"shape_vert_class", "shape_horiz_class"}:
+                    _d = slope_shape_gowers_distance(_ov, _mv_clean)
+                    _sim = round(1.0 - _d, 3) if _d is not None else None
                 else:
                     _tr = SITE_THEORETICAL_RANGES.get(_f)
                     if _tr and _ov is not None and _mv_clean is not None:
