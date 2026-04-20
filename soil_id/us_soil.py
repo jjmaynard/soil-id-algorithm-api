@@ -2664,7 +2664,7 @@ def rank_soils(
             "aspect_easterness": 0.25,
             "shape_vert_class": 0.25,
             "shape_horiz_class": 0.25,
-            "landscape_class": 0.75,
+            "landscape_class": 0.35,
         }
         weights = np.array([DEFAULT_WEIGHTS[f] for f in features])
 
