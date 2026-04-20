@@ -738,6 +738,15 @@ def main():
                     args.request_timeout,
                 )
 
+                # Reuse the soil list from the baseline call for the terrain
+                # pass so both runs compare identical candidates and we avoid
+                # a second SSURGO fetch (which halves timeouts and ensures
+                # list_soils returns the same result for both).
+                baseline_rank_data_csv = baseline_api_response.get("rank_data_csv") or ""
+                baseline_soil_list_json = baseline_api_response.get("soil_list_json") or {}
+                baseline_mucomp_csv = baseline_api_response.get("map_unit_component_data_csv") or ""
+
+                rank_url = args.soilid_api_url.replace("/analyze-soil", "/rank-soils")
                 terrain_payload = _build_analyze_payload(
                     lon=lon,
                     lat=lat,
@@ -751,18 +760,35 @@ def main():
                     p_landscape=p_landscape,
                     max_distance_m=args.buffer_meters,
                 )
-                terrain_api_response = _call_analyze_soil_api(
-                    args.soilid_api_url,
-                    terrain_payload,
-                    args.request_timeout,
-                )
+                # Override with cached list data so no second SSURGO call is made.
+                terrain_payload["soil_list_json"] = baseline_soil_list_json
+                terrain_payload["rank_data_csv"] = baseline_rank_data_csv
+                terrain_payload["map_unit_component_data_csv"] = baseline_mucomp_csv
+
+                if baseline_rank_data_csv:
+                    # Use /rank-soils — skips list_soils entirely.
+                    terrain_api_response = _call_analyze_soil_api(
+                        rank_url,
+                        terrain_payload,
+                        args.request_timeout,
+                    )
+                    # /rank-soils returns the rank result directly (has "soilRank" at top).
+                    with_terrain = terrain_api_response
+                else:
+                    # Fallback: baseline didn't return rank_data_csv (old deployment),
+                    # so fall back to a second analyze-soil call.
+                    terrain_api_response = _call_analyze_soil_api(
+                        args.soilid_api_url,
+                        terrain_payload,
+                        args.request_timeout,
+                    )
+                    with_terrain = terrain_api_response.get("ranking_result") or {}
 
                 list_output_data = {
-                    "soil_list_json": baseline_api_response.get("soil_list_json") or {},
-                    "map_unit_component_data_csv": baseline_api_response.get("map_unit_component_data_csv") or "",
+                    "soil_list_json": baseline_soil_list_json,
+                    "map_unit_component_data_csv": baseline_mucomp_csv,
                 }
                 baseline = baseline_api_response.get("ranking_result") or {}
-                with_terrain = terrain_api_response.get("ranking_result") or {}
             elif args.list_source == "live":
                 if lon is None or lat is None:
                     raise RuntimeError("Missing Longitude_NAD83/Latitude_NAD83 for live list_soils")
@@ -949,14 +975,26 @@ def main():
                         p_landscape=p_landscape_qc,
                         max_distance_m=args.buffer_meters,
                     )
-                    with_terrain_qc = (
-                        _call_analyze_soil_api(
-                            args.soilid_api_url,
+                    # Reuse cached soil list — same fix as terrain payload above.
+                    qc_payload["soil_list_json"] = baseline_soil_list_json
+                    qc_payload["rank_data_csv"] = baseline_rank_data_csv
+                    qc_payload["map_unit_component_data_csv"] = baseline_mucomp_csv
+
+                    if baseline_rank_data_csv:
+                        with_terrain_qc = _call_analyze_soil_api(
+                            rank_url,
                             qc_payload,
                             args.request_timeout,
-                        ).get("ranking_result")
-                        or {}
-                    )
+                        )
+                    else:
+                        with_terrain_qc = (
+                            _call_analyze_soil_api(
+                                args.soilid_api_url,
+                                qc_payload,
+                                args.request_timeout,
+                            ).get("ranking_result")
+                            or {}
+                        )
                 else:
                     with_terrain_qc = rank_soils(
                         lon=0.0,
