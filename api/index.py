@@ -317,8 +317,11 @@ async def api_rank_soils(request: RankSoilsRequest):
     > separate `list-soils` step), use `/api/analyze-soil` instead.
     """
     try:
-        # Validate that CSV fields look like real data from list-soils, not placeholders.
-        _REQUIRED_RANK_COLS = {"cokey", "compname", "comp_max_bottom"}
+        # Validate that rank_data_csv looks like real data from list-soils (has compname column).
+        # NOTE: rank_data_csv from list-soils contains compname plus feature columns
+        # (sandpct_intpl, claypct_intpl, rfv_intpl, l, a, b). cokey and comp_max_bottom
+        # are in map_unit_component_data_csv, not rank_data_csv.
+        _REQUIRED_RANK_COLS = {"compname"}
         try:
             import io
             import pandas as _pd
@@ -329,8 +332,7 @@ async def api_rank_soils(request: RankSoilsRequest):
                 raise HTTPException(
                     status_code=422,
                     detail=(
-                        "rank_data_csv does not contain the required columns "
-                        f"({sorted(_REQUIRED_RANK_COLS)}). "
+                        "rank_data_csv does not contain the required 'compname' column. "
                         "This field must be the verbatim 'rank_data_csv' string "
                         "returned by /api/list-soils. "
                         "For a single self-contained request without a separate "
@@ -380,6 +382,8 @@ async def api_rank_soils(request: RankSoilsRequest):
         
         return result
     
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=500,
