@@ -6,10 +6,13 @@
 # (at your option) any later version.
 
 from fastapi import FastAPI, HTTPException
+from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Optional, List, Union
 from mangum import Mangum
+import math
+import numbers
 import sys
 from pathlib import Path
 
@@ -180,6 +183,31 @@ def _resolve_lab_color(request: "RankSoilsRequest"):
     return converted
 
 
+def _sanitize_non_finite_floats(value):
+    """
+    Recursively replace NaN/Inf numeric values with None for strict JSON output.
+    """
+    if value is None or isinstance(value, bool):
+        return value
+
+    if isinstance(value, numbers.Real):
+        as_float = float(value)
+        if not math.isfinite(as_float):
+            return None
+        return value
+
+    if isinstance(value, dict):
+        return {k: _sanitize_non_finite_floats(v) for k, v in value.items()}
+
+    if isinstance(value, list):
+        return [_sanitize_non_finite_floats(v) for v in value]
+
+    if isinstance(value, tuple):
+        return tuple(_sanitize_non_finite_floats(v) for v in value)
+
+    return value
+
+
 # ============================================================================
 # API Endpoints
 # ============================================================================
@@ -273,7 +301,7 @@ async def api_list_soils(request: ListSoilsRequest):
         
         # Convert dataclass to dict for JSON serialization
         return SoilListOutputDataResponse(
-            soil_list_json=result.soil_list_json,
+            soil_list_json=_sanitize_non_finite_floats(jsonable_encoder(result.soil_list_json)),
             rank_data_csv=result.rank_data_csv,
             map_unit_component_data_csv=result.map_unit_component_data_csv
         )
@@ -380,7 +408,7 @@ async def api_rank_soils(request: RankSoilsRequest):
             pLandscapeMode=request.pLandscapeMode,
         )
         
-        return result
+        return _sanitize_non_finite_floats(jsonable_encoder(result))
     
     except HTTPException:
         raise
@@ -448,12 +476,12 @@ async def api_analyze_soil_combined(request: RankSoilsRequest):
         )
         
         # Combine list and rank results
-        return {
+        return _sanitize_non_finite_floats(jsonable_encoder({
             "soil_list_json": list_result.soil_list_json,
             "rank_data_csv": list_result.rank_data_csv,
             "map_unit_component_data_csv": list_result.map_unit_component_data_csv,
             "ranking_result": rank_result
-        }
+        }))
     
     except HTTPException:
         raise
